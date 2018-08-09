@@ -10,10 +10,7 @@ add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 enable_cxx17(${PROJECT_NAME})
 setup_compile_options(${PROJECT_NAME})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-        VERSION ${VERSION}
-        SOVERSION ${VERSION}
-        )
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION})
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
