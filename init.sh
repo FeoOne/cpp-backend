@@ -3,7 +3,11 @@
 echo "Make library aliases..."
 
 mkdir engine/include
-ln -s engine/src engine/include/engine
+cd engine/include
+ln -s ../src ./engine
+cd -
 
 mkdir framework/include
-ln -s framework/src framework/include/framework
+cd framework/include
+ln -s ../src ./framework
+cd -
