@@ -10,7 +10,7 @@ function(enable_cxx17 TARGET)
         set_target_properties(${TARGET} PROPERTIES
                 COMPILE_FLAGS "-stdlib=libc++ -pthread"
                 )
-        target_link_libraries(${TARGET} PRIVATE c++experimental pthread)
+        target_link_libraries(${TARGET} PRIVATE pthread)
     endif()
 endfunction(enable_cxx17)
 

@@ -8,14 +8,40 @@
 #ifndef ENGINE_EXECUTION_CONTEXT_H
 #define ENGINE_EXECUTION_CONTEXT_H
 
+#include <framework/framework.h>
+
 namespace engine {
 
     class execution_context {
     public:
+        class service;
+
+        virtual ~execution_context();
+
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_context)
+
+    protected:
         execution_context();
-        ~execution_context();
+
+    };
+
+    class execution_context::service {
+    public:
+        virtual ~service() = default;
+
+        virtual void shutdown() noexcept = 0;
+
+        FW_DELETE_DEFAULT_CTOR(service)
+        FW_DELETE_DEFAULT_COPY_CTOR(service)
+        FW_DELETE_DEFAULT_COPY_ASSIGN(service)
+
+    protected:
+        explicit service(execution_context& owner) noexcept : _context { owner } {}
+
+        execution_context& context() noexcept { return _context; }
 
     private:
+        execution_context&      _context;
 
     };
 

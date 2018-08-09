@@ -5,4 +5,18 @@
  * @brief
  */
 
-#include "execution_context.h"
+#include "core/execution_context.h"
+
+namespace engine {
+
+    execution_context::execution_context()
+    {
+
+    }
+
+    execution_context::~execution_context()
+    {
+
+    }
+
+}

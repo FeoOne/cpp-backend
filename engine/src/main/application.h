@@ -5,8 +5,8 @@
  * @brief
  */
 
-#ifndef PROJECT_APPLICATION_H
-#define PROJECT_APPLICATION_H
+#ifndef ENGINE_APPLICATION_H
+#define ENGINE_APPLICATION_H
 
 namespace engine {
 
@@ -21,4 +21,4 @@ namespace engine {
 
 }
 
-#endif /* PROJECT_APPLICATION_H */
+#endif /* ENGINE_APPLICATION_H */

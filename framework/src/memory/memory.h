@@ -24,6 +24,17 @@
     FW_DELETE_DEFAULT_CTOR(c)                   \
     FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(c)
 
+#define FW_DECLARE_SMARTPOINTERS(T)                                         \
+    using sptr = std::shared_ptr<T>;                                        \
+    using uptr = std::unique_ptr<T>;                                        \
+    using wptr = std::weak_ptr<T>;                                          \
+    template<typename... Args> static sptr make_shared(Args&&... args) {    \
+        return std::make_shared<T>(std::forward<Args>(args)...);            \
+    }                                                                       \
+    template<typename... Args> static uptr make_unique(Args&&... args) {    \
+        return std::make_unique<T>(std::forward<Args>(args)...);            \
+    }
+
 namespace framework {
 
 
