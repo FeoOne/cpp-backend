@@ -1,0 +1,4 @@
+set(PROJECT_NAME backend)
+
+project(${PROJECT_NAME} VERSION 0.0.1 LANGUAGES CXX)
+
