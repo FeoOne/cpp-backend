@@ -17,11 +17,6 @@ namespace engine {
         io_context();
         virtual ~io_context();
 
-        void start() noexcept;
-        void stop() noexcept;
-        void restart() noexcept;
-        bool stopped() const noexcept;
-
         FW_DELETE_DEFAULT_COPY_CTOR(io_context)
         FW_DELETE_DEFAULT_COPY_ASSIGN(io_context)
 

@@ -10,53 +10,37 @@
 
 #include <framework.h>
 
-namespace engine {
+#include "execution_service.h"
 
-    enum class fork_event_t {
-        PREPARE,
-        PARENT,
-        CHILD,
-    };
+namespace engine {
 
     class execution_context {
     public:
         FW_DECLARE_SMARTPOINTERS(execution_context)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_context)
 
-        class service;
-
         virtual ~execution_context();
 
-        void notify_fork(fork_event_t event) noexcept;
+        void start() noexcept;
+        void stop() noexcept;
+        void restart() noexcept;
+        void join() noexcept;
+
+        bool stopped() const noexcept;
 
     protected:
         execution_context();
 
     private:
-        std::vector<service>        _services;
+        std::vector<execution_service>      _services;
 
-        void shutdown() noexcept;
-        void destroy() noexcept;
+        std::atomic_bool                    _should_work;
+        std::atomic_bool                    _should_restart;
+        std::atomic_bool                    _is_stopped;
 
-    };
+        std::thread                         _thread;
 
-    class execution_context::service {
-    public:
-        FW_DECLARE_SMARTPOINTERS(service)
-        FW_DELETE_ALL_DEFAULT(service)
-
-        virtual ~service() = default;
-
-        virtual void notify_fork(fork_event_t event) noexcept = 0;
-        virtual void shutdown() noexcept = 0;
-
-    protected:
-        explicit service(execution_context& owner) noexcept : _context { owner } {}
-
-        execution_context& context() noexcept { return _context; }
-
-    private:
-        execution_context&      _context;
+        void execute() noexcept;
 
     };
 

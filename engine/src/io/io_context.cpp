@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "io/kqueue_context_loop.h"
+
 #include "io/io_context.h"
 
 namespace engine {
@@ -14,6 +16,7 @@ namespace engine {
      */
 
     io_context::io_context() :
+            execution_context(std::move(kqueue_context_loop::make_unique())),
             _should_work { false },
             _should_restart { false },
             _is_stopped { true }

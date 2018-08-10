@@ -16,11 +16,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
-            ${CONFIG_INCLUDE_DIR}
+            ${Config_INCLUDE_DIR}
             ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
 target_link_libraries(${PROJECT_NAME}
-        PUBLIC
-            ${CONFIG_LIBRARIES}
+        PRIVATE
+            ${Config_LIBRARIES}
         )

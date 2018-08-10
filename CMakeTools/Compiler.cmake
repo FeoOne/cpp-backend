@@ -23,6 +23,7 @@ function(setup_compile_options TARGET)
             -Wno-c++98-compat
             -Wno-weak-vtables
             -Wno-unused-parameter
+            -Wno-reserved-id-macro
             -Wno-format-nonliteral
             -Wno-global-constructors
             -Wno-exit-time-destructors

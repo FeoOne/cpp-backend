@@ -21,12 +21,23 @@ namespace engine {
 
     application::~application()
     {
+        loginfo("Application stopped.");
     }
 
     void application::load_config(const std::string_view& filename) noexcept
     {
         loginfo("Loading config: %s", filename.data());
         _config->read(filename);
+    }
+
+    void application::prepare() noexcept
+    {
+        loginfo("Prepearing to run application...");
+    }
+
+    void application::run() noexcept
+    {
+        loginfo("Running application...");
     }
 
 }

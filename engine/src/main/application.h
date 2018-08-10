@@ -21,7 +21,8 @@ namespace engine {
 
         void load_config(const std::string_view& filename) noexcept;
 
-        void run();
+        void prepare() noexcept;
+        void run() noexcept;
 
     private:
         framework::config::sptr         _config;

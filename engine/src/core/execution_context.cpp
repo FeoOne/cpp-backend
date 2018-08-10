@@ -9,42 +9,56 @@
 
 namespace engine {
 
-    execution_context::execution_context()
+    execution_context::execution_context() :
+            _services {},
+            _should_work { false },
+            _should_restart { false },
+            _is_stopped { true },
+            _thread {}
     {
-
     }
 
     execution_context::~execution_context()
     {
-        shutdown();
-        destroy();
     }
 
-    void execution_context::notify_fork(fork_event_t event) noexcept
+    void execution_context::start() noexcept
     {
-        if (event == fork_event_t::PREPARE) {
-            for (auto it = _services.rbegin(); it != _services.rend(); ++it) {
-                it->notify_fork(event);
-            }
-        } else {
-            for (auto it = _services.begin(); it != _services.end(); ++it) {
-                it->notify_fork(event);
-            }
+        if (!stopped()) {
+            logerror("Execution context already started.");
+            return;
         }
+
+        _thread = std::thread(std::bind(&execution_context::execute, this));
     }
 
-    void execution_context::shutdown() noexcept
+    void execution_context::stop() noexcept
     {
-        for (auto it = _services.rbegin(); it != _services.rend(); ++it) {
-            it->shutdown();
-        }
+
     }
 
-    void execution_context::destroy() noexcept
+    void execution_context::restart() noexcept
     {
-        for (auto it = _services.rbegin(); it != _services.rend(); ++it) {
-            it->shutdown();
-        }
+
+    }
+
+    void execution_context::join() noexcept
+    {
+
+    }
+
+    bool execution_context::stopped() const noexcept
+    {
+
+    }
+
+    void execution_context::execute() noexcept
+    {
+        _is_stopped = false;
+
+
+
+        _is_stopped = true;
     }
 
 }
