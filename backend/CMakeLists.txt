@@ -13,8 +13,8 @@ setup_compile_options(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${framework_SOURCE_DIR}/include
-            ${engine_SOURCE_DIR}/include
+            ${framework_SOURCE_DIR}/src
+            ${engine_SOURCE_DIR}/src
         )
 
 target_link_libraries(${PROJECT_NAME}

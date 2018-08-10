@@ -15,7 +15,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${framework_SOURCE_DIR}/include
+            ${framework_SOURCE_DIR}/src
         )
 
 target_link_libraries(${PROJECT_NAME}

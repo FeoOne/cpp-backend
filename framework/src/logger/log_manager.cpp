@@ -5,11 +5,14 @@
  * @brief
  */
 
-#include "log_manager.h"
+#include "logger/log_manager.h"
 
 namespace framework {
 
-    //static
+    // static
+    logger::uptr log_manager::_logger;
+
+    // static
     void log_manager::setup() noexcept {
         _logger = stdout_logger::make_unique();
     }

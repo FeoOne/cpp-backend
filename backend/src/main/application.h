@@ -8,12 +8,14 @@
 #ifndef BACKEND_APPLICATION_H
 #define BACKEND_APPLICATION_H
 
+#include <engine.h>
+
 namespace backend {
 
-    class application {
+    class application : public engine::application {
     public:
-        application();
-        ~application();
+        application() = default;
+        virtual ~application() = default;
 
     private:
 

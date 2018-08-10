@@ -5,8 +5,8 @@
  * @brief
  */
 
-#ifndef PROJECT_MEMORY_H
-#define PROJECT_MEMORY_H
+#ifndef FRAMEWORK_MEMORY_H
+#define FRAMEWORK_MEMORY_H
 
 #define FW_DELETE_DEFAULT_CTOR(c)               c() = delete;
 #define FW_DELETE_DEFAULT_COPY_CTOR(c)          c(const c&) = delete;
@@ -41,4 +41,4 @@ namespace framework {
 
 }
 
-#endif //PROJECT_MEMORY_H
+#endif /* FRAMEWORK_MEMORY_H */

@@ -13,7 +13,7 @@ namespace engine {
     class application {
     public:
         application();
-        ~application();
+        virtual ~application();
 
     private:
 

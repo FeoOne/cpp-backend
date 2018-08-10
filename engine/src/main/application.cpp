@@ -5,13 +5,17 @@
  * @brief
  */
 
-#include "application.h"
+#include <framework.h>
+
+#include "main/application.h"
 
 namespace engine {
 
+    using namespace framework;
+
     application::application()
     {
-
+        log_manager::setup();
     }
 
     application::~application()

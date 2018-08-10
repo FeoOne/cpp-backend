@@ -12,8 +12,8 @@ namespace framework {
 
     class time {
     public:
-        time();
-        ~time();
+        time() = default;
+        ~time() = default;
 
     private:
 

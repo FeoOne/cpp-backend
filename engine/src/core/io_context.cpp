@@ -55,6 +55,8 @@ namespace engine {
     void io_context::restart() noexcept
     {
         _should_restart = true;
+
+        stop();
     }
 
     bool io_context::stopped() const noexcept

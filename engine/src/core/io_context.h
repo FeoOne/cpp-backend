@@ -12,9 +12,6 @@
 
 namespace engine {
 
-    /**
-     * @todo implement `run_for` and `run_until` methods
-     */
     class io_context : public execution_context {
     public:
         io_context();

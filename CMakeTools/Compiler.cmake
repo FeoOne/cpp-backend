@@ -19,12 +19,16 @@ function(setup_compile_options TARGET)
             -Wall
             -Wextra
             -Weverything
+            -Wno-padded
             -Wno-c++98-compat
-            -Wno-c++98-c++11-c++14-compat
-            -Wno-exit-time-destructors
             -Wno-weak-vtables
+            -Wno-unused-parameter
+            -Wno-format-nonliteral
             -Wno-global-constructors
+            -Wno-exit-time-destructors
             -Wno-c++98-compat-pedantic
+            -Wno-c++98-c++11-c++14-compat
+            -Wno-c++98-c++11-c++14-compat-pedantic
             -Wno-gnu-zero-variadic-macro-arguments
             )
 endfunction()
