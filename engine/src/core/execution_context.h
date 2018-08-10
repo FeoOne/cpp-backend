@@ -12,28 +12,43 @@
 
 namespace engine {
 
+    enum class fork_event_t {
+        PREPARE,
+        PARENT,
+        CHILD,
+    };
+
     class execution_context {
     public:
+        FW_DECLARE_SMARTPOINTERS(execution_context)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_context)
+
         class service;
 
         virtual ~execution_context();
 
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_context)
+        void notify_fork(fork_event_t event) noexcept;
 
     protected:
         execution_context();
+
+    private:
+        std::vector<service>        _services;
+
+        void shutdown() noexcept;
+        void destroy() noexcept;
 
     };
 
     class execution_context::service {
     public:
+        FW_DECLARE_SMARTPOINTERS(service)
+        FW_DELETE_ALL_DEFAULT(service)
+
         virtual ~service() = default;
 
+        virtual void notify_fork(fork_event_t event) noexcept = 0;
         virtual void shutdown() noexcept = 0;
-
-        FW_DELETE_DEFAULT_CTOR(service)
-        FW_DELETE_DEFAULT_COPY_CTOR(service)
-        FW_DELETE_DEFAULT_COPY_ASSIGN(service)
 
     protected:
         explicit service(execution_context& owner) noexcept : _context { owner } {}

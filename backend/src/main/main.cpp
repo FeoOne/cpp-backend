@@ -7,7 +7,15 @@
 
 #include <cstdlib>
 
+#include "main/application.h"
+
+using namespace engine;
+
 int main(int argc, char **argv)
 {
+    application::uptr app = application::make_unique();
+    app->load_config("backend.cfg");
+    app->run();
+
     return EXIT_SUCCESS;
 }

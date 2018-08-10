@@ -8,15 +8,22 @@
 #ifndef FRAMEWORK_FRAMEWORK_H
 #define FRAMEWORK_FRAMEWORK_H
 
+#include <set>
+#include <list>
 #include <array>
+#include <vector>
 #include <atomic>
 #include <condition_variable>
 #include <experimental/optional>
+
+#include "util/optional.h"
 
 #include "main/tools.h"
 
 #include "logger/log_manager.h"
 
 #include "memory/memory.h"
+
+#include "config/config.h"
 
 #endif /* FRAMEWORK_FRAMEWORK_H */

@@ -1,5 +1,5 @@
 /**
- * @file ip.h
+ * @file internet_protocol.h
  * @author Feo
  * @date 10/08/2018
  * @brief
@@ -8,8 +8,9 @@
 #ifndef ENGINE_IP_H
 #define ENGINE_IP_H
 
-#include <framework.h>
 #include <netinet/in.h>
+
+#include <framework.h>
 
 namespace engine {
 
@@ -90,7 +91,6 @@ namespace engine {
         address();
         explicit address(const address_v4& v4) noexcept;
         explicit address(const address_v6& v6) noexcept;
-        virtual ~address() = default;
 
         bool is_unspecified() const noexcept;
         bool is_loopback() const noexcept;

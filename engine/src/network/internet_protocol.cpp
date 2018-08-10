@@ -1,11 +1,11 @@
 /**
- * @file ip.cpp
+ * @file internet_protocol.cpp
  * @author Feo
  * @date 10/08/2018
  * @brief
  */
 
-#include "network/ip.h"
+#include "network/internet_protocol.h"
 
 namespace engine {
 

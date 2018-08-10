@@ -14,6 +14,8 @@ namespace backend {
 
     class application : public engine::application {
     public:
+        FW_DECLARE_SMARTPOINTERS(application)
+
         application() = default;
         virtual ~application() = default;
 
