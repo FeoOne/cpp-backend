@@ -9,11 +9,11 @@
 
 namespace engine {
 
-    websocket_handle_service::websocket_handle_service(SoupServer *server) :
+    websocket_handle_service::websocket_handle_service(SoupServer *server) noexcept :
             _server { server }
     {
         soup_server_add_websocket_handler(_server,
-                                          nullptr,
+                                          "/websocket",
                                           nullptr,
                                           nullptr,
                                           &websocket_handle_service::_handler,
@@ -24,7 +24,7 @@ namespace engine {
     // virtual
     websocket_handle_service::~websocket_handle_service()
     {
-        soup_server_remove_handler(_server, nullptr);
+        soup_server_remove_handler(_server, "/websocket");
     }
 
     void websocket_handle_service::_handler(SoupServer *server,

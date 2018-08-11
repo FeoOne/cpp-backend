@@ -9,7 +9,7 @@
 
 namespace engine {
 
-    http_handle_service::http_handle_service(SoupServer *server) :
+    http_handle_service::http_handle_service(SoupServer *server) noexcept :
             _server { server }
     {
         soup_server_add_handler(_server, nullptr, &http_handle_service::_handler, this, nullptr);

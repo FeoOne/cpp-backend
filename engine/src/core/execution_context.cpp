@@ -70,7 +70,7 @@ namespace engine {
 
     void execution_context::_add_service(const execution_service::sptr& service) noexcept
     {
-        _services[service->get_key()] = service; // @todo Error handling
+        _services.insert({ service->get_key(), service }); // @todo Error handling
     }
 
     void execution_context::_remove_service(execution_service::key_type key) noexcept

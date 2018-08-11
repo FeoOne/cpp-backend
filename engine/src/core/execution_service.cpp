@@ -5,4 +5,11 @@
  * @brief
  */
 
-#include "execution_service.h"
+#include "core/execution_service.h"
+
+namespace engine {
+
+    // static
+    execution_service::key_type execution_service::_key_counter { 0 };
+
+}

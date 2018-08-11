@@ -19,7 +19,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(websocket_handle_service)
         FW_DELETE_ALL_DEFAULT(websocket_handle_service)
 
-        websocket_handle_service(SoupServer *server);
+        explicit websocket_handle_service(SoupServer *server) noexcept;
         virtual ~websocket_handle_service();
 
     private:

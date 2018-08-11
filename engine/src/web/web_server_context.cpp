@@ -55,7 +55,9 @@ namespace engine {
                                                  static_cast<guint>(port),
                                                  static_cast<SoupServerListenOptions>(0),
                                                  &error);
+
             if (result == TRUE) {
+                // print some server info
                 GSList *uris = soup_server_get_uris(_server);
                 for (GSList *u = uris; u != nullptr; u = u->next) {
                     auto suri = reinterpret_cast<SoupURI *>(u->data);
@@ -69,6 +71,9 @@ namespace engine {
                 loginfo("Web server started...");
             } else {
                 logerror("Failed to start listen.");
+
+                soup_server_disconnect(_server);
+                _server = nullptr;
             }
         } else {
             logerror("Failed to create web server.");

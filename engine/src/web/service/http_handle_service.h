@@ -19,7 +19,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(http_handle_service)
         FW_DELETE_ALL_DEFAULT(http_handle_service)
 
-        http_handle_service(SoupServer *server);
+        explicit http_handle_service(SoupServer *server) noexcept;
         virtual ~http_handle_service();
 
     private:

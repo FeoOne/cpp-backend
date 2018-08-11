@@ -26,6 +26,8 @@ namespace engine {
     protected:
         execution_service() = default;
 
+        static key_type _key_counter;
+
     };
 
     template<typename T>
@@ -39,10 +41,10 @@ namespace engine {
 
         key_type get_key() const noexcept final { return key(); }
 
-        static key_type key() noexcept { return KEY; }
-
-    private:
-        static constexpr key_type KEY { FW_COUNTER };
+        static key_type key() noexcept {
+            static key_type k = _key_counter++;
+            return k;
+        }
 
     };
 
