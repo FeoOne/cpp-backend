@@ -10,7 +10,7 @@
 
 #include <framework.h>
 
-#include "execution_service.h"
+#include "core/execution_loop.h"
 
 namespace engine {
 
@@ -24,32 +24,23 @@ namespace engine {
         void start() noexcept;
         void stop() noexcept;
         void restart() noexcept;
+
         void join() noexcept;
 
-        bool stopped() const noexcept;
-
     protected:
-        explicit execution_context(const framework::config_setting::sptr& config) noexcept;
+        explicit execution_context(execution_loop::uptr&& loop,
+                                   const framework::config_setting::sptr& config) noexcept;
 
         framework::config_setting::sptr& config() noexcept { return _config; }
 
-        virtual void _poll_once() noexcept = 0;
-
-        virtual void _before_execute() noexcept = 0;
-        virtual void _after_execute() noexcept = 0;
-
-        virtual bool _should_work() const noexcept = 0;
-        virtual void _should_work(bool b) noexcept = 0;
+        virtual void _before_run() noexcept = 0;
+        virtual void _after_run() noexcept = 0;
 
     private:
-        std::vector<execution_service>      _services;
-
+        execution_loop::uptr                _loop;
         framework::config_setting::sptr     _config;
-
-        std::atomic_bool                    _should_restart;
-        std::atomic_bool                    _is_stopped;
-
         std::thread                         _thread;
+        bool                                _should_restart;
 
         void _execute() noexcept;
 

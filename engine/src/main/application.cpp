@@ -7,6 +7,7 @@
 
 #include <framework.h>
 
+#include "main/engine_const.h"
 #include "system/system_context.h"
 #include "web/web_server_context.h"
 
@@ -43,10 +44,10 @@ namespace engine {
 
             auto specific_context_config = (*context_config)[i];
             auto name = (*specific_context_config)["name"]->to_string();
-            if (std::strcmp(name, system_context::NAME.data()) == 0) {
+            if (std::strcmp(name, engine_const::SYSTEM_CONTEXT_NAME.data()) == 0) {
                 // system_context
                 context = system_context::make_shared(specific_context_config);
-            } else if (std::strcmp(name, web_server_context::NAME.data()) == 0) {
+            } else if (std::strcmp(name, engine_const::WEB_SERVER_CONTEXT_NAME.data()) == 0) {
                 // web_server_context
                 context = web_server_context::make_shared(specific_context_config);
             }
@@ -64,7 +65,12 @@ namespace engine {
             context->start();
         }
 
-        _context_map[system_context::NAME]->join();
+        try {
+            _context_map[engine_const::SYSTEM_CONTEXT_NAME]->join();
+        }
+        catch (const std::exception& exception) {
+            logemerg("Failed to join system context: %s", exception.what());
+        }
     }
 
 }

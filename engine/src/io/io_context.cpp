@@ -16,7 +16,7 @@ namespace engine {
      */
 
     io_context::io_context(const config_setting::sptr& config) :
-            execution_context(config)
+            execution_context(nullptr, config)
 //            _should_work { false },
 //            _should_restart { false },
 //            _is_stopped { true }

@@ -11,12 +11,12 @@ namespace engine {
 
     using namespace framework;
 
-    execution_context::execution_context(const config_setting::sptr& config) noexcept :
-            _services {},
+    execution_context::execution_context(execution_loop::uptr&& loop,
+                                         const config_setting::sptr& config) noexcept :
+            _loop { std::move(loop) },
             _config { config },
-            _should_restart { false },
-            _is_stopped { true },
-            _thread {}
+            _thread {},
+            _should_restart { false }
     {
         assert(config != nullptr);
     }
@@ -27,7 +27,7 @@ namespace engine {
 
     void execution_context::start() noexcept
     {
-        if (!stopped()) {
+        if (!_loop->stopped()) {
             logerror("Execution context already started.");
             return;
         }
@@ -37,21 +37,24 @@ namespace engine {
 
     void execution_context::stop() noexcept
     {
-        if (!stopped()) {
-            _should_work(false);
-        } else {
+        if (_loop->stopped()) {
             logerror("Execution context already stopped.");
+            return;
         }
+
+        _loop->stop();
     }
 
     void execution_context::restart() noexcept
     {
-        if (!stopped()) {
-            _should_restart = true;
-            stop();
-        } else {
-            start();
+        if (_loop->stopped()) {
+            logerror("Can't restart stopped context.");
+            return;
         }
+
+        _should_restart = true;
+
+        stop();
     }
 
     void execution_context::join() noexcept
@@ -63,31 +66,18 @@ namespace engine {
         }
     }
 
-    bool execution_context::stopped() const noexcept
-    {
-        return _is_stopped;
-    }
-
     void execution_context::_execute() noexcept
     {
-        _is_stopped = false;
-
         do {
             if (_should_restart) {
-                loginfo("Restarting context.");
+                loginfo("Restarting context...");
                 _should_restart = false;
             }
 
-            _before_execute();
-
-            do {
-                _poll_once();
-            } while (_should_work());
-
-            _after_execute();
+            _before_run();
+            _loop->run();
+            _after_run();
         } while (_should_restart);
-
-        _is_stopped = true;
     }
 
 }

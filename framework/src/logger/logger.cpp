@@ -73,10 +73,6 @@ namespace framework {
         std::ostream& stream = fatal ? std::cerr : std::cout;
 
         stream << buffer << std::endl;
-
-        if (fatal) {
-            abort();
-        }
     }
 
 }

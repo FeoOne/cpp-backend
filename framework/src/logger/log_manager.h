@@ -42,24 +42,30 @@
                                                                               __FUNCTION__,                        \
                                                                               format,                              \
                                                                               ##__VA_ARGS__)
-#define logcrit(format, ...)            framework::log_manager::logger()->log(framework::logger::level_t::CRIT,    \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
-                                                                              ##__VA_ARGS__)
-#define logalert(format, ...)           framework::log_manager::logger()->log(framework::logger::level_t::ALERT,   \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
-                                                                              ##__VA_ARGS__)
-#define logemerg(format, ...)           framework::log_manager::logger()->log(framework::logger::level_t::EMERG,   \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
-                                                                              ##__VA_ARGS__)
+#define logcrit(format, ...)            \
+    do { framework::log_manager::logger()->log(framework::logger::level_t::CRIT,    \
+                                               __FILE__,                            \
+                                               __LINE__,                            \
+                                               __FUNCTION__,                        \
+                                               format,                              \
+                                               ##__VA_ARGS__);                      \
+        abort(); } while (false)
+#define logalert(format, ...)                                                       \
+    do { framework::log_manager::logger()->log(framework::logger::level_t::ALERT,   \
+                                               __FILE__,                            \
+                                               __LINE__,                            \
+                                               __FUNCTION__,                        \
+                                               format,                              \
+                                               ##__VA_ARGS__);                      \
+        abort(); } while (false)
+#define logemerg(format, ...)                                                       \
+    do { framework::log_manager::logger()->log(framework::logger::level_t::EMERG,   \
+                                               __FILE__,                            \
+                                               __LINE__,                            \
+                                               __FUNCTION__,                        \
+                                               format,                              \
+                                               ##__VA_ARGS__);                      \
+        abort(); } while (false)
 
 namespace framework {
 

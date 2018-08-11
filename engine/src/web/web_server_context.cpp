@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "web/web_server_loop.h"
+
 #include "web/web_server_context.h"
 
 namespace engine {
@@ -12,8 +14,7 @@ namespace engine {
     using namespace framework;
 
     web_server_context::web_server_context(const config_setting::sptr& config) noexcept :
-            execution_context(config),
-            _loop { nullptr },
+            execution_context(web_server_loop::make_unique(), config),
             _server { nullptr }
     {
     }
@@ -24,42 +25,15 @@ namespace engine {
     }
 
     // virtual
-    void web_server_context::_poll_once() noexcept
-    {
-        if (_loop == nullptr) {
-            _loop = g_main_loop_new(nullptr, TRUE);
-            g_main_loop_run(_loop);
-        } else {
-            logerror("Failed to poll already polled web loop.");
-        }
-    }
-
-    // virtual
-    void web_server_context::_before_execute() noexcept
+    void web_server_context::_before_run() noexcept
     {
         _create_server();
     }
 
     // virtual
-    void web_server_context::_after_execute() noexcept
+    void web_server_context::_after_run() noexcept
     {
         _destroy_server();
-    }
-
-    // virtual
-    bool web_server_context::_should_work() const noexcept
-    {
-        return false;
-    }
-
-    // virtual
-    void web_server_context::_should_work(bool b) noexcept
-    {
-        if (!b && _loop != nullptr && g_main_loop_is_running(_loop)) {
-            g_main_loop_quit(_loop);
-            // @todo Does we might unref loop here?
-            _loop = nullptr;
-        }
     }
 
     void web_server_context::_create_server() noexcept
