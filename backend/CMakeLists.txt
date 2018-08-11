@@ -21,6 +21,7 @@ target_include_directories(${PROJECT_NAME}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
+            ${FLATBUFFERS_INCLUDE_DIR}
             ${framework_SOURCE_DIR}/src
             ${engine_SOURCE_DIR}/src
             ${CMAKE_CURRENT_SOURCE_DIR}/src

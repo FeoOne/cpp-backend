@@ -6,6 +6,7 @@ project(${PROJECT_NAME} VERSION ${VERSION} LANGUAGES CXX)
 find_package(config REQUIRED)
 find_package(soup REQUIRED)
 find_package(uv REQUIRED)
+find_package(flatbuffers REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -24,6 +25,7 @@ target_include_directories(${PROJECT_NAME}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
             ${UV_INCLUDE_DIRS}
+            ${FLATBUFFERS_INCLUDE_DIR}
             ${framework_SOURCE_DIR}/src
             ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
