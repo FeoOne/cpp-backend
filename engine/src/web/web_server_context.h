@@ -31,6 +31,12 @@ namespace engine {
         void _create_server() noexcept;
         void _destroy_server() noexcept;
 
+        void _create_http_handle_service() noexcept;
+        void _destroy_http_handle_service() noexcept;
+
+        void _create_websocket_handle_service() noexcept;
+        void _destroy_websocket_handle_service() noexcept;
+
     };
 
 }

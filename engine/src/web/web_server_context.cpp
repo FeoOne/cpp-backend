@@ -6,6 +6,8 @@
  */
 
 #include "web/web_server_loop.h"
+#include "web/service/http_handle_service.h"
+#include "web/service/websocket_handle_service.h"
 
 #include "web/web_server_context.h"
 
@@ -28,11 +30,15 @@ namespace engine {
     void web_server_context::_before_run() noexcept
     {
         _create_server();
+        _create_http_handle_service();
+        _create_websocket_handle_service();
     }
 
     // virtual
     void web_server_context::_after_run() noexcept
     {
+        _destroy_websocket_handle_service();
+        _destroy_http_handle_service();
         _destroy_server();
     }
 
@@ -75,6 +81,28 @@ namespace engine {
             soup_server_disconnect(_server);
             _server = nullptr;
         }
+    }
+
+    void web_server_context::_create_http_handle_service() noexcept
+    {
+        auto service = http_handle_service::make_shared();
+        _add_service(service);
+    }
+
+    void web_server_context::_destroy_http_handle_service() noexcept
+    {
+        _remove_service(http_handle_service::key());
+    }
+
+    void web_server_context::_create_websocket_handle_service() noexcept
+    {
+        auto service = websocket_handle_service::make_shared();
+        _add_service(service);
+    }
+
+    void web_server_context::_destroy_websocket_handle_service() noexcept
+    {
+        _remove_service(websocket_handle_service::key());
     }
 
 }

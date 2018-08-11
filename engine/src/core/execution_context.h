@@ -11,6 +11,7 @@
 #include <framework.h>
 
 #include "core/execution_loop.h"
+#include "core/execution_service.h"
 
 namespace engine {
 
@@ -33,14 +34,27 @@ namespace engine {
 
         framework::config_setting::sptr& config() noexcept { return _config; }
 
+        void _add_service(const execution_service::sptr& service) noexcept;
+        void _remove_service(execution_service::key_type key) noexcept;
+        execution_service::sptr _get_service(execution_service::key_type key) noexcept;
+
+        template<typename T>
+        typename T::sptr _get_service() noexcept {
+            return std::static_pointer_cast<T>(get_service(T::key()));
+        }
+
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;
 
     private:
+        using service_map = std::unordered_map<execution_service::key_type, execution_service::sptr>;
+
         execution_loop::uptr                _loop;
         framework::config_setting::sptr     _config;
         std::thread                         _thread;
         bool                                _should_restart;
+
+        service_map                         _services;
 
         void _execute() noexcept;
 

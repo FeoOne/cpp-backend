@@ -66,6 +66,21 @@ namespace engine {
         }
     }
 
+    void execution_context::_add_service(const execution_service::sptr& service) noexcept
+    {
+        _services[service->get_key()] = service; // @todo Error handling
+    }
+
+    void execution_context::_remove_service(execution_service::key_type key) noexcept
+    {
+        _services.erase(key); // @todo Error handling
+    }
+
+    execution_service::sptr execution_context::_get_service(execution_service::key_type key) noexcept
+    {
+        return _services[key]; // @todo Error handling
+    }
+
     void execution_context::_execute() noexcept
     {
         do {

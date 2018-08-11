@@ -8,6 +8,8 @@
 #ifndef FRAMEWORK_TOOLS_H
 #define FRAMEWORK_TOOLS_H
 
+#define FW_COUNTER          __COUNTER__
+
 #define FW_STR_IMPL(str)    #str
 #define FW_STR(str)         FW_STR_IMPL(str)
 
