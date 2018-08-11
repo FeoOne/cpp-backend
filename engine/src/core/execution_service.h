@@ -19,6 +19,9 @@ namespace engine {
 
         virtual ~execution_service() = default;
 
+        virtual void create() noexcept = 0;
+        virtual void destroy() noexcept = 0;
+
     protected:
         execution_service() = default;
 

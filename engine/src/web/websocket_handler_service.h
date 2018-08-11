@@ -8,12 +8,14 @@
 #ifndef ENGINE_WEBSOCKET_HANDLER_SERVICE_H
 #define ENGINE_WEBSOCKET_HANDLER_SERVICE_H
 
+#include "core/execution_service.h"
+
 namespace engine {
 
-    class websocket_handler_service {
+    class websocket_handler_service : public execution_service {
     public:
         websocket_handler_service();
-        ~websocket_handler_service();
+        virtual ~websocket_handler_service();
 
     private:
 

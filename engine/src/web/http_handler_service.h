@@ -8,12 +8,14 @@
 #ifndef ENGINE_HTTP_HANDLER_SERVICE_H
 #define ENGINE_HTTP_HANDLER_SERVICE_H
 
+#include "core/execution_service.h"
+
 namespace engine {
 
-    class http_handler_service {
+    class http_handler_service : public execution_service {
     public:
         http_handler_service();
-        ~http_handler_service();
+        virtual ~http_handler_service();
 
     private:
 

@@ -18,7 +18,7 @@ namespace engine {
     class web_server_context final : public execution_context {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_context)
-        FW_DELETE_ALL_DEFAULT(web_server_context)
+        FW_DELETE_ALL_DEFAULT(web_server_context)web_server_context
 
         static constexpr std::string_view NAME { "web_server" };
 
