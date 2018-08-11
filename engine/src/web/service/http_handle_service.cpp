@@ -27,6 +27,8 @@ namespace engine {
                                        GHashTable *query,
                                        SoupClientContext *client) noexcept
     {
+        logdebug("HTTP handler fired.");
+
         // @todo
     }
 

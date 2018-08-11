@@ -16,6 +16,9 @@ namespace engine {
 
     class http_handle_service : public basic_execution_service<http_handle_service> {
     public:
+        FW_DECLARE_SMARTPOINTERS(http_handle_service)
+        FW_DELETE_ALL_DEFAULT(http_handle_service)
+
         http_handle_service(SoupServer *server);
         virtual ~http_handle_service();
 

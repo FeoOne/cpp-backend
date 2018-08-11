@@ -16,6 +16,9 @@ namespace engine {
 
     class websocket_handle_service : public basic_execution_service<websocket_handle_service> {
     public:
+        FW_DECLARE_SMARTPOINTERS(websocket_handle_service)
+        FW_DELETE_ALL_DEFAULT(websocket_handle_service)
+
         websocket_handle_service(SoupServer *server);
         virtual ~websocket_handle_service();
 

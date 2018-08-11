@@ -31,6 +31,8 @@ namespace engine {
                                             const char *path,
                                             SoupClientContext *client) noexcept
     {
+        logdebug("WebSocket handler fired.");
+
         // @todo
     }
 

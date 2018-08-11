@@ -85,7 +85,7 @@ namespace engine {
 
     void web_server_context::_create_http_handle_service() noexcept
     {
-        auto service = http_handle_service::make_shared();
+        auto service = http_handle_service::make_shared(_server);
         _add_service(service);
     }
 
@@ -96,7 +96,7 @@ namespace engine {
 
     void web_server_context::_create_websocket_handle_service() noexcept
     {
-        auto service = websocket_handle_service::make_shared();
+        auto service = websocket_handle_service::make_shared(_server);
         _add_service(service);
     }
 
