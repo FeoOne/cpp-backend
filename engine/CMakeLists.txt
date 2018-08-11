@@ -19,6 +19,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${framework_SOURCE_DIR}/src
             ${Config_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
             ${GLib_INCLUDE_DIRS}
@@ -26,8 +28,6 @@ target_include_directories(${PROJECT_NAME}
             ${Soup_INCLUDE_DIRS}
             ${UV_INCLUDE_DIRS}
             ${FLATBUFFERS_INCLUDE_DIR}
-            ${framework_SOURCE_DIR}/src
-            ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
 target_link_libraries(${PROJECT_NAME}

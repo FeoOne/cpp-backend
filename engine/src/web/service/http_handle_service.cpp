@@ -12,13 +12,35 @@ namespace engine {
     http_handle_service::http_handle_service(SoupServer *server) noexcept :
             _server { server }
     {
-        soup_server_add_handler(_server, nullptr, &http_handle_service::_handler, this, nullptr);
     }
 
     // virtual
     http_handle_service::~http_handle_service()
     {
-        soup_server_remove_handler(_server, nullptr);
+
+    }
+
+    void http_handle_service::add_handler(const std::string_view& path,
+                                          const http_request_handler::sptr& handler) noexcept
+    {
+        auto it = _handlers.find(path);
+        if (it == _handlers.end()) {
+            _handlers.insert({path, handler});
+            soup_server_add_handler(_server, path.data(), &http_handle_service::_handler, this, nullptr);
+        } else {
+            logwarn("Can't add already added handler for path '%s'.", path.data());
+        }
+    }
+
+    void http_handle_service::remove_handler(const std::string_view& path) noexcept
+    {
+        auto it = _handlers.find(path);
+        if (it != _handlers.end()) {
+            soup_server_remove_handler(_server, path.data());
+            _handlers.erase(it);
+        } else {
+            logwarn("Can't remove non-exists handler for path '%s'.", path.data());
+        }
     }
 
     void http_handle_service::_handler(SoupServer *server,

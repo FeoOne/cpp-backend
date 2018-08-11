@@ -26,7 +26,7 @@ namespace engine {
     protected:
         execution_service() = default;
 
-        static key_type _key_counter;
+        static std::atomic<key_type>    _key_counter;
 
     };
 
@@ -42,7 +42,7 @@ namespace engine {
         key_type get_key() const noexcept final { return key(); }
 
         static key_type key() noexcept {
-            static key_type k = _key_counter++;
+            static const key_type k { _key_counter++ };
             return k;
         }
 

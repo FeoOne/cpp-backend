@@ -61,6 +61,8 @@ namespace engine {
     {
         loginfo("Running application...");
 
+        _before_run();
+
         for (auto& context: _context_vector) {
             context->start();
         }
@@ -71,6 +73,8 @@ namespace engine {
         catch (const std::exception& exception) {
             logemerg("Failed to join system context: %s", exception.what());
         }
+
+        _after_run();
     }
 
 }

@@ -16,15 +16,15 @@ setup_compile_options(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${engine_SOURCE_DIR}/src
+            ${framework_SOURCE_DIR}/src
             ${Config_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
             ${FLATBUFFERS_INCLUDE_DIR}
-            ${framework_SOURCE_DIR}/src
-            ${engine_SOURCE_DIR}/src
-            ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
 target_link_libraries(${PROJECT_NAME}

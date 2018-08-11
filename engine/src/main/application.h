@@ -26,6 +26,10 @@ namespace engine {
         void prepare() noexcept;
         void run() noexcept;
 
+    protected:
+        virtual void _before_run() noexcept = 0;
+        virtual void _after_run() noexcept = 0;
+
     private:
         using context_vector = std::vector<execution_context::sptr>;
         using context_map = std::unordered_map<std::string_view, execution_context::sptr>;

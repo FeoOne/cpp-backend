@@ -10,6 +10,6 @@
 namespace engine {
 
     // static
-    execution_service::key_type execution_service::_key_counter { 0 };
+    std::atomic<execution_service::key_type> execution_service::_key_counter { 0 };
 
 }

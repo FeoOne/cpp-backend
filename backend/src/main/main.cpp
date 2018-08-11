@@ -9,7 +9,7 @@
 
 #include "main/application.h"
 
-using namespace engine;
+using namespace backend;
 
 int main(int argc, char **argv)
 {
