@@ -24,6 +24,7 @@ namespace engine {
     // virtual
     websocket_handle_service::~websocket_handle_service()
     {
+        soup_server_remove_handler(_server, nullptr);
     }
 
     void websocket_handle_service::_handler(SoupServer *server,
@@ -31,7 +32,9 @@ namespace engine {
                                             const char *path,
                                             SoupClientContext *client) noexcept
     {
-        logdebug("WebSocket handler fired.");
+        logdebug("WebSocket handler fired. Host: %s, user: %s.",
+                 soup_client_context_get_host(client),
+                 soup_client_context_get_auth_user(client));
 
         // @todo
     }

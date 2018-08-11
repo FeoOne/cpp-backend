@@ -27,7 +27,9 @@ namespace engine {
                                        GHashTable *query,
                                        SoupClientContext *client) noexcept
     {
-        logdebug("HTTP handler fired.");
+        logdebug("HTTP handler fired. Host: %s, user: %s.",
+                 soup_client_context_get_host(client),
+                 soup_client_context_get_auth_user(client));
 
         // @todo
     }

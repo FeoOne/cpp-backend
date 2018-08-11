@@ -1,0 +1,37 @@
+/**
+ * @file io_loop.h
+ * @author Feo
+ * @date 11/08/2018
+ * @brief
+ */
+
+#ifndef ENGINE_IO_LOOP_H
+#define ENGINE_IO_LOOP_H
+
+#include <uv.h>
+
+#include "core/execution_loop.h"
+
+namespace engine {
+
+    class io_loop : public execution_loop {
+    public:
+        FW_DECLARE_SMARTPOINTERS(io_loop)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(io_loop)
+
+        io_loop();
+        virtual ~io_loop();
+
+        void run() noexcept final;
+        void stop() noexcept final;
+
+        bool stopped() const noexcept final;
+
+    private:
+        std::unique_ptr<uv_loop_t>      _loop;
+
+    };
+
+}
+
+#endif /* PROJECT_IO_LOOP_H */

@@ -32,6 +32,8 @@ namespace engine {
             return;
         }
 
+        loginfo("Starting execution context thread.");
+
         _thread = std::thread(std::bind(&execution_context::_execute, this));
     }
 

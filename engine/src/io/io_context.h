@@ -14,13 +14,15 @@ namespace engine {
 
     class io_context : public execution_context {
     public:
-        io_context(const framework::config_setting::sptr& config);
+        FW_DECLARE_SMARTPOINTERS(io_context)
+        FW_DELETE_ALL_DEFAULT(io_context)
+
+        explicit io_context(const framework::config_setting::sptr& config) noexcept;
         virtual ~io_context();
 
-        FW_DELETE_DEFAULT_COPY_CTOR(io_context)
-        FW_DELETE_DEFAULT_COPY_ASSIGN(io_context)
-
     private:
+        void _before_run() noexcept final;
+        void _after_run() noexcept final;
 
     };
 
