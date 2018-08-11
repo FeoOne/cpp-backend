@@ -22,24 +22,27 @@ namespace framework {
     /**
      *
      */
-    class config_scope {
+    class config_setting {
     public:
-        FW_DECLARE_SMARTPOINTERS(config_scope)
+        FW_DECLARE_SMARTPOINTERS(config_setting)
+        FW_DELETE_ALL_DEFAULT(config_setting)
 
-        virtual ~config_scope() = default;
+        explicit config_setting(config_setting_t *setting) noexcept : _setting { setting } {}
+        virtual ~config_setting() = default;
 
-        bool lookup(const std::string_view& key, bool *value) const noexcept;
-        bool lookup(const std::string_view& key, s32 *value) const noexcept;
-        bool lookup(const std::string_view& key, s64 *value) const noexcept;
-        bool lookup(const std::string_view& key, float *value) const noexcept;
-        bool lookup(const std::string_view& key, double *value) const noexcept;
-        bool lookup(const std::string_view& key, std::string& value) const noexcept;
-        bool lookup(const std::string_view& key, config_scope::sptr& value) const noexcept;
+        config_setting::sptr operator[](size_t index) const noexcept;
+        config_setting::sptr operator[](const char *key) const noexcept;
 
-        void setting(config_setting_t *s) { _setting = s; }
+        bool to_bool() const noexcept;
+        s32 to_s32() const noexcept;
+        s64 to_s64() const noexcept;
+        double to_double() const noexcept;
+        const char *to_string() const noexcept;
+
+        size_t size() const noexcept;
 
     protected:
-        config_scope() : _setting { nullptr } {}
+        void setting(config_setting_t *setting) noexcept { _setting = setting; }
 
     private:
         config_setting_t *      _setting;
@@ -49,7 +52,7 @@ namespace framework {
     /**
      *
      */
-    class config : public config_scope {
+    class config : public config_setting {
     public:
         FW_DECLARE_SMARTPOINTERS(config)
 

@@ -7,7 +7,7 @@
 
 #include <time.h>
 
-#include "main/constants.h"
+#include "main/ftamework_constants.h"
 
 #include "logger/logger.h"
 
@@ -41,16 +41,17 @@ namespace framework {
 
         struct tm *timeinfo { localtime(&rawtime) };
 
-        char buffer[constants::LOGGER_MAX_MESSAGE_LENGTH];
+        char buffer[ftamework_constants::LOGGER_MAX_MESSAGE_LENGTH];
+        char format_buffer[ftamework_constants::LOGGER_MAX_MESSAGE_LENGTH];
 
         va_list args;
         va_start(args, format);
-        vsprintf(buffer, format, args);
+        vsnprintf(format_buffer, ftamework_constants::LOGGER_MAX_MESSAGE_LENGTH, format, args);
         va_end(args);
 
         std::snprintf(buffer,
-                      constants::LOGGER_MAX_MESSAGE_LENGTH,
-                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu (%s)][%s] %s",
+                      ftamework_constants::LOGGER_MAX_MESSAGE_LENGTH,
+                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s",
                       timeinfo->tm_year + 1900,
                       timeinfo->tm_mon + 1,
                       timeinfo->tm_mday,
@@ -59,20 +60,23 @@ namespace framework {
                       timeinfo->tm_sec,
                       file,
                       line,
-                      function,
+                      //function,
                       levels[level].data(),
-                      buffer
+                      format_buffer
                 );
 
-        FILE *out = stdout;
-        if (level == level_t::EMERG ||
-            level == level_t::ALERT ||
-            level == level_t::CRIT ||
-            level == level_t::ERROR) {
-            out = stderr;
-        }
+        bool fatal = (level == level_t::EMERG ||
+                level == level_t::ALERT ||
+                level == level_t::CRIT ||
+                level == level_t::ERROR);
 
-        std::fprintf(out, "%s\n", buffer);
+        std::ostream& stream = fatal ? std::cerr : std::cout;
+
+        stream << buffer << std::endl;
+
+        if (fatal) {
+            abort();
+        }
     }
 
 }

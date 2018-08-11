@@ -9,6 +9,7 @@
 #define FRAMEWORK_LOGGER_H
 
 #include <cstdio>
+#include <iostream>
 #include <string_view>
 #include <unordered_map>
 

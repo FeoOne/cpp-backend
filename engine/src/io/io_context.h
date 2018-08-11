@@ -14,18 +14,13 @@ namespace engine {
 
     class io_context : public execution_context {
     public:
-        io_context();
+        io_context(const framework::config_setting::sptr& config);
         virtual ~io_context();
 
         FW_DELETE_DEFAULT_COPY_CTOR(io_context)
         FW_DELETE_DEFAULT_COPY_ASSIGN(io_context)
 
     private:
-        std::atomic_bool            _should_work;
-        std::atomic_bool            _should_restart;
-        std::atomic_bool            _is_stopped;
-
-        void _run_once() noexcept;
 
     };
 

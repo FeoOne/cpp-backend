@@ -14,7 +14,7 @@ using namespace engine;
 int main(int argc, char **argv)
 {
     application::uptr app = application::make_unique();
-    app->load_config("backend.cfg");
+    app->load_config("/Users/Feo/GDrive/FeoSoftware/bitpt/config/backend.cfg");
     app->prepare();
     app->run();
 

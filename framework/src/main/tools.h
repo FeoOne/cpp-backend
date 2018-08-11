@@ -13,4 +13,6 @@
 
 #define FW_FORMAT_BOOL(b)   (b ? "true" : "false")
 
+#define FW_UNUSED           [[maybe_unused]]
+
 #endif /* FRAMEWORK_TOOLS_H */

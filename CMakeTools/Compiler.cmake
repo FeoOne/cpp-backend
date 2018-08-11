@@ -20,8 +20,11 @@ function(setup_compile_options TARGET)
             -Wextra
             -Weverything
             -Wno-padded
+            -Wno-return-type
             -Wno-c++98-compat
             -Wno-weak-vtables
+            -Wno-documentation
+            -Wno-old-style-cast
             -Wno-unused-parameter
             -Wno-reserved-id-macro
             -Wno-format-nonliteral
@@ -29,6 +32,8 @@ function(setup_compile_options TARGET)
             -Wno-exit-time-destructors
             -Wno-c++98-compat-pedantic
             -Wno-c++98-c++11-c++14-compat
+            -Wno-zero-as-null-pointer-constant
+            -Wno-documentation-unknown-command
             -Wno-c++98-c++11-c++14-compat-pedantic
             -Wno-gnu-zero-variadic-macro-arguments
             )

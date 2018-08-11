@@ -14,12 +14,15 @@
 #include <vector>
 #include <atomic>
 #include <thread>
+#include <cassert>
 #include <condition_variable>
 #include <experimental/optional>
 
 #include "util/optional.h"
 
 #include "main/tools.h"
+
+#include "time/time.h"
 
 #include "logger/log_manager.h"
 

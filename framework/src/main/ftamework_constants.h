@@ -12,7 +12,7 @@
 
 namespace framework {
 
-    class constants {
+    class ftamework_constants {
     public:
         static constexpr size_t LOGGER_MAX_MESSAGE_LENGTH { 4096 };
 

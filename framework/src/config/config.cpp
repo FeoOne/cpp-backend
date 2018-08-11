@@ -12,100 +12,66 @@
 namespace framework {
 
     /**
-     * config_scope
+     * config_setting
      */
 
-    bool config_scope::lookup(const std::string_view& key, bool *value) const noexcept
+    config_setting::sptr config_setting::operator[](size_t index) const noexcept
     {
-        bool result { false };
-
-        int val;
-        if (config_setting_lookup_bool(_setting, key.data(), &val) == CONFIG_TRUE) {
-            *value = (val == CONFIG_TRUE);
-            result = true;
-        }
-
-        return result;
+        assert(config_setting_is_aggregate(_setting) == CONFIG_TRUE);
+        return config_setting::make_shared(config_setting_get_elem(_setting, static_cast<unsigned int>(index)));
     }
 
-    bool config_scope::lookup(const std::string_view& key, s32 *value) const noexcept
+    config_setting::sptr config_setting::operator[](const char *key) const noexcept
     {
-        bool result { false };
-
-        int val;
-        if (config_setting_lookup_int(_setting, key.data(), &val) == CONFIG_TRUE) {
-            *value = static_cast<s32>(val);
-            result = true;
-        }
-
-        return result;
+        //assert(config_setting_is_group(_setting) == CONFIG_TRUE);
+        return config_setting::make_shared(config_setting_get_member(_setting, key));
     }
 
-    bool config_scope::lookup(const std::string_view& key, s64 *value) const noexcept
+    bool config_setting::to_bool() const noexcept
     {
-        bool result { false };
-
-        long long val;
-        if (config_setting_lookup_int64(_setting, key.data(), &val) == CONFIG_TRUE) {
-            *value = static_cast<s64>(val);
-            result = true;
-        }
-
-        return result;
+        assert(config_setting_type(_setting) == CONFIG_TYPE_BOOL);
+        return config_setting_get_bool(_setting) != 0;
     }
 
-    bool config_scope::lookup(const std::string_view& key, float *value) const noexcept
+    s32 config_setting::to_s32() const noexcept
     {
-        bool result { false };
-
-        double val;
-        if (config_setting_lookup_float(_setting, key.data(), &val) == CONFIG_TRUE) {
-            *value = static_cast<float>(val);
-            result = true;
-        }
-
-        return result;
+        assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
+        return config_setting_get_int(_setting);
     }
 
-    bool config_scope::lookup(const std::string_view& key, double *value) const noexcept
+    s64 config_setting::to_s64() const noexcept
     {
-        return (config_setting_lookup_float(_setting, key.data(), value) == CONFIG_TRUE);
+        assert(config_setting_type(_setting) == CONFIG_TYPE_INT64);
+        return config_setting_get_int64(_setting);
     }
 
-    bool config_scope::lookup(const std::string_view& key, std::string& value) const noexcept
+    double config_setting::to_double() const noexcept
     {
-        bool result { false };
-
-        const char *val;
-        if (config_setting_lookup_string(_setting, key.data(), &val) == CONFIG_TRUE) {
-            value.assign(val);
-            result = true;
-        }
-
-        return result;
+        assert(config_setting_type(_setting) == CONFIG_TYPE_FLOAT);
+        return config_setting_get_float(_setting);
     }
 
-    bool config_scope::lookup(const std::string_view& key, config_scope::sptr& value) const noexcept
+    const char *config_setting::to_string() const noexcept
     {
-        bool result { false };
-
-        auto setting = config_setting_lookup(_setting, key.data());
-        if (setting != nullptr) {
-            value->setting(setting);
-            result = true;
-        }
-
-        return result;
+        assert(config_setting_type(_setting) == CONFIG_TYPE_STRING);
+        return config_setting_get_string(_setting);
     }
 
-    config::config() :
-            _config {}
+    size_t config_setting::size() const noexcept
     {
+        assert(config_setting_is_aggregate(_setting) == CONFIG_TRUE);
+        return static_cast<size_t>(config_setting_length(_setting));
     }
 
     /**
      * config
      */
+
+    config::config() :
+            config_setting(nullptr),
+            _config {}
+    {
+    }
 
     config::~config()
     {
@@ -120,6 +86,7 @@ namespace framework {
         config_init(&config);
         if (config_read_file(&config, filename.data()) == CONFIG_TRUE) {
             _config.value(config);
+            setting(config.root);
         } else {
             logcrit("Failed to load log: %s", filename.data());
         }

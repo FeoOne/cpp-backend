@@ -10,6 +10,8 @@
 
 #include <framework.h>
 
+#include "core/execution_context.h"
+
 namespace engine {
 
     class application {
@@ -25,7 +27,13 @@ namespace engine {
         void run() noexcept;
 
     private:
-        framework::config::sptr         _config;
+        using context_vector = std::vector<execution_context::sptr>;
+        using context_map = std::unordered_map<std::string_view, execution_context::sptr>;
+
+        framework::config::sptr                 _config;
+
+        context_map                             _context_map;
+        context_vector                          _context_vector;
 
     };
 

@@ -16,6 +16,10 @@ setup_compile_options(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${Config_INCLUDE_DIR}
+            "${GIO_INCLUDE_DIRS}"
+            "${GLib_INCLUDE_DIRS}"
+            "${GObject_INCLUDE_DIRS}"
+            ${Soup_INCLUDE_DIRS}
             ${framework_SOURCE_DIR}/src
             ${engine_SOURCE_DIR}/src
             ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -24,6 +28,10 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
+            "${GIO_LIBRARY}"
+            "${GLib_LIBRARY}"
+            "${GObject_LIBRARY}"
+            ${Soup_LIBRARY}
             framework
             engine
         )

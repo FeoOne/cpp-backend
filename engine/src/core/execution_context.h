@@ -17,7 +17,7 @@ namespace engine {
     class execution_context {
     public:
         FW_DECLARE_SMARTPOINTERS(execution_context)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_context)
+        FW_DELETE_ALL_DEFAULT(execution_context)
 
         virtual ~execution_context();
 
@@ -29,18 +29,29 @@ namespace engine {
         bool stopped() const noexcept;
 
     protected:
-        execution_context();
+        explicit execution_context(const framework::config_setting::sptr& config) noexcept;
+
+        framework::config_setting::sptr& config() noexcept { return _config; }
+
+        virtual void _poll_once() noexcept = 0;
+
+        virtual void _before_execute() noexcept = 0;
+        virtual void _after_execute() noexcept = 0;
+
+        virtual bool _should_work() const noexcept = 0;
+        virtual void _should_work(bool b) noexcept = 0;
 
     private:
         std::vector<execution_service>      _services;
 
-        std::atomic_bool                    _should_work;
+        framework::config_setting::sptr     _config;
+
         std::atomic_bool                    _should_restart;
         std::atomic_bool                    _is_stopped;
 
         std::thread                         _thread;
 
-        void execute() noexcept;
+        void _execute() noexcept;
 
     };
 
