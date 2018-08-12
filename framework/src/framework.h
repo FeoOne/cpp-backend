@@ -11,6 +11,8 @@
 #include <set>
 #include <list>
 #include <array>
+#include <queue>
+#include <deque>
 #include <vector>
 #include <atomic>
 #include <thread>

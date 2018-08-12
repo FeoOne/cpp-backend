@@ -7,6 +7,7 @@
 
 #include <framework.h>
 
+#include "events/events.h"
 #include "main/engine_const.h"
 #include "job/job_context.h"
 #include "system/system_context.h"
@@ -44,6 +45,7 @@ namespace engine {
 
         _create_event_queues();
         _create_contexts();
+        _setup_routes();
     }
 
     void application::run() noexcept
@@ -114,34 +116,30 @@ namespace engine {
 #undef INSERT_QUEUE
     }
 
+    void application::_setup_routes() noexcept
+    {
+        event_queue::sptr queue { nullptr };
+        {
+            // job
+            queue = _queues[engine_const::JOB_CONTEXT_NAME];
+
+            _router->add_route(context_did_start_event::key(), queue);
+        }
+    }
+
     execution_context::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
     {
-        auto queue = _queues[engine_const::JOB_CONTEXT_NAME];
-        execution_context::sptr context = system_context::make_shared(queue, _router, config);
-
-        //_router->add_route();
-
-        return context;
+        return job_context::make_shared(_queues[engine_const::JOB_CONTEXT_NAME], _router, config);
     }
 
     execution_context::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
     {
-        auto queue = _queues[engine_const::SYSTEM_CONTEXT_NAME];
-        execution_context::sptr context = system_context::make_shared(queue, _router, config);
-
-        //_router->add_route();
-
-        return context;
+        return system_context::make_shared(_queues[engine_const::SYSTEM_CONTEXT_NAME], _router, config);
     }
 
     execution_context::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
     {
-        auto queue = _queues[engine_const::WEB_SERVER_CONTEXT_NAME];
-        execution_context::sptr context = web_server_context::make_shared(queue, _router, config);
-
-        //_router->add_route();
-
-        return context;
+        return web_server_context::make_shared(_queues[engine_const::WEB_SERVER_CONTEXT_NAME], _router, config);
     }
 
 }

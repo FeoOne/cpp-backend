@@ -20,12 +20,18 @@ namespace engine {
         virtual ~event_queue() = default;
 
         virtual event::sptr dequeue() noexcept = 0;
+        bool empty() const noexcept { return _queue.empty(); }
 
     protected:
         event_queue() = default;
 
+        void push(const event::sptr& e) noexcept;
+        event::sptr pop() noexcept;
+
     private:
         friend class event_router;
+
+        std::queue<event::sptr>     _queue;
 
         virtual void enqueue(const event::sptr& e) noexcept = 0;
 

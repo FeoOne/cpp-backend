@@ -5,6 +5,7 @@
  * @brief
  */
 
+#include <events/context_did_start_event.h>
 #include "core/execution_context.h"
 
 namespace engine {
@@ -35,8 +36,6 @@ namespace engine {
             logerror("Execution context already started.");
             return;
         }
-
-        loginfo("Starting execution context thread.");
 
         _thread = std::thread(std::bind(&execution_context::_execute, this));
     }
@@ -79,17 +78,17 @@ namespace engine {
 
     void execution_context::_add_service(const execution_service::sptr& service) noexcept
     {
-        _services.insert({ service->get_key(), service }); // @todo Error handling
+        _services.insert({ service->get_key(), service });
     }
 
     void execution_context::_remove_service(execution_service::key_type key) noexcept
     {
-        _services.erase(key); // @todo Error handling
+        _services.erase(key);
     }
 
     execution_service::sptr execution_context::_get_service(execution_service::key_type key) noexcept
     {
-        return _services[key]; // @todo Error handling
+        return _services[key];
     }
 
     void execution_context::_execute() noexcept
@@ -101,9 +100,16 @@ namespace engine {
             }
 
             _before_run();
+            _notify_about_start();
             _loop->run();
             _after_run();
         } while (_should_restart);
+    }
+
+    void execution_context::_notify_about_start() noexcept
+    {
+        auto e = context_did_start_event::make_shared(shared_from_this());
+        router()->enqueue(e);
     }
 
 }

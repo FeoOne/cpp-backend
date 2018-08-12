@@ -17,7 +17,7 @@
 
 namespace engine {
 
-    class execution_context {
+    class execution_context : public std::enable_shared_from_this<execution_context> {
     public:
         FW_DECLARE_SMARTPOINTERS(execution_context)
         FW_DELETE_ALL_DEFAULT(execution_context)
@@ -44,6 +44,8 @@ namespace engine {
                                    const framework::config_setting::sptr& config) noexcept;
 
         framework::config_setting::sptr& config() noexcept { return _config; }
+        event_queue::sptr queue() noexcept { return _queue; }
+        event_router::sptr router() noexcept { return _router; }
 
         void _add_service(const execution_service::sptr& service) noexcept;
         void _remove_service(execution_service::key_type key) noexcept;
@@ -65,6 +67,8 @@ namespace engine {
         service_map                         _services;
 
         void _execute() noexcept;
+
+        void _notify_about_start() noexcept;
 
     };
 

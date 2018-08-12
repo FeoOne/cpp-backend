@@ -51,7 +51,7 @@ namespace framework {
 
         std::snprintf(buffer,
                       ftamework_const::LOGGER_MAX_MESSAGE_LENGTH,
-                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s",
+                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s\n",
                       timeinfo->tm_year + 1900,
                       timeinfo->tm_mon + 1,
                       timeinfo->tm_mday,
@@ -72,7 +72,7 @@ namespace framework {
 
         std::ostream& stream = fatal ? std::cerr : std::cout;
 
-        stream << buffer << std::endl;
+        stream << buffer;
     }
 
 }

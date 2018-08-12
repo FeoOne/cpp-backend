@@ -46,6 +46,7 @@ namespace engine {
 
         void _create_contexts() noexcept;
         void _create_event_queues() noexcept;
+        void _setup_routes() noexcept;
 
         execution_context::sptr _create_job_context(const framework::config_setting::sptr& config) noexcept;
         execution_context::sptr _create_system_context(const framework::config_setting::sptr& config) noexcept;

@@ -18,8 +18,8 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(event)
         FW_CRUCIAL_BASE_DEFINITION()
 
-        event();
-        virtual ~event();
+        event() = default;
+        virtual ~event() = default;
 
     private:
 

@@ -9,14 +9,33 @@
 
 namespace engine {
 
-    void job_event_queue::enqueue(const event::sptr& e) noexcept
+    job_event_queue::job_event_queue() :
+            _cv {},
+            _mutex {}
     {
-
     }
 
+    // vitual
+    void job_event_queue::enqueue(const event::sptr& e) noexcept
+    {
+        {
+            std::unique_lock<std::mutex> lock(_mutex);
+            push(e);
+        }
+
+        _cv.notify_one();
+    }
+
+    // vitual
     event::sptr job_event_queue::dequeue() noexcept
     {
-        return nullptr;
+        std::unique_lock<std::mutex> lock(_mutex);
+
+        _cv.wait(lock, [this]() {
+            return !empty();
+        });
+
+        return pop();
     }
 
 }

@@ -20,10 +20,10 @@ namespace engine {
         web_server_event_queue() = default;
         virtual ~web_server_event_queue() = default;
 
-        void enqueue(const event::sptr& e) noexcept final;
         event::sptr dequeue() noexcept final;
 
     private:
+        void enqueue(const event::sptr& e) noexcept final;
 
     };
 

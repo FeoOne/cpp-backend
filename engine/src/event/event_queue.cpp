@@ -9,6 +9,16 @@
 
 namespace engine {
 
+    void event_queue::push(const event::sptr& e) noexcept
+    {
+        _queue.push(e);
+    }
 
+    event::sptr event_queue::pop() noexcept
+    {
+        auto e = _queue.front();
+        _queue.pop();
+        return e;
+    }
 
 }

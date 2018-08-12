@@ -12,18 +12,21 @@
 
 namespace engine {
 
-    class job_event_queue : public event_queue {
+    class job_event_queue final : public event_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(job_event_queue)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(job_event_queue)
 
-        job_event_queue() = default;
+        job_event_queue();
         virtual ~job_event_queue() = default;
 
-        void enqueue(const event::sptr& e) noexcept final;
         event::sptr dequeue() noexcept final;
 
     private:
+        void enqueue(const event::sptr& e) noexcept final;
+
+        std::condition_variable     _cv;
+        std::mutex                  _mutex;
 
     };
 

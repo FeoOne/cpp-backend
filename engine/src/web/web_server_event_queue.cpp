@@ -9,11 +9,13 @@
 
 namespace engine {
 
+    // vitual
     void web_server_event_queue::enqueue(const event::sptr& e) noexcept
     {
 
     }
 
+    // vitual
     event::sptr web_server_event_queue::dequeue() noexcept
     {
         return nullptr;
