@@ -8,6 +8,7 @@
 #include <framework.h>
 
 #include "main/engine_const.h"
+#include "job/job_context.h"
 #include "system/system_context.h"
 #include "web/web_server_context.h"
 
@@ -19,8 +20,9 @@ namespace engine {
 
     application::application() :
             _config { config::make_shared() },
-            _context_map {},
-            _context_mutex {}
+            _contexts {},
+            _queues {},
+            _router { event_router::make_unique() }
     {
         log_manager::setup();
     }
@@ -40,24 +42,8 @@ namespace engine {
     {
         loginfo("Prepearing to run application...");
 
-        auto context_config = (*_config)["context"];
-        for (size_t i = 0; i < context_config->size(); ++i) {
-            execution_context::sptr context { nullptr };
-
-            auto specific_context_config = (*context_config)[i];
-            auto name = (*specific_context_config)["name"]->to_string();
-            if (std::strcmp(name, engine_const::SYSTEM_CONTEXT_NAME.data()) == 0) {
-                // system_context
-                auto queue = system_event_queue::make_shared();
-                context = system_context::make_shared(queue, specific_context_config);
-            } else if (std::strcmp(name, engine_const::WEB_SERVER_CONTEXT_NAME.data()) == 0) {
-                // web_server_context
-                auto queue = web_server_event_queue::make_shared();
-                context = web_server_context::make_shared(queue, specific_context_config);
-            }
-
-            _add_execution_context(name, context);
-        }
+        _create_event_queues();
+        _create_contexts();
     }
 
     void application::run() noexcept
@@ -66,37 +52,96 @@ namespace engine {
 
         _before_run();
 
-        for (auto& p: _context_map) {
-            p.second->start();
+        for (auto& pair: _contexts) {
+            for (auto& context: pair.second) {
+                context->start();
+            }
         }
 
-        try {
-            _context_map[engine_const::SYSTEM_CONTEXT_NAME]->join();
-        }
-        catch (const std::exception& exception) {
-            logemerg("Failed to join system context: %s", exception.what());
-        }
+        _get_contexts(engine_const::SYSTEM_CONTEXT_NAME)[0]->join();
 
         _after_run();
     }
 
-    void application::_add_execution_context(const std::string_view& name,
-                                             const execution_context::sptr& context) noexcept
+    void application::_add_context(const std::string_view &name,
+                                   const execution_context::sptr &context) noexcept
     {
-        std::lock_guard<std::timed_mutex> lock(_context_mutex);
-        _context_map.insert({ name, context });
+        _contexts[name].push_back(context);
     }
 
-    void application::_remove_execution_context(const std::string_view& name) noexcept
+    void application::_remove_context(const std::string_view &name) noexcept
     {
-        std::lock_guard<std::timed_mutex> lock(_context_mutex);
-        _context_map.erase(name);
+        _contexts.erase(name);
     }
 
-    execution_context::sptr application::_get_execution_context(const std::string_view& name) noexcept
+    std::vector<execution_context::sptr> application::_get_contexts(const std::string_view &name) noexcept
     {
-        std::lock_guard<std::timed_mutex> lock(_context_mutex);
-        return _context_map[name];
+        return _contexts[name];
+    }
+
+    void application::_create_contexts() noexcept
+    {
+#define ADD_ENTRY(n, m)         { engine_const::n, std::bind(&application::m, this, std::placeholders::_1) }
+
+        std::unordered_map<std::string_view,
+                           std::function<execution_context::sptr(const config_setting::sptr&)>> functors {
+            ADD_ENTRY(JOB_CONTEXT_NAME, _create_job_context),
+            ADD_ENTRY(SYSTEM_CONTEXT_NAME, _create_system_context),
+            ADD_ENTRY(WEB_SERVER_CONTEXT_NAME, _create_web_server_context)
+        };
+
+#undef ADD_ENTRY
+
+        auto context_config = (*_config)["context"];
+        for (size_t i = 0; i < context_config->size(); ++i) {
+            auto config { (*context_config)[i] };
+            std::string_view name { (*config )["name"]->to_string() };
+
+            auto context { functors[name](config) };
+
+            _add_context(name, context);
+        }
+    }
+
+    void application::_create_event_queues() noexcept
+    {
+#define INSERT_QUEUE(n, c)      _queues.insert({ engine_const::n, c::make_shared() })
+
+        INSERT_QUEUE(JOB_CONTEXT_NAME, job_event_queue);
+        INSERT_QUEUE(SYSTEM_CONTEXT_NAME, system_event_queue);
+        INSERT_QUEUE(WEB_SERVER_CONTEXT_NAME, web_server_event_queue);
+
+#undef INSERT_QUEUE
+    }
+
+    execution_context::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
+    {
+        auto queue = _queues[engine_const::JOB_CONTEXT_NAME];
+        execution_context::sptr context = system_context::make_shared(queue, config);
+
+        //_router->add_route();
+
+        return context;
+    }
+
+    execution_context::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
+    {
+        auto queue = _queues[engine_const::SYSTEM_CONTEXT_NAME];
+        execution_context::sptr context = system_context::make_shared(queue, config);
+
+        //_router->add_route();
+
+        return context;
+    }
+
+    execution_context::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
+    {
+        auto queue = _queues[engine_const::WEB_SERVER_CONTEXT_NAME];
+        execution_context::sptr context = web_server_context::make_shared(queue, config);
+
+        //_router->add_route();
+
+        return context;
     }
 
 }

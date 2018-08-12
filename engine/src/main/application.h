@@ -11,6 +11,7 @@
 #include <framework.h>
 
 #include "core/execution_context.h"
+#include "event/event_router.h"
 
 namespace engine {
 
@@ -30,18 +31,25 @@ namespace engine {
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;
 
-        void _add_execution_context(const std::string_view& name, const execution_context::sptr& context) noexcept;
-        void _remove_execution_context(const std::string_view& name) noexcept;
-        execution_context::sptr _get_execution_context(const std::string_view& name) noexcept;
+        void _add_context(const std::string_view &name, const execution_context::sptr &context) noexcept;
+        void _remove_context(const std::string_view &name) noexcept;
+        std::vector<execution_context::sptr> _get_contexts(const std::string_view &name) noexcept;
 
     private:
-        using context_vector = std::vector<execution_context::sptr>;
-        using context_map = std::unordered_map<std::string_view, execution_context::sptr>;
+        using context_map = std::unordered_map<std::string_view, std::vector<execution_context::sptr>>;
+        using event_queue_map = std::unordered_map<std::string_view, event_queue::sptr>;
 
         framework::config::sptr                 _config;
+        context_map                             _contexts;
+        event_queue_map                         _queues;
+        event_router::uptr                      _router;
 
-        context_map                             _context_map;
-        std::timed_mutex                        _context_mutex;
+        void _create_contexts() noexcept;
+        void _create_event_queues() noexcept;
+
+        execution_context::sptr _create_job_context(const framework::config_setting::sptr& config) noexcept;
+        execution_context::sptr _create_system_context(const framework::config_setting::sptr& config) noexcept;
+        execution_context::sptr _create_web_server_context(const framework::config_setting::sptr& config) noexcept;
 
     };
 

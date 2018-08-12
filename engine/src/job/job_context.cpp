@@ -5,10 +5,34 @@
  * @brief
  */
 
+#include "job/job_loop.h"
+
 #include "job/job_context.h"
 
 namespace engine {
 
+    using namespace framework;
 
+    job_context::job_context(const event_queue::sptr& queue, const config_setting::sptr& config) noexcept :
+            execution_context(job_loop::make_unique(), queue, config)
+    {
+    }
+
+    // virtual
+    job_context::~job_context()
+    {
+    }
+
+    // virtual
+    void job_context::_before_run() noexcept
+    {
+
+    }
+
+    // virtual
+    void job_context::_after_run() noexcept
+    {
+
+    }
 
 }

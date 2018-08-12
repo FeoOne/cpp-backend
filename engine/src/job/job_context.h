@@ -8,14 +8,22 @@
 #ifndef ENGINE_JOB_CONTEXT_H
 #define ENGINE_JOB_CONTEXT_H
 
+#include "core/execution_context.h"
+#include "job/job_event_queue.h"
+
 namespace engine {
 
-    class job_context {
+    class job_context : public execution_context {
     public:
-        job_context();
-        ~job_context();
+        FW_DECLARE_SMARTPOINTERS(job_context)
+        FW_DELETE_ALL_DEFAULT(job_context)
+
+        explicit job_context(const event_queue::sptr& queue, const framework::config_setting::sptr& config) noexcept;
+        virtual ~job_context();
 
     private:
+        void _before_run() noexcept final;
+        void _after_run() noexcept final;
 
     };
 
