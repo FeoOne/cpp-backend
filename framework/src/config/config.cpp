@@ -83,9 +83,9 @@ namespace framework {
         return (config_setting_lookup_float(_setting, key, value) == CONFIG_TRUE);
     }
 
-    bool config_setting::lookup_string(const char *key, const char *value) const noexcept
+    bool config_setting::lookup_string(const char *key, const char **value) const noexcept
     {
-        return (config_setting_lookup_string(_setting, key, &value) == CONFIG_TRUE);
+        return (config_setting_lookup_string(_setting, key, value) == CONFIG_TRUE);
     }
 
     size_t config_setting::size() const noexcept

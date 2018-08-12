@@ -14,10 +14,7 @@ namespace backend {
 
     class backend_const {
     public:
-        static constexpr std::string_view WEB_SERVER_HEADER { "bitpt-httpd " };
-        static constexpr size_t WEB_SERVER_PORT { 8888 };
-
-        static constexpr std::string_view HTTP_PAYMENT_PATH { "/payment" };
+        static constexpr std::string_view HTTP_INVOICE_PATH { "/invoice" };
 
     };
 

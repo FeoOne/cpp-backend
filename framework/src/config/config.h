@@ -43,7 +43,7 @@ namespace framework {
         bool lookup_s32(const char *key, s32 *value) const noexcept;
         bool lookup_s64(const char *key, s64 *value) const noexcept;
         bool lookup_double(const char *key, double *value) const noexcept;
-        bool lookup_string(const char *key, const char *value) const noexcept;
+        bool lookup_string(const char *key, const char **value) const noexcept;
 
         size_t size() const noexcept;
 

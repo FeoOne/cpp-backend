@@ -5,6 +5,7 @@
  * @brief
  */
 
+#include <main/engine_const.h>
 #include "web/web_server_loop.h"
 #include "web/service/http_handle_service.h"
 #include "web/service/websocket_handle_service.h"
@@ -47,8 +48,15 @@ namespace engine {
     {
         GError *error { nullptr };
 
-        const char *header = (*config())["header"]->to_string();
-        s32 port = (*config())["port"]->to_s32();
+        const char *header = engine_const::WEB_SERVER_HEADER.data();
+        if (!config()->lookup_string("header", &header)) {
+            logwarn("Used default web server header: '%s'.", header);
+        }
+
+        s32 port = static_cast<s32>(engine_const::WEB_SERVER_PORT);
+        if (!config()->lookup_s32("port", &port)) {
+            logwarn("Used default web server port: '%d'.", port);
+        }
 
         _server = soup_server_new(SOUP_SERVER_SERVER_HEADER, header, nullptr);
         if (_server != nullptr) {
