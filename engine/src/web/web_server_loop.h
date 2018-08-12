@@ -17,9 +17,9 @@ namespace engine {
     class web_server_loop : public execution_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_loop)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(web_server_loop)
+        FW_DELETE_ALL_DEFAULT(web_server_loop)
 
-        web_server_loop();
+        explicit web_server_loop(const event_queue::sptr& queue) noexcept;
         virtual ~web_server_loop();
 
         void run() noexcept final;
@@ -28,7 +28,12 @@ namespace engine {
         bool stopped() const noexcept final;
 
     private:
-        GMainLoop *         _loop;
+        GMainLoop *                 _loop;
+        std::atomic_bool            _should_work;
+
+        gboolean on_idle() noexcept;
+
+        static gboolean on_idle(gpointer pointer) noexcept;
 
     };
 

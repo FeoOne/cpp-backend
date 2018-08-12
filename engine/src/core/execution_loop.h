@@ -10,6 +10,8 @@
 
 #include <framework.h>
 
+#include "event/event_queue.h"
+
 namespace engine {
 
     class execution_loop {
@@ -25,10 +27,15 @@ namespace engine {
         virtual bool stopped() const noexcept = 0;
 
     protected:
-        execution_loop() = default;
+        explicit execution_loop(const event_queue::sptr& queue) noexcept : _queue { queue } {}
+
+        event_queue::sptr queue() const noexcept { return _queue; }
+
+    private:
+        event_queue::sptr       _queue;
 
     };
 
 }
 
-#endif /* PROJECT_EXECUTION_LOOP_H */
+#endif /* ENGINE_EXECUTION_LOOP_H */

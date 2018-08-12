@@ -21,7 +21,7 @@ namespace engine {
     web_server_context::web_server_context(const event_queue::sptr& queue,
                                            const event_router::sptr& router,
                                            const config_setting::sptr& config) noexcept :
-            execution_context(web_server_loop::make_unique(), queue, router, config),
+            execution_context(web_server_loop::make_unique(queue), queue, router, config),
             _server { nullptr }
     {
     }

@@ -33,21 +33,20 @@ namespace engine {
         using handler_map = std::unordered_map<std::string_view, http_request_handler::sptr>;
 
         SoupServer *            _server;
-
         handler_map             _handlers;
 
-        void _handler(SoupServer *server,
-                      SoupMessage *message,
-                      const char *path,
-                      GHashTable *query,
-                      SoupClientContext *client) noexcept;
+        void handler(SoupServer *server,
+                     SoupMessage *message,
+                     const char *path,
+                     GHashTable *query,
+                     SoupClientContext *client) noexcept;
 
-        static void _handler(SoupServer *server,
-                             SoupMessage *message,
-                             const char *path,
-                             GHashTable *query,
-                             SoupClientContext *client,
-                             gpointer context) noexcept;
+        static void handler(SoupServer *server,
+                            SoupMessage *message,
+                            const char *path,
+                            GHashTable *query,
+                            SoupClientContext *client,
+                            gpointer context) noexcept;
 
     };
 

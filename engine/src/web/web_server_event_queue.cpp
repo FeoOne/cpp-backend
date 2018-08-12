@@ -12,13 +12,15 @@ namespace engine {
     // vitual
     void web_server_event_queue::enqueue(const event::sptr& e) noexcept
     {
-
+        std::unique_lock<std::timed_mutex> lock(_mutex);
+        push(e);
     }
 
     // vitual
     event::sptr web_server_event_queue::dequeue() noexcept
     {
-        return nullptr;
+        std::unique_lock<std::timed_mutex> lock(_mutex);
+        return empty() ? nullptr : pop();
     }
 
 }

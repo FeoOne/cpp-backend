@@ -118,7 +118,7 @@ namespace engine {
 
     void application::_setup_routes() noexcept
     {
-        event_queue::sptr queue { nullptr };
+        event_queue::sptr queue;
         {
             // job
             queue = _queues[engine_const::JOB_CONTEXT_NAME];

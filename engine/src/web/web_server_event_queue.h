@@ -23,6 +23,8 @@ namespace engine {
         event::sptr dequeue() noexcept final;
 
     private:
+        std::timed_mutex        _mutex;
+
         void enqueue(const event::sptr& e) noexcept final;
 
     };

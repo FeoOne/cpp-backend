@@ -15,9 +15,9 @@ namespace engine {
     class system_loop : public execution_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(system_loop)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(system_loop)
+        FW_DELETE_ALL_DEFAULT(system_loop)
 
-        system_loop();
+        explicit system_loop(const event_queue::sptr& queue) noexcept;
         virtual ~system_loop();
 
         void run() noexcept final;

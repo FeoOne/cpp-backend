@@ -9,7 +9,8 @@
 
 namespace engine {
 
-    io_loop::io_loop() :
+    io_loop::io_loop(const event_queue::sptr& queue) noexcept :
+            execution_loop(queue),
             _loop {}
     {
         uv_loop_init(_loop.get());

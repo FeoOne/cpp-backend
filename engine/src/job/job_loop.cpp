@@ -11,17 +11,12 @@
 
 namespace engine {
 
-    job_loop::job_loop(const event_queue::sptr& queue) :
+    job_loop::job_loop(const event_queue::sptr& queue) noexcept :
+            execution_loop(queue),
             _is_stopped { true },
-            _should_work { false },
-            _queue { queue }
+            _should_work { false }
     {
 
-    }
-
-    // virtual
-    job_loop::~job_loop()
-    {
     }
 
     // virtual
@@ -31,7 +26,7 @@ namespace engine {
         _is_stopped = false;
 
         while (_should_work) {
-            auto e = _queue->dequeue();
+            auto e = queue()->dequeue();
 
             // e can be null in case when loop finalize working
             if (static_cast<bool>(e)) {
@@ -39,7 +34,7 @@ namespace engine {
                          e->get_key(),
                          event_name_from_key(e->get_key()).data());
 
-                // @todo Implement
+                // @todo Implement event processing
             }
         }
         _is_stopped = true;

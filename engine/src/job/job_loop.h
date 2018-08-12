@@ -18,8 +18,8 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(job_loop)
         FW_DELETE_ALL_DEFAULT(job_loop)
 
-        job_loop(const event_queue::sptr& queue);
-        virtual ~job_loop();
+        explicit job_loop(const event_queue::sptr& queue) noexcept;
+        virtual ~job_loop() = default;
 
         void run() noexcept final;
         void stop() noexcept final;
@@ -29,8 +29,6 @@ namespace engine {
     private:
         std::atomic_bool            _is_stopped;
         std::atomic_bool            _should_work;
-
-        event_queue::sptr           _queue;
 
     };
 

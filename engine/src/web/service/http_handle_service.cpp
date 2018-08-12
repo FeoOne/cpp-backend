@@ -27,7 +27,7 @@ namespace engine {
         auto it = _handlers.find(path);
         if (it == _handlers.end()) {
             _handlers.insert({path, handler});
-            soup_server_add_handler(_server, path.data(), &http_handle_service::_handler, this, nullptr);
+            soup_server_add_handler(_server, path.data(), &http_handle_service::handler, this, nullptr);
         } else {
             logwarn("Can't add already added handler for path '%s'.", path.data());
         }
@@ -44,11 +44,11 @@ namespace engine {
         }
     }
 
-    void http_handle_service::_handler(SoupServer *server,
-                                       SoupMessage *message,
-                                       const char *path,
-                                       GHashTable *query,
-                                       SoupClientContext *client) noexcept
+    void http_handle_service::handler(SoupServer *server,
+                                      SoupMessage *message,
+                                      const char *path,
+                                      GHashTable *query,
+                                      SoupClientContext *client) noexcept
     {
         logdebug("HTTP handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
@@ -69,15 +69,15 @@ namespace engine {
     }
 
     // static
-    void http_handle_service::_handler(SoupServer *server,
-                                       SoupMessage *message,
-                                       const char *path,
-                                       GHashTable *query,
-                                       SoupClientContext *client,
-                                       gpointer context) noexcept
+    void http_handle_service::handler(SoupServer *server,
+                                      SoupMessage *message,
+                                      const char *path,
+                                      GHashTable *query,
+                                      SoupClientContext *client,
+                                      gpointer context) noexcept
     {
         auto self = static_cast<http_handle_service *>(context);
-        self->_handler(server, message, path, query, client);
+        self->handler(server, message, path, query, client);
     }
 
 }

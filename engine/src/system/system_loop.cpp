@@ -11,7 +11,8 @@ namespace engine {
 
     using namespace std::chrono_literals;
 
-    system_loop::system_loop() :
+    system_loop::system_loop(const event_queue::sptr& queue) noexcept :
+            execution_loop(queue),
             _is_stopped { true },
             _should_work { false }
     {
