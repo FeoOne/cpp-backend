@@ -39,6 +39,12 @@ namespace framework {
         double to_double() const noexcept;
         const char *to_string() const noexcept;
 
+        bool lookup_bool(const char *key, bool *value) const noexcept;
+        bool lookup_s32(const char *key, s32 *value) const noexcept;
+        bool lookup_s64(const char *key, s64 *value) const noexcept;
+        bool lookup_double(const char *key, double *value) const noexcept;
+        bool lookup_string(const char *key, const char *value) const noexcept;
+
         size_t size() const noexcept;
 
     protected:

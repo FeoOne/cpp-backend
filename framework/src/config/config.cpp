@@ -57,6 +57,37 @@ namespace framework {
         return config_setting_get_string(_setting);
     }
 
+    bool config_setting::lookup_bool(const char *key, bool *value) const noexcept
+    {
+        int i;
+        bool result { false };
+        if (config_setting_lookup_bool(_setting, key, &i) == CONFIG_TRUE) {
+            *value = (i != CONFIG_FALSE);
+            result = true;
+        }
+        return result;
+    }
+
+    bool config_setting::lookup_s32(const char *key, s32 *value) const noexcept
+    {
+        return (config_setting_lookup_int(_setting, key, value) == CONFIG_TRUE);
+    }
+
+    bool config_setting::lookup_s64(const char *key, s64 *value) const noexcept
+    {
+        return (config_setting_lookup_int64(_setting, key, value) == CONFIG_TRUE);
+    }
+
+    bool config_setting::lookup_double(const char *key, double *value) const noexcept
+    {
+        return (config_setting_lookup_float(_setting, key, value) == CONFIG_TRUE);
+    }
+
+    bool config_setting::lookup_string(const char *key, const char *value) const noexcept
+    {
+        return (config_setting_lookup_string(_setting, key, &value) == CONFIG_TRUE);
+    }
+
     size_t config_setting::size() const noexcept
     {
         assert(config_setting_is_aggregate(_setting) == CONFIG_TRUE);
