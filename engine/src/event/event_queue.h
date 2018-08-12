@@ -19,11 +19,15 @@ namespace engine {
 
         virtual ~event_queue() = default;
 
-        virtual void enqueue(const event::sptr& e) noexcept = 0;
         virtual event::sptr dequeue() noexcept = 0;
 
     protected:
         event_queue() = default;
+
+    private:
+        friend class event_router;
+
+        virtual void enqueue(const event::sptr& e) noexcept = 0;
 
     };
 

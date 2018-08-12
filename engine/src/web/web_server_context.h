@@ -21,6 +21,7 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT(web_server_context)
 
         explicit web_server_context(const event_queue::sptr& queue,
+                                    const event_router::sptr& router,
                                     const framework::config_setting::sptr& config) noexcept;
         virtual ~web_server_context();
 

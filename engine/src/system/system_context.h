@@ -18,7 +18,9 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(system_context)
         FW_DELETE_ALL_DEFAULT(system_context)
 
-        explicit system_context(const event_queue::sptr& queue, const framework::config_setting::sptr& config) noexcept;
+        explicit system_context(const event_queue::sptr& queue,
+                                const event_router::sptr& router,
+                                const framework::config_setting::sptr& config) noexcept;
         virtual ~system_context();
 
     private:

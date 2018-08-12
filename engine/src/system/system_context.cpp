@@ -13,8 +13,10 @@ namespace engine {
 
     using namespace framework;
 
-    system_context::system_context(const event_queue::sptr& queue, const config_setting::sptr& config) noexcept :
-            execution_context(system_loop::make_unique(), queue, config)
+    system_context::system_context(const event_queue::sptr& queue,
+                                   const event_router::sptr& router,
+                                   const config_setting::sptr& config) noexcept :
+            execution_context(system_loop::make_unique(), queue, router, config)
     {
     }
 

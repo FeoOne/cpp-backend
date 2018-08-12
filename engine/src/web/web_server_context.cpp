@@ -17,8 +17,9 @@ namespace engine {
     using namespace framework;
 
     web_server_context::web_server_context(const event_queue::sptr& queue,
+                                           const event_router::sptr& router,
                                            const config_setting::sptr& config) noexcept :
-            execution_context(web_server_loop::make_unique(), queue, config),
+            execution_context(web_server_loop::make_unique(), queue, router, config),
             _server { nullptr }
     {
     }
@@ -34,6 +35,8 @@ namespace engine {
         _create_server();
         _create_http_handle_service();
         _create_websocket_handle_service();
+
+
     }
 
     // virtual

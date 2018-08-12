@@ -13,9 +13,11 @@ namespace engine {
 
     execution_context::execution_context(execution_loop::uptr&& loop,
                                          const event_queue::sptr& queue,
+                                         const event_router::sptr& router,
                                          const config_setting::sptr& config) noexcept :
             _loop { std::move(loop) },
             _queue { queue },
+            _router { router },
             _config { config },
             _thread {},
             _should_restart { false }
@@ -68,6 +70,11 @@ namespace engine {
         } else {
             logerror("Can't join thread.");
         }
+    }
+
+    std::string_view execution_context::name() const noexcept
+    {
+        return { (*_config)["name"]->to_string() };
     }
 
     void execution_context::_add_service(const execution_service::sptr& service) noexcept

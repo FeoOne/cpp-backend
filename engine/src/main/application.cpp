@@ -22,7 +22,7 @@ namespace engine {
             _config { config::make_shared() },
             _contexts {},
             _queues {},
-            _router { event_router::make_unique() }
+            _router { event_router::make_shared() }
     {
         log_manager::setup();
     }
@@ -69,7 +69,7 @@ namespace engine {
         _contexts[name].push_back(context);
     }
 
-    void application::_remove_context(const std::string_view &name) noexcept
+    void application::_remove_contexts(const std::string_view &name) noexcept
     {
         _contexts.erase(name);
     }
@@ -117,7 +117,7 @@ namespace engine {
     execution_context::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
     {
         auto queue = _queues[engine_const::JOB_CONTEXT_NAME];
-        execution_context::sptr context = system_context::make_shared(queue, config);
+        execution_context::sptr context = system_context::make_shared(queue, _router, config);
 
         //_router->add_route();
 
@@ -127,7 +127,7 @@ namespace engine {
     execution_context::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
     {
         auto queue = _queues[engine_const::SYSTEM_CONTEXT_NAME];
-        execution_context::sptr context = system_context::make_shared(queue, config);
+        execution_context::sptr context = system_context::make_shared(queue, _router, config);
 
         //_router->add_route();
 
@@ -137,7 +137,7 @@ namespace engine {
     execution_context::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
     {
         auto queue = _queues[engine_const::WEB_SERVER_CONTEXT_NAME];
-        execution_context::sptr context = web_server_context::make_shared(queue, config);
+        execution_context::sptr context = web_server_context::make_shared(queue, _router, config);
 
         //_router->add_route();
 

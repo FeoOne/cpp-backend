@@ -11,6 +11,7 @@
 #include <framework.h>
 
 #include "event/event_queue.h"
+#include "event/event_router.h"
 #include "core/execution_loop.h"
 #include "core/execution_service.h"
 
@@ -29,6 +30,8 @@ namespace engine {
 
         void join() noexcept;
 
+        std::string_view name() const noexcept;
+
         template<typename T>
         typename T::sptr get_service() noexcept {
             return std::static_pointer_cast<T>(_get_service(T::key()));
@@ -37,6 +40,7 @@ namespace engine {
     protected:
         explicit execution_context(execution_loop::uptr&& loop,
                                    const event_queue::sptr& queue,
+                                   const event_router::sptr& router,
                                    const framework::config_setting::sptr& config) noexcept;
 
         framework::config_setting::sptr& config() noexcept { return _config; }
@@ -53,6 +57,7 @@ namespace engine {
 
         execution_loop::uptr                _loop;
         event_queue::sptr                   _queue;
+        event_router::sptr                  _router;
         framework::config_setting::sptr     _config;
         std::thread                         _thread;
         bool                                _should_restart;

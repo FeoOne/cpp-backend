@@ -32,7 +32,7 @@ namespace engine {
         virtual void _after_run() noexcept = 0;
 
         void _add_context(const std::string_view &name, const execution_context::sptr &context) noexcept;
-        void _remove_context(const std::string_view &name) noexcept;
+        void _remove_contexts(const std::string_view &name) noexcept;
         std::vector<execution_context::sptr> _get_contexts(const std::string_view &name) noexcept;
 
     private:
@@ -42,7 +42,7 @@ namespace engine {
         framework::config::sptr                 _config;
         context_map                             _contexts;
         event_queue_map                         _queues;
-        event_router::uptr                      _router;
+        event_router::sptr                      _router;
 
         void _create_contexts() noexcept;
         void _create_event_queues() noexcept;
