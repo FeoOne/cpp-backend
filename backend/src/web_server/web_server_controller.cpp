@@ -5,11 +5,15 @@
  * @brief
  */
 
+#include "main/backend_const.h"
+#include "web_server/payment_request_handler.h"
+
 #include "web_server/web_server_controller.h"
 
 namespace backend {
 
-    web_server_controller::web_server_controller()
+    web_server_controller::web_server_controller(const engine::http_handle_service::sptr& http_service) noexcept :
+            _http_service { http_service }
     {
 
     }
@@ -21,12 +25,13 @@ namespace backend {
 
     void web_server_controller::create() noexcept
     {
-
+        auto handler = payment_request_handler::make_shared();
+        _http_service->add_handler(backend_const::HTTP_PAYMENT_PATH, handler);
     }
 
     void web_server_controller::destroy() noexcept
     {
-
+        _http_service->remove_handler(backend_const::HTTP_PAYMENT_PATH);
     }
 
 }

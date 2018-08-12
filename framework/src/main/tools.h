@@ -13,6 +13,8 @@
 #define FW_STR_IMPL(str)    #str
 #define FW_STR(str)         FW_STR_IMPL(str)
 
+#define FW_COMMA()          ,
+
 #define FW_FORMAT_BOOL(b)   (b ? "true" : "false")
 
 #define FW_UNUSED           [[maybe_unused]]

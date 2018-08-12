@@ -18,7 +18,9 @@ namespace engine {
     using namespace framework;
 
     application::application() :
-            _config { config::make_shared() }
+            _config { config::make_shared() },
+            _context_map {},
+            _context_mutex {}
     {
         log_manager::setup();
     }
@@ -52,8 +54,7 @@ namespace engine {
                 context = web_server_context::make_shared(specific_context_config);
             }
 
-            _context_map[name] = context;
-            _context_vector.push_back(context);
+            _add_execution_context(name, context);
         }
     }
 
@@ -63,8 +64,8 @@ namespace engine {
 
         _before_run();
 
-        for (auto& context: _context_vector) {
-            context->start();
+        for (auto& p: _context_map) {
+            p.second->start();
         }
 
         try {
@@ -75,6 +76,25 @@ namespace engine {
         }
 
         _after_run();
+    }
+
+    void application::_add_execution_context(const std::string_view& name,
+                                             const execution_context::sptr& context) noexcept
+    {
+        std::lock_guard<std::timed_mutex> lock(_context_mutex);
+        _context_map.insert({ name, context });
+    }
+
+    void application::_remove_execution_context(const std::string_view& name) noexcept
+    {
+        std::lock_guard<std::timed_mutex> lock(_context_mutex);
+        _context_map.erase(name);
+    }
+
+    execution_context::sptr application::_get_execution_context(const std::string_view& name) noexcept
+    {
+        std::lock_guard<std::timed_mutex> lock(_context_mutex);
+        return _context_map[name];
     }
 
 }

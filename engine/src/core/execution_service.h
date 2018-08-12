@@ -26,17 +26,13 @@ namespace engine {
     protected:
         execution_service() = default;
 
-        static std::atomic<key_type>    _key_counter;
+        static key_type     _key_counter;
 
     };
 
     template<typename T>
     class basic_execution_service : public execution_service {
     public:
-        FW_DECLARE_SMARTPOINTERS(basic_execution_service<T>)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(basic_execution_service<T>)
-
-        basic_execution_service() = default;
         virtual ~basic_execution_service() = default;
 
         key_type get_key() const noexcept final { return key(); }
@@ -45,6 +41,9 @@ namespace engine {
             static const key_type k { _key_counter++ };
             return k;
         }
+
+    protected:
+        basic_execution_service() = default;
 
     };
 

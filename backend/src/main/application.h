@@ -18,11 +18,11 @@ namespace backend {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
 
-        application() = default;
-        virtual ~application() = default;
+        application();
+        virtual ~application();
 
     private:
-        web_server_controller::uptr         _web_server_controller;
+        web_server_controller::uptr     _web_server_controller;
 
         void _before_run() noexcept final;
         void _after_run() noexcept final;

@@ -30,6 +30,10 @@ namespace engine {
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;
 
+        void _add_execution_context(const std::string_view& name, const execution_context::sptr& context) noexcept;
+        void _remove_execution_context(const std::string_view& name) noexcept;
+        execution_context::sptr _get_execution_context(const std::string_view& name) noexcept;
+
     private:
         using context_vector = std::vector<execution_context::sptr>;
         using context_map = std::unordered_map<std::string_view, execution_context::sptr>;
@@ -37,7 +41,7 @@ namespace engine {
         framework::config::sptr                 _config;
 
         context_map                             _context_map;
-        context_vector                          _context_vector;
+        std::timed_mutex                        _context_mutex;
 
     };
 

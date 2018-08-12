@@ -10,6 +10,7 @@
 
 #include <framework.h>
 
+#include "event/event.h"
 #include "core/execution_loop.h"
 #include "core/execution_service.h"
 
@@ -28,6 +29,11 @@ namespace engine {
 
         void join() noexcept;
 
+        template<typename T>
+        typename T::sptr get_service() noexcept {
+            return std::static_pointer_cast<T>(_get_service(T::key()));
+        }
+
     protected:
         explicit execution_context(execution_loop::uptr&& loop,
                                    const framework::config_setting::sptr& config) noexcept;
@@ -37,11 +43,6 @@ namespace engine {
         void _add_service(const execution_service::sptr& service) noexcept;
         void _remove_service(execution_service::key_type key) noexcept;
         execution_service::sptr _get_service(execution_service::key_type key) noexcept;
-
-        template<typename T>
-        typename T::sptr _get_service() noexcept {
-            return std::static_pointer_cast<T>(get_service(T::key()));
-        }
 
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;

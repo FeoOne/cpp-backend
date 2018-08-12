@@ -18,6 +18,7 @@
 #include <condition_variable>
 #include <experimental/optional>
 
+#include "util/crucial.h"
 #include "util/optional.h"
 
 #include "main/tools.h"

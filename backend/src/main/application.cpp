@@ -9,8 +9,23 @@
 
 namespace backend {
 
+    using namespace engine;
+
+    application::application() :
+            _web_server_controller { nullptr }
+    {
+
+    }
+
+    application::~application()
+    {
+
+    }
+
     void application::_before_run() noexcept
     {
+        auto context = _get_execution_context(engine_const::SYSTEM_CONTEXT_NAME);
+        _web_server_controller = web_server_controller::make_unique(context->get_service<http_handle_service>());
         _web_server_controller->create();
     }
 

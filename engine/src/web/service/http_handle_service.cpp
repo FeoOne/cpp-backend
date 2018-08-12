@@ -10,7 +10,8 @@
 namespace engine {
 
     http_handle_service::http_handle_service(SoupServer *server) noexcept :
-            _server { server }
+            _server { server },
+            _handlers {}
     {
     }
 
@@ -53,7 +54,18 @@ namespace engine {
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
-        // @todo
+        http_response::sptr response { nullptr };
+
+        auto it = _handlers.find({ path });
+        if (it != _handlers.end()) {
+            response = it->second->handle(nullptr);
+        } else {
+            logwarn("No handler presented for path '%s'.");
+
+            // @todo Setup default error response
+        }
+
+        // @todo Process response
     }
 
     // static
