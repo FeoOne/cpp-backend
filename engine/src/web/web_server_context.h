@@ -19,7 +19,8 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(web_server_context)
         FW_DELETE_ALL_DEFAULT(web_server_context)
 
-        explicit web_server_context(const framework::config_setting::sptr& config) noexcept;
+        explicit web_server_context(const event_queue::sptr& queue,
+                                    const framework::config_setting::sptr& config) noexcept;
         virtual ~web_server_context();
 
     private:

@@ -16,36 +16,16 @@ namespace engine {
     public:
         FW_DECLARE_SMARTPOINTERS(execution_service)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(execution_service)
-
-        using key_type = size_t;
+        FW_CRUCIAL_BASE_DEFINITION()
 
         virtual ~execution_service() = default;
-
-        virtual key_type get_key() const noexcept = 0;
 
     protected:
         execution_service() = default;
 
-        static key_type     _key_counter;
-
     };
 
-    template<typename T>
-    class basic_execution_service : public execution_service {
-    public:
-        virtual ~basic_execution_service() = default;
 
-        key_type get_key() const noexcept final { return key(); }
-
-        static key_type key() noexcept {
-            static const key_type k { _key_counter++ };
-            return k;
-        }
-
-    protected:
-        basic_execution_service() = default;
-
-    };
 
 }
 

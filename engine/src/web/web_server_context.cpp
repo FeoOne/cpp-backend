@@ -15,8 +15,9 @@ namespace engine {
 
     using namespace framework;
 
-    web_server_context::web_server_context(const config_setting::sptr& config) noexcept :
-            execution_context(web_server_loop::make_unique(), config),
+    web_server_context::web_server_context(const event_queue::sptr& queue,
+                                           const config_setting::sptr& config) noexcept :
+            execution_context(web_server_loop::make_unique(), queue, config),
             _server { nullptr }
     {
     }

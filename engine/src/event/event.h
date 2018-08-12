@@ -8,21 +8,20 @@
 #ifndef ENGINE_EVENT_H
 #define ENGINE_EVENT_H
 
+#include <framework.h>
+
 namespace engine {
 
     class event {
     public:
+        FW_DECLARE_SMARTPOINTERS(event)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(event)
+        FW_CRUCIAL_BASE_DEFINITION()
+
         event();
-        ~event();
+        virtual ~event();
 
     private:
-
-    };
-
-    template<typename T>
-    class basic_event : public event {
-    public:
-
 
     };
 

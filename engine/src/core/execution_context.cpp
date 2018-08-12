@@ -12,8 +12,10 @@ namespace engine {
     using namespace framework;
 
     execution_context::execution_context(execution_loop::uptr&& loop,
+                                         const event_queue::sptr& queue,
                                          const config_setting::sptr& config) noexcept :
             _loop { std::move(loop) },
+            _queue { queue },
             _config { config },
             _thread {},
             _should_restart { false }

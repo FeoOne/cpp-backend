@@ -10,7 +10,7 @@
 
 #include <framework.h>
 
-#include "event/event.h"
+#include "event/event_queue.h"
 #include "core/execution_loop.h"
 #include "core/execution_service.h"
 
@@ -36,6 +36,7 @@ namespace engine {
 
     protected:
         explicit execution_context(execution_loop::uptr&& loop,
+                                   const event_queue::sptr& queue,
                                    const framework::config_setting::sptr& config) noexcept;
 
         framework::config_setting::sptr& config() noexcept { return _config; }
@@ -51,6 +52,7 @@ namespace engine {
         using service_map = std::unordered_map<execution_service::key_type, execution_service::sptr>;
 
         execution_loop::uptr                _loop;
+        event_queue::sptr                   _queue;
         framework::config_setting::sptr     _config;
         std::thread                         _thread;
         bool                                _should_restart;

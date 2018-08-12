@@ -14,8 +14,8 @@ namespace engine {
     using namespace framework;
 
 
-    system_context::system_context(const config_setting::sptr& config) noexcept :
-            execution_context(system_loop::make_unique(), config)
+    system_context::system_context(const event_queue::sptr& queue, const config_setting::sptr& config) noexcept :
+            execution_context(system_loop::make_unique(), queue, config)
     {
     }
 

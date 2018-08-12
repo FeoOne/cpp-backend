@@ -9,7 +9,6 @@
 
 namespace engine {
 
-    // static
-    execution_service::key_type execution_service::_key_counter { 0 };
+    FW_CRUCIAL_BASE_DECLARATION(execution_service)
 
 }

@@ -14,7 +14,7 @@
 
 namespace engine {
 
-    class websocket_handle_service : public basic_execution_service<websocket_handle_service> {
+    class websocket_handle_service : public framework::crucial<websocket_handle_service, execution_service> {
     public:
         FW_DECLARE_SMARTPOINTERS(websocket_handle_service)
         FW_DELETE_ALL_DEFAULT(websocket_handle_service)

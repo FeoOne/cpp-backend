@@ -13,10 +13,11 @@
 #include "scalar/scalar.h"
 
 #define FW_CRUCIAL_BASE_DEFINITION()                    \
+    public:                                             \
+        using key_type = size_t;                        \
     protected:                                          \
         static key_type _key_counter;                   \
     public:                                             \
-        using key_type = size_t;                        \
         virtual key_type get_key() const noexcept = 0;
 
 #define FW_CRUCIAL_BASE_DECLARATION(base)               \

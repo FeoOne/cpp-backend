@@ -9,6 +9,6 @@
 
 namespace engine {
 
-
+    FW_CRUCIAL_BASE_DECLARATION(event)
 
 }

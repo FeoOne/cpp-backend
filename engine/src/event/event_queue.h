@@ -14,13 +14,16 @@ namespace engine {
 
     class event_queue {
     public:
-        event_queue();
-        virtual ~event_queue();
+        FW_DECLARE_SMARTPOINTERS(event_queue)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(event_queue)
 
-        void enqueue() noexcept;
+        virtual ~event_queue() = default;
 
+        virtual void enqueue(const event::sptr& e) noexcept = 0;
+        virtual event::sptr dequeue() noexcept = 0;
 
-    private:
+    protected:
+        event_queue() = default;
 
     };
 

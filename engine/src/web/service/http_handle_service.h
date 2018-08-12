@@ -18,7 +18,7 @@ namespace engine {
     /**
      *
      */
-    class http_handle_service : public basic_execution_service<http_handle_service> {
+    class http_handle_service : public framework::crucial<http_handle_service, execution_service> {
     public:
         FW_DECLARE_SMARTPOINTERS(http_handle_service)
         FW_DELETE_ALL_DEFAULT(http_handle_service)
