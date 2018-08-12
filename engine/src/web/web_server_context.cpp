@@ -66,20 +66,10 @@ namespace engine {
                                                  &error);
 
             if (result == TRUE) {
-                // print some server info
-                GSList *uris = soup_server_get_uris(_server);
-                for (GSList *u = uris; u != nullptr; u = u->next) {
-                    auto suri = reinterpret_cast<SoupURI *>(u->data);
-                    char *str = soup_uri_to_string(suri, FALSE);
-                    loginfo("Listening on %s", str);
-                    g_free(str);
-                    soup_uri_free(suri);
-                }
-                g_slist_free(uris);
-
+                _print_server_info();
                 loginfo("Web server started...");
             } else {
-                logerror("Failed to start listen.");
+                logerror("Failed to start web server.");
 
                 soup_server_disconnect(_server);
                 _server = nullptr;
@@ -95,6 +85,19 @@ namespace engine {
             soup_server_disconnect(_server);
             _server = nullptr;
         }
+    }
+
+    void web_server_context::_print_server_info() const noexcept
+    {
+        GSList *uris = soup_server_get_uris(_server);
+        for (GSList *u = uris; u != nullptr; u = u->next) {
+            auto suri = reinterpret_cast<SoupURI *>(u->data);
+            char *str = soup_uri_to_string(suri, FALSE);
+            loginfo("Listening on %s", str);
+            g_free(str);
+            soup_uri_free(suri);
+        }
+        g_slist_free(uris);
     }
 
     void web_server_context::_create_http_handle_service() noexcept

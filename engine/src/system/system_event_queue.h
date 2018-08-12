@@ -14,8 +14,8 @@ namespace engine {
 
     class system_event_queue : public event_queue {
     public:
-        FW_DECLARE_SMARTPOINTERS(event_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(event_queue)
+        FW_DECLARE_SMARTPOINTERS(system_event_queue)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(system_event_queue)
 
         system_event_queue() = default;
         virtual ~system_event_queue() = default;

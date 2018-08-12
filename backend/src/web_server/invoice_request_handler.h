@@ -12,13 +12,13 @@
 
 namespace backend {
 
-    class payment_request_handler : public engine::http_request_handler {
+    class invoice_request_handler : public engine::http_request_handler {
     public:
-        FW_DECLARE_SMARTPOINTERS(payment_request_handler)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(payment_request_handler)
+        FW_DECLARE_SMARTPOINTERS(invoice_request_handler)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(invoice_request_handler)
 
-        payment_request_handler();
-        virtual ~payment_request_handler();
+        invoice_request_handler();
+        virtual ~invoice_request_handler();
 
         engine::http_response::sptr handle(const engine::http_request::sptr& request) noexcept final;
 

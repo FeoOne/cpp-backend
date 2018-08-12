@@ -6,7 +6,7 @@
  */
 
 #include "main/backend_const.h"
-#include "web_server/payment_request_handler.h"
+#include "web_server/invoice_request_handler.h"
 
 #include "web_server/web_server_controller.h"
 
@@ -25,13 +25,13 @@ namespace backend {
 
     void web_server_controller::create() noexcept
     {
-        auto handler = payment_request_handler::make_shared();
-        _http_service->add_handler(backend_const::HTTP_PAYMENT_PATH, handler);
+        auto handler = invoice_request_handler::make_shared();
+        _http_service->add_handler(backend_const::HTTP_INVOICE_PATH, handler);
     }
 
     void web_server_controller::destroy() noexcept
     {
-        _http_service->remove_handler(backend_const::HTTP_PAYMENT_PATH);
+        _http_service->remove_handler(backend_const::HTTP_INVOICE_PATH);
     }
 
 }

@@ -11,6 +11,7 @@
 #include <libsoup/soup.h>
 
 #include "core/execution_context.h"
+#include "web/web_server_event_queue.h"
 
 namespace engine {
 
@@ -31,6 +32,8 @@ namespace engine {
 
         void _create_server() noexcept;
         void _destroy_server() noexcept;
+
+        void _print_server_info() const noexcept;
 
         void _create_http_handle_service() noexcept;
         void _destroy_http_handle_service() noexcept;

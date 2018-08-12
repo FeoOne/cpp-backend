@@ -16,7 +16,7 @@ namespace engine {
 
     event::sptr system_event_queue::dequeue() noexcept
     {
-
+        return nullptr;
     }
 
 }

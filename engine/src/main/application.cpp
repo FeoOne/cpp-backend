@@ -48,10 +48,12 @@ namespace engine {
             auto name = (*specific_context_config)["name"]->to_string();
             if (std::strcmp(name, engine_const::SYSTEM_CONTEXT_NAME.data()) == 0) {
                 // system_context
-                context = system_context::make_shared(specific_context_config);
+                auto queue = system_event_queue::make_shared();
+                context = system_context::make_shared(queue, specific_context_config);
             } else if (std::strcmp(name, engine_const::WEB_SERVER_CONTEXT_NAME.data()) == 0) {
                 // web_server_context
-                context = web_server_context::make_shared(specific_context_config);
+                auto queue = web_server_event_queue::make_shared();
+                context = web_server_context::make_shared(queue, specific_context_config);
             }
 
             _add_execution_context(name, context);

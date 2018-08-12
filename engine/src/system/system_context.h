@@ -9,6 +9,7 @@
 #define ENGINE_SYSTEM_CONTEXT_H
 
 #include "core/execution_context.h"
+#include "system/system_event_queue.h"
 
 namespace engine {
 
