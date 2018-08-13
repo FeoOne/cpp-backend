@@ -37,4 +37,4 @@ function(setup_compile_options TARGET)
             -Wno-c++98-c++11-c++14-compat-pedantic
             -Wno-gnu-zero-variadic-macro-arguments
             )
-endfunction()
+endfunction(setup_compile_options)

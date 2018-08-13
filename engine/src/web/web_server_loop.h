@@ -14,7 +14,7 @@
 
 namespace engine {
 
-    class web_server_loop : public execution_loop {
+    class web_server_loop final : public execution_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_loop)
         FW_DELETE_ALL_DEFAULT(web_server_loop)

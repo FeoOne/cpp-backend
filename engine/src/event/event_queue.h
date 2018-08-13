@@ -33,6 +33,10 @@ namespace engine {
 
         std::queue<event::sptr>     _queue;
 
+        /**
+         * Called only by event_router::enqueue(...)
+         * @param e Event to enqueue.
+         */
         virtual void enqueue(const event::sptr& e) noexcept = 0;
 
     };
