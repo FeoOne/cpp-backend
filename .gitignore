@@ -1,5 +1,3 @@
 .idea
 cmake-build-*
 
-engine/include
-framework/include
