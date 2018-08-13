@@ -14,8 +14,10 @@ namespace engine {
 
     class engine_const {
     public:
-        static constexpr std::string_view WEB_SERVER_HEADER { "bitpt-httpd " };
+        static constexpr std::string_view WEB_SERVER_HEADER { "bitpt-httpd" };
         static constexpr size_t WEB_SERVER_PORT { 8888 };
+        static constexpr std::string_view WEB_SERVER_HTTP_HANDLE { "http" };
+        static constexpr std::string_view WEB_SERVER_WEBSOCKET_HANDLE { "websocket" };
 
         static constexpr std::string_view JOB_CONTEXT_NAME { "job" };
         static constexpr std::string_view SYSTEM_CONTEXT_NAME { "system" };

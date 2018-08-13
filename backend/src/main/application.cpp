@@ -11,8 +11,7 @@ namespace backend {
 
     using namespace engine;
 
-    application::application() :
-            _web_server_controller { nullptr }
+    application::application()
     {
 
     }
