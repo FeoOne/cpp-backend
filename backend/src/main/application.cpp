@@ -24,14 +24,12 @@ namespace backend {
 
     void application::_before_run() noexcept
     {
-//        auto context = _get_contexts(engine_const::SYSTEM_CONTEXT_NAME)[0];
-//        _web_server_controller = web_server_controller::make_unique(context->get_service<http_handle_service>());
-//        _web_server_controller->create();
+
     }
 
     void application::_after_run() noexcept
     {
-//        _web_server_controller->destroy();
+
     }
 
 }

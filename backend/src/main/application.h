@@ -10,8 +10,6 @@
 
 #include <engine.h>
 
-#include "web_server/web_server_controller.h"
-
 namespace backend {
 
     class application : public engine::application {
@@ -22,7 +20,6 @@ namespace backend {
         virtual ~application();
 
     private:
-        web_server_controller::uptr     _web_server_controller;
 
         void _before_run() noexcept final;
         void _after_run() noexcept final;
