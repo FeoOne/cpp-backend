@@ -11,7 +11,7 @@
 #include <framework.h>
 
 #include "event/event_queue.h"
-#include "event/event_router.h"
+#include "event/event_recipient.h"
 #include "core/execution_loop.h"
 #include "core/execution_service.h"
 
@@ -40,12 +40,12 @@ namespace engine {
     protected:
         explicit execution_context(execution_loop::uptr&& loop,
                                    const event_queue::sptr& queue,
-                                   const event_router::sptr& router,
+                                   const event_recipient::sptr& recipient,
                                    const framework::config_setting::sptr& config) noexcept;
 
         framework::config_setting::sptr& config() noexcept { return _config; }
         event_queue::sptr queue() noexcept { return _queue; }
-        event_router::sptr router() noexcept { return _router; }
+        event_recipient::sptr recipient() noexcept { return _recipient; }
 
         void add_service(const execution_service::sptr &service) noexcept;
         void remove_service(execution_service::key_type key) noexcept;
@@ -57,12 +57,12 @@ namespace engine {
     private:
         using service_map = std::unordered_map<execution_service::key_type, execution_service::sptr>;
 
-        execution_loop::uptr                _loop;
-        event_queue::sptr                   _queue;
-        event_router::sptr                  _router;
-        framework::config_setting::sptr     _config;
         std::thread                         _thread;
+        execution_loop::uptr                _loop;
         bool                                _should_restart;
+        event_queue::sptr                   _queue;
+        event_recipient::sptr               _recipient;
+        framework::config_setting::sptr     _config;
 
         service_map                         _services;
 

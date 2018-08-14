@@ -9,8 +9,8 @@
 
 namespace engine {
 
-    websocket_handle_service::websocket_handle_service(const event_router::sptr& router, SoupServer *server) noexcept :
-            web_server_service(router, server)
+    websocket_handle_service::websocket_handle_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept :
+            web_server_service(recipient, server)
     {
 //        soup_server_add_websocket_handler(_server,
 //                                          "/websocket",

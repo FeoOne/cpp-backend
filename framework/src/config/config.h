@@ -8,7 +8,7 @@
 #ifndef FRAMEWORK_CONFIG_H
 #define FRAMEWORK_CONFIG_H
 
-#include <experimental/optional>
+#include <cassert>
 
 #include <libconfig.h>
 

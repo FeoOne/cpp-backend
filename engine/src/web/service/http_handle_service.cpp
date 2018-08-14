@@ -15,8 +15,8 @@ namespace engine {
 
     using namespace framework;
 
-    http_handle_service::http_handle_service(const event_router::sptr& router, SoupServer *server) noexcept :
-            web_server_service(router, server)
+    http_handle_service::http_handle_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept :
+            web_server_service(recipient, server)
     {
         soup_server_add_handler(get_server(),
                                 engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data(),
@@ -44,7 +44,7 @@ namespace engine {
 
         std::string_view p { path };
         auto request { http_request::make_shared(message, p, query, client) };
-        router()->enqueue(http_request_event::make_shared(request));
+        recipient()->enqueue(http_request_event::make_shared(request));
 
         soup_server_pause_message(get_server(), message);
     }

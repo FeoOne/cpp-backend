@@ -23,7 +23,7 @@ namespace engine {
             _config { config::make_shared() },
             _contexts {},
             _queues {},
-            _router { event_router::make_shared() }
+            _recipient { event_recipient::make_shared() }
     {
         log_manager::setup();
     }
@@ -123,23 +123,23 @@ namespace engine {
             // job
             queue = _queues[engine_const::JOB_CONTEXT_NAME];
 
-            _router->add_route(context_did_start_event::key(), queue);
+            _recipient->add_route(context_did_start_event::key(), queue);
         }
     }
 
     execution_context::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
     {
-        return job_context::make_shared(_queues[engine_const::JOB_CONTEXT_NAME], _router, config);
+        return job_context::make_shared(_queues[engine_const::JOB_CONTEXT_NAME], _recipient, config);
     }
 
     execution_context::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
     {
-        return system_context::make_shared(_queues[engine_const::SYSTEM_CONTEXT_NAME], _router, config);
+        return system_context::make_shared(_queues[engine_const::SYSTEM_CONTEXT_NAME], _recipient, config);
     }
 
     execution_context::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
     {
-        return web_server_context::make_shared(_queues[engine_const::WEB_SERVER_CONTEXT_NAME], _router, config);
+        return web_server_context::make_shared(_queues[engine_const::WEB_SERVER_CONTEXT_NAME], _recipient, config);
     }
 
 }

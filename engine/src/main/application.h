@@ -11,7 +11,7 @@
 #include <framework.h>
 
 #include "core/execution_context.h"
-#include "event/event_router.h"
+#include "event/event_recipient.h"
 
 namespace engine {
 
@@ -42,7 +42,7 @@ namespace engine {
         framework::config::sptr                 _config;
         context_map                             _contexts;
         event_queue_map                         _queues;
-        event_router::sptr                      _router;
+        event_recipient::sptr                      _recipient;
 
         void _create_contexts() noexcept;
         void _create_event_queues() noexcept;

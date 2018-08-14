@@ -19,7 +19,7 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT(system_context)
 
         explicit system_context(const event_queue::sptr& queue,
-                                const event_router::sptr& router,
+                                const event_recipient::sptr& recipient,
                                 const framework::config_setting::sptr& config) noexcept;
         virtual ~system_context();
 

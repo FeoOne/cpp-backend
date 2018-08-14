@@ -14,9 +14,9 @@ namespace engine {
     using namespace framework;
 
     job_context::job_context(const event_queue::sptr& queue,
-                             const event_router::sptr& router,
+                             const event_recipient::sptr& recipient,
                              const config_setting::sptr& config) noexcept :
-            execution_context(job_loop::make_unique(queue), queue, router, config)
+            execution_context(job_loop::make_unique(queue), queue, recipient, config)
     {
     }
 

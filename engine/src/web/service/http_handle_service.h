@@ -22,7 +22,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(http_handle_service)
         FW_DELETE_ALL_DEFAULT(http_handle_service)
 
-        explicit http_handle_service(const event_router::sptr& router, SoupServer *server) noexcept;
+        explicit http_handle_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept;
         virtual ~http_handle_service();
 
     private:

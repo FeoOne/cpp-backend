@@ -18,7 +18,7 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT(io_context)
 
         explicit io_context(const event_queue::sptr& queue,
-                            const event_router::sptr& router,
+                            const event_recipient::sptr& recipient,
                             const framework::config_setting::sptr& config) noexcept;
         virtual ~io_context();
 

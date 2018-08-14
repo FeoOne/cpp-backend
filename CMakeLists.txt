@@ -1,13 +1,15 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+
+cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/CMakeModules
         )
 
 include(${CMAKE_SOURCE_DIR}/CMakeTools/Compiler.cmake)
+include(${CMAKE_SOURCE_DIR}/CMakeTools/Version.cmake)
 
-#set_property(GLOBAL PROPERTY PROJECT_VERSION "0.0.1")
-set(PROJECT_VERSION "0.0.1")
+setup_version()
 
 add_subdirectory(framework)
 add_subdirectory(engine)

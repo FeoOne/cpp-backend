@@ -8,7 +8,7 @@
 #ifndef ENGINE_EXECUTION_SERVICE_H
 #define ENGINE_EXECUTION_SERVICE_H
 
-#include "event/event_router.h"
+#include "event/event_recipient.h"
 
 namespace engine {
 
@@ -21,12 +21,12 @@ namespace engine {
         virtual ~execution_service() = default;
 
     protected:
-        explicit execution_service(const event_router::sptr& router) noexcept;
+        explicit execution_service(const event_recipient::sptr& recipient) noexcept;
 
-        event_router::sptr router() const noexcept { return _router; }
+        event_recipient::sptr recipient() const noexcept { return _recipient; }
 
     private:
-        event_router::sptr      _router;
+        event_recipient::sptr      _recipient;
 
     };
 

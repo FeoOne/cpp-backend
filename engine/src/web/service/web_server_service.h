@@ -30,8 +30,8 @@ namespace engine {
         }
 
     protected:
-        explicit web_server_service(const event_router::sptr& router, SoupServer *server) noexcept :
-                WEB_SERVER_SERVICE_BASE(router),
+        explicit web_server_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept :
+                WEB_SERVER_SERVICE_BASE(recipient),
                 _server { GO_REF(server) }
         {}
 

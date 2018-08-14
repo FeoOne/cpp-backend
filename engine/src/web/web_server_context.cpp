@@ -20,9 +20,9 @@ namespace engine {
     using namespace framework;
 
     web_server_context::web_server_context(const event_queue::sptr &queue,
-                                           const event_router::sptr &router,
+                                           const event_recipient::sptr &recipient,
                                            const config_setting::sptr &config) noexcept :
-            execution_context(web_server_loop::make_unique(queue), queue, router, config),
+            execution_context(web_server_loop::make_unique(queue), queue, recipient, config),
             _server { nullptr }
     {
     }
@@ -100,7 +100,7 @@ namespace engine {
     }
 
     void web_server_context::_create_http_handle_service(const config_setting::sptr &route_config) noexcept {
-        auto service { http_handle_service::make_shared(router(), _server) };
+        auto service { http_handle_service::make_shared(recipient(), _server) };
         add_service(service);
     }
 
@@ -110,7 +110,7 @@ namespace engine {
     }
 
     void web_server_context::_create_websocket_handle_service(const config_setting::sptr &route_config) noexcept {
-        auto service { websocket_handle_service::make_shared(router(), _server) };
+        auto service { websocket_handle_service::make_shared(recipient(), _server) };
         add_service(service);
     }
 

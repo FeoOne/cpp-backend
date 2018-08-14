@@ -19,7 +19,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(websocket_handle_service)
         FW_DELETE_ALL_DEFAULT(websocket_handle_service)
 
-        explicit websocket_handle_service(const event_router::sptr& router, SoupServer *server) noexcept;
+        explicit websocket_handle_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept;
         virtual ~websocket_handle_service();
 
     private:

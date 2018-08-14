@@ -29,12 +29,12 @@ namespace engine {
         event::sptr pop() noexcept;
 
     private:
-        friend class event_router;
+        friend class event_recipient;
 
         std::queue<event::sptr>     _queue;
 
         /**
-         * Called only by event_router::enqueue(...)
+         * Called only by event_recipient::enqueue(...)
          * @param e Event to enqueue.
          */
         virtual void enqueue(const event::sptr& e) noexcept = 0;

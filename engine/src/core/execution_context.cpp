@@ -14,14 +14,14 @@ namespace engine {
 
     execution_context::execution_context(execution_loop::uptr&& loop,
                                          const event_queue::sptr& queue,
-                                         const event_router::sptr& router,
+                                         const event_recipient::sptr& recipient,
                                          const config_setting::sptr& config) noexcept :
-            _loop { std::move(loop) },
-            _queue { queue },
-            _router { router },
-            _config { config },
             _thread {},
-            _should_restart { false }
+            _loop { std::move(loop) },
+            _should_restart { false },
+            _queue { queue },
+            _recipient { recipient },
+            _config { config }
     {
         assert(config != nullptr);
     }
@@ -109,7 +109,7 @@ namespace engine {
     void execution_context::_notify_about_start() noexcept
     {
         auto e = context_did_start_event::make_shared(shared_from_this());
-        router()->enqueue(e);
+        recipient()->enqueue(e);
     }
 
 }
