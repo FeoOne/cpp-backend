@@ -10,31 +10,22 @@
 
 #include <libsoup/soup.h>
 
-#include "core/execution_service.h"
-#include "web/http/http_request_handler.h"
+#include "web/service/web_server_service.h"
 
 namespace engine {
 
     /**
      *
      */
-    class http_handle_service final : public framework::crucial<http_handle_service, execution_service> {
+    class http_handle_service final : public web_server_service<http_handle_service> {
     public:
         FW_DECLARE_SMARTPOINTERS(http_handle_service)
         FW_DELETE_ALL_DEFAULT(http_handle_service)
 
-        explicit http_handle_service(SoupServer *server) noexcept;
+        explicit http_handle_service(const event_router::sptr& router, SoupServer *server) noexcept;
         virtual ~http_handle_service();
 
-        void add_handler(const std::string_view& path, const http_request_handler::sptr& handler) noexcept;
-        void remove_handler(const std::string_view& path) noexcept;
-
     private:
-        using handler_map = std::unordered_map<std::string_view, http_request_handler::sptr>;
-
-        SoupServer *            _server;
-        handler_map             _handlers;
-
         void handler(SoupServer *server,
                      SoupMessage *message,
                      const char *path,

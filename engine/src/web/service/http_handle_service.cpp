@@ -5,43 +5,30 @@
  * @brief
  */
 
+#include "main/engine_const.h"
+#include "web/http/http_request.h"
+#include "web/event/http_request_event.h"
+
 #include "web/service/http_handle_service.h"
 
 namespace engine {
 
-    http_handle_service::http_handle_service(SoupServer *server) noexcept :
-            _server { server },
-            _handlers {}
+    using namespace framework;
+
+    http_handle_service::http_handle_service(const event_router::sptr& router, SoupServer *server) noexcept :
+            web_server_service(router, server)
     {
+        soup_server_add_handler(get_server(),
+                                engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data(),
+                                &http_handle_service::handler,
+                                this,
+                                nullptr);
     }
 
     // virtual
     http_handle_service::~http_handle_service()
     {
-
-    }
-
-    void http_handle_service::add_handler(const std::string_view& path,
-                                          const http_request_handler::sptr& handler) noexcept
-    {
-        auto it = _handlers.find(path);
-        if (it == _handlers.end()) {
-            _handlers.insert({path, handler});
-            soup_server_add_handler(_server, path.data(), &http_handle_service::handler, this, nullptr);
-        } else {
-            logwarn("Can't add already added handler for path '%s'.", path.data());
-        }
-    }
-
-    void http_handle_service::remove_handler(const std::string_view& path) noexcept
-    {
-        auto it = _handlers.find(path);
-        if (it != _handlers.end()) {
-            soup_server_remove_handler(_server, path.data());
-            _handlers.erase(it);
-        } else {
-            logwarn("Can't remove non-exists handler for path '%s'.", path.data());
-        }
+        soup_server_remove_handler(get_server(), engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
     void http_handle_service::handler(SoupServer *server,
@@ -50,22 +37,16 @@ namespace engine {
                                       GHashTable *query,
                                       SoupClientContext *client) noexcept
     {
+        // @todo Compare server pointers for extra error check.
         logdebug("HTTP handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
-        http_response::sptr response { nullptr };
+        std::string_view p { path };
+        auto request { http_request::make_shared(message, p, query, client) };
+        router()->enqueue(http_request_event::make_shared(request));
 
-        auto it = _handlers.find({ path });
-        if (it != _handlers.end()) {
-            response = it->second->handle(nullptr);
-        } else {
-            logwarn("No handler presented for path '%s'.");
-
-            // @todo Setup default error response
-        }
-
-        // @todo Process response
+        soup_server_pause_message(get_server(), message);
     }
 
     // static

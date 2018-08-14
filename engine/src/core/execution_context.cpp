@@ -26,9 +26,9 @@ namespace engine {
         assert(config != nullptr);
     }
 
-    execution_context::~execution_context()
-    {
-    }
+//    execution_context::~execution_context()
+//    {
+//    }
 
     void execution_context::start() noexcept
     {
@@ -76,17 +76,17 @@ namespace engine {
         return { (*_config)["name"]->to_string() };
     }
 
-    void execution_context::_add_service(const execution_service::sptr& service) noexcept
+    void execution_context::add_service(const execution_service::sptr &service) noexcept
     {
         _services.insert({ service->get_key(), service });
     }
 
-    void execution_context::_remove_service(execution_service::key_type key) noexcept
+    void execution_context::remove_service(execution_service::key_type key) noexcept
     {
         _services.erase(key);
     }
 
-    execution_service::sptr execution_context::_get_service(execution_service::key_type key) noexcept
+    execution_service::sptr execution_context::get_service(execution_service::key_type key) noexcept
     {
         return _services[key];
     }

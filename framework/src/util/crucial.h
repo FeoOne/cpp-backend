@@ -8,6 +8,8 @@
 #ifndef FRAMEWORK_TYPED_H
 #define FRAMEWORK_TYPED_H
 
+#include <utility>
+
 #include "main/tools.h"
 #include "memory/memory.h"
 #include "scalar/scalar.h"
@@ -25,12 +27,14 @@
 
 namespace framework {
 
-    template<typename Derived, typename Base>
+    template<typename Base, typename Derived>
     class crucial : public Base {
     public:
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(crucial)
 
         using key_type = typename Base::key_type;
+        using base_type = Base;
+        using derived_type = Derived;
 
         virtual ~crucial() = default;
 
@@ -43,6 +47,9 @@ namespace framework {
 
     protected:
         crucial() = default;
+
+        template<typename... Args>
+        explicit crucial(Args&&... args) noexcept : base_type(std::forward<Args>(args)...) {}
 
     };
 

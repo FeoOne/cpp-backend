@@ -8,6 +8,8 @@
 #ifndef ENGINE_HTTP_REQUEST_H
 #define ENGINE_HTTP_REQUEST_H
 
+#include <libsoup/soup.h>
+
 #include <framework.h>
 
 namespace engine {
@@ -15,9 +17,12 @@ namespace engine {
     class http_request {
     public:
         FW_DECLARE_SMARTPOINTERS(http_request)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_request)
+        FW_DELETE_ALL_DEFAULT(http_request)
 
-        http_request();
+        explicit http_request(SoupMessage *message,
+                              const std::string_view& path,
+                              GHashTable *query,
+                              SoupClientContext *client) noexcept;
         ~http_request();
 
     private:

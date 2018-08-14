@@ -13,7 +13,7 @@
 
 namespace engine {
 
-    class context_did_start_event : public framework::crucial<context_did_start_event, event> {
+    class context_did_start_event : public framework::crucial<event, context_did_start_event> {
     public:
         FW_DECLARE_SMARTPOINTERS(context_did_start_event)
         FW_DELETE_ALL_DEFAULT(context_did_start_event)
@@ -21,7 +21,7 @@ namespace engine {
         explicit context_did_start_event(const execution_context::wptr& context) noexcept : _context { context } {}
         virtual ~context_did_start_event() = default;
 
-        execution_context::wptr context() noexcept { return _context; }
+        execution_context::wptr get_context() noexcept { return _context; }
 
     private:
         execution_context::wptr     _context;

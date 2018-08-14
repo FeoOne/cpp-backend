@@ -23,7 +23,7 @@ namespace engine {
         explicit web_server_context(const event_queue::sptr& queue,
                                     const event_router::sptr& router,
                                     const framework::config_setting::sptr& config) noexcept;
-        virtual ~web_server_context();
+        virtual ~web_server_context() = default;
 
     private:
         SoupServer *        _server;
@@ -36,10 +36,10 @@ namespace engine {
 
         void _print_server_info() const noexcept;
 
-        void _create_http_handle_service() noexcept;
+        void _create_http_handle_service(const framework::config_setting::sptr& route_config) noexcept;
         void _destroy_http_handle_service() noexcept;
 
-        void _create_websocket_handle_service() noexcept;
+        void _create_websocket_handle_service(const framework::config_setting::sptr& route_config) noexcept;
         void _destroy_websocket_handle_service() noexcept;
 
     };

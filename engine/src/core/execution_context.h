@@ -22,7 +22,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(execution_context)
         FW_DELETE_ALL_DEFAULT(execution_context)
 
-        virtual ~execution_context();
+        virtual ~execution_context() = default;
 
         void start() noexcept;
         void stop() noexcept;
@@ -34,7 +34,7 @@ namespace engine {
 
         template<typename T>
         typename T::sptr get_service() noexcept {
-            return std::static_pointer_cast<T>(_get_service(T::key()));
+            return std::static_pointer_cast<T>(get_service(T::key()));
         }
 
     protected:
@@ -47,9 +47,9 @@ namespace engine {
         event_queue::sptr queue() noexcept { return _queue; }
         event_router::sptr router() noexcept { return _router; }
 
-        void _add_service(const execution_service::sptr& service) noexcept;
-        void _remove_service(execution_service::key_type key) noexcept;
-        execution_service::sptr _get_service(execution_service::key_type key) noexcept;
+        void add_service(const execution_service::sptr &service) noexcept;
+        void remove_service(execution_service::key_type key) noexcept;
+        execution_service::sptr get_service(execution_service::key_type key) noexcept;
 
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;

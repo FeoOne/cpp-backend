@@ -9,22 +9,22 @@
 
 namespace engine {
 
-    websocket_handle_service::websocket_handle_service(SoupServer *server) noexcept :
-            _server { server }
+    websocket_handle_service::websocket_handle_service(const event_router::sptr& router, SoupServer *server) noexcept :
+            web_server_service(router, server)
     {
-        soup_server_add_websocket_handler(_server,
-                                          "/websocket",
-                                          nullptr,
-                                          nullptr,
-                                          &websocket_handle_service::_handler,
-                                          this,
-                                          nullptr);
+//        soup_server_add_websocket_handler(_server,
+//                                          "/websocket",
+//                                          nullptr,
+//                                          nullptr,
+//                                          &websocket_handle_service::_handler,
+//                                          this,
+//                                          nullptr);
     }
 
     // virtual
     websocket_handle_service::~websocket_handle_service()
     {
-        soup_server_remove_handler(_server, "/websocket");
+//        soup_server_remove_handler(_server, "/websocket");
     }
 
     void websocket_handle_service::_handler(SoupServer *server,
@@ -32,11 +32,12 @@ namespace engine {
                                             const char *path,
                                             SoupClientContext *client) noexcept
     {
+        // @todo Compare server pointers for extra error check.
         logdebug("WebSocket handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
-        // @todo
+
     }
 
     //static

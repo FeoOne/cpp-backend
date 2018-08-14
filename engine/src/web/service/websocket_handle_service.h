@@ -10,21 +10,19 @@
 
 #include <libsoup/soup.h>
 
-#include "core/execution_service.h"
+#include "web/service/web_server_service.h"
 
 namespace engine {
 
-    class websocket_handle_service final : public framework::crucial<websocket_handle_service, execution_service> {
+    class websocket_handle_service final : public web_server_service<websocket_handle_service> {
     public:
         FW_DECLARE_SMARTPOINTERS(websocket_handle_service)
         FW_DELETE_ALL_DEFAULT(websocket_handle_service)
 
-        explicit websocket_handle_service(SoupServer *server) noexcept;
+        explicit websocket_handle_service(const event_router::sptr& router, SoupServer *server) noexcept;
         virtual ~websocket_handle_service();
 
     private:
-        SoupServer *            _server;
-
         void _handler(SoupServer *server,
                       SoupWebsocketConnection *connection,
                       const char *path,

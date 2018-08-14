@@ -11,4 +11,9 @@ namespace engine {
 
     FW_CRUCIAL_BASE_DECLARATION(execution_service)
 
+    execution_service::execution_service(const event_router::sptr& router) noexcept :
+            _router { router }
+    {
+    }
+
 }
