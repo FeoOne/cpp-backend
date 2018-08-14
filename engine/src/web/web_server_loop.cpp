@@ -62,7 +62,7 @@ namespace engine {
             logdebug("Dequeued event with key: %lu, name: '%s'.",
                      e->get_key(),
                      event_name_from_key(e->get_key()).data());
-            // @todo Implement event processing
+            handle_event(e);
         }
 
         return _should_work ? TRUE : FALSE;

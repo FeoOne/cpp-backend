@@ -9,6 +9,14 @@
 
 namespace engine {
 
-    // @todo Remove?
+    void execution_loop::handle_event(const event::sptr& e) const noexcept
+    {
+
+    }
+
+    void execution_loop::add_route(event::key_type key, const executor::sptr& exec) noexcept
+    {
+
+    }
 
 }

@@ -8,8 +8,7 @@
 #ifndef ENGINE_EXECUTION_LOOP_H
 #define ENGINE_EXECUTION_LOOP_H
 
-#include <framework.h>
-
+#include "core/executor.h"
 #include "event/event_queue.h"
 
 namespace engine {
@@ -30,6 +29,9 @@ namespace engine {
         explicit execution_loop(const event_queue::sptr& queue) noexcept : _queue { queue } {}
 
         event_queue::sptr queue() const noexcept { return _queue; }
+
+        void add_route(event::key_type key, const executor::sptr& exec) noexcept;
+        void handle_event(const event::sptr& e) const noexcept;
 
     private:
         event_queue::sptr       _queue;

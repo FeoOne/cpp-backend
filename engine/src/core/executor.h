@@ -19,8 +19,7 @@ namespace engine {
 
         virtual ~executor() = default;
 
-        template<typename T>
-        std::vector<event::sptr> operator()(const typename T::sptr& e) noexcept;
+        virtual std::vector<event::sptr> operator()(const event::sptr& e) noexcept = 0;
 
     protected:
         executor() = default;
