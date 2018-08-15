@@ -8,7 +8,7 @@
 #ifndef ENGINE_EXECUTION_LOOP_H
 #define ENGINE_EXECUTION_LOOP_H
 
-#include "event/event_queue.h"
+//#include "event/event_queue.h"
 #include "event/event_handler.h"
 
 namespace engine {
