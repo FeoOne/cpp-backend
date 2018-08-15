@@ -1,1 +1,1 @@
-execution context types
+Read [wiki](https://bitbucket.org/feosoftware/bitpayments-core/wiki/Home).
