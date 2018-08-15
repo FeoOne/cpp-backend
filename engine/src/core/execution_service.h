@@ -23,7 +23,7 @@ namespace engine {
     protected:
         explicit execution_service(const event_recipient::sptr& recipient) noexcept;
 
-        event_recipient::sptr recipient() const noexcept { return _recipient; }
+        event_recipient::sptr get_recipient() const noexcept { return _recipient; }
 
     private:
         event_recipient::sptr      _recipient;

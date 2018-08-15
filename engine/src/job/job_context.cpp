@@ -26,13 +26,13 @@ namespace engine {
     }
 
     // virtual
-    void job_context::_before_run() noexcept
+    void job_context::before_run() noexcept
     {
 
     }
 
     // virtual
-    void job_context::_after_run() noexcept
+    void job_context::after_run() noexcept
     {
 
     }

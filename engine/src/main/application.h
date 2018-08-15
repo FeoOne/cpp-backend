@@ -42,7 +42,7 @@ namespace engine {
         framework::config::sptr                 _config;
         context_map                             _contexts;
         event_queue_map                         _queues;
-        event_recipient::sptr                      _recipient;
+        event_recipient::sptr                   _recipient;
 
         void _create_contexts() noexcept;
         void _create_event_queues() noexcept;

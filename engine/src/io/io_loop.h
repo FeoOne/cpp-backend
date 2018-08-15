@@ -27,8 +27,15 @@ namespace engine {
 
         bool stopped() const noexcept final;
 
+        void wakeup() noexcept final;
+
     private:
         std::unique_ptr<uv_loop_t>      _loop;
+        std::unique_ptr<uv_async_t>     _async_handler;
+
+        void notify_callback() noexcept;
+
+        static void notify_callback(uv_async_t *handle) noexcept;
 
     };
 

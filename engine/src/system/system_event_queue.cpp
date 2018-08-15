@@ -9,6 +9,11 @@
 
 namespace engine {
 
+    system_event_queue::system_event_queue(const execution_loop::sptr& loop) noexcept :
+            event_queue(loop)
+    {
+    }
+
     // vitual
     void system_event_queue::enqueue(const event::sptr& e) noexcept
     {

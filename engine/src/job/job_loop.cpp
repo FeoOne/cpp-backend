@@ -26,7 +26,7 @@ namespace engine {
         _is_stopped = false;
 
         while (_should_work) {
-            auto e = queue()->dequeue();
+            auto e = get_queue()->dequeue();
 
             // e can be null in case when loop finalize working
             if (static_cast<bool>(e)) {
@@ -45,7 +45,7 @@ namespace engine {
     {
         _should_work = false;
 
-        // @todo queue->stop
+        // @todo get_queue->stop
     }
 
     // virtual

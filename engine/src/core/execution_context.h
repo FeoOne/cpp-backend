@@ -43,16 +43,16 @@ namespace engine {
                                    const event_recipient::sptr& recipient,
                                    const framework::config_setting::sptr& config) noexcept;
 
-        framework::config_setting::sptr& config() noexcept { return _config; }
-        event_queue::sptr queue() noexcept { return _queue; }
-        event_recipient::sptr recipient() noexcept { return _recipient; }
+        framework::config_setting::sptr& get_config() noexcept { return _config; }
+        event_queue::sptr get_queue() noexcept { return _queue; }
+        event_recipient::sptr get_recipient() noexcept { return _recipient; }
 
         void add_service(const execution_service::sptr &service) noexcept;
         void remove_service(execution_service::key_type key) noexcept;
         execution_service::sptr get_service(execution_service::key_type key) noexcept;
 
-        virtual void _before_run() noexcept = 0;
-        virtual void _after_run() noexcept = 0;
+        virtual void before_run() noexcept = 0;
+        virtual void after_run() noexcept = 0;
 
     private:
         using service_map = std::unordered_map<execution_service::key_type, execution_service::sptr>;

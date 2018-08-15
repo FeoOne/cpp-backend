@@ -57,12 +57,12 @@ namespace engine {
 
     gboolean web_server_loop::on_idle() noexcept
     {
-        auto e = queue()->dequeue();
-        if (e != nullptr) {
+        auto eve = get_queue()->dequeue();
+        if (eve != nullptr) {
             logdebug("Dequeued event with key: %lu, name: '%s'.",
-                     e->get_key(),
-                     event_name_from_key(e->get_key()).data());
-            handle_event(e);
+                     eve->get_key(),
+                     event_name_from_key(eve->get_key()).data());
+            handle_event(eve);
         }
 
         return _should_work ? TRUE : FALSE;

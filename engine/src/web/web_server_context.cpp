@@ -28,17 +28,17 @@ namespace engine {
     }
 
     // virtual
-    void web_server_context::_before_run() noexcept {
+    void web_server_context::before_run() noexcept {
         _create_server();
 
-        auto route_config { (*config())["route"] };
+        auto route_config { (*get_config())["route"] };
 
         _create_http_handle_service(route_config);
         _create_websocket_handle_service(route_config);
     }
 
     // virtual
-    void web_server_context::_after_run() noexcept {
+    void web_server_context::after_run() noexcept {
         _destroy_websocket_handle_service();
         _destroy_http_handle_service();
 
@@ -49,12 +49,12 @@ namespace engine {
         GError *error { nullptr };
 
         const char *header = engine_const::WEB_SERVER_HEADER.data();
-        if (!config()->lookup_string("header", &header)) {
+        if (!get_config()->lookup_string("header", &header)) {
             logwarn("Used default web server header: '%s'.", header);
         }
 
         s32 port = static_cast<s32>(engine_const::WEB_SERVER_PORT);
-        if (!config()->lookup_s32("port", &port)) {
+        if (!get_config()->lookup_s32("port", &port)) {
             logwarn("Used default web server port: '%d'.", port);
         }
 
@@ -100,7 +100,7 @@ namespace engine {
     }
 
     void web_server_context::_create_http_handle_service(const config_setting::sptr &route_config) noexcept {
-        auto service { http_handle_service::make_shared(recipient(), _server) };
+        auto service { http_handle_service::make_shared(get_recipient(), _server) };
         add_service(service);
     }
 
@@ -110,7 +110,7 @@ namespace engine {
     }
 
     void web_server_context::_create_websocket_handle_service(const config_setting::sptr &route_config) noexcept {
-        auto service { websocket_handle_service::make_shared(recipient(), _server) };
+        auto service { websocket_handle_service::make_shared(get_recipient(), _server) };
         add_service(service);
     }
 

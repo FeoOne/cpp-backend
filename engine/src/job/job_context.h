@@ -24,8 +24,8 @@ namespace engine {
         virtual ~job_context();
 
     private:
-        void _before_run() noexcept final;
-        void _after_run() noexcept final;
+        void before_run() noexcept final;
+        void after_run() noexcept final;
 
     };
 

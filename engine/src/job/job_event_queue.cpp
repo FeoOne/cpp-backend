@@ -9,7 +9,8 @@
 
 namespace engine {
 
-    job_event_queue::job_event_queue() :
+    job_event_queue::job_event_queue(const execution_loop::sptr& loop) :
+            event_queue(loop),
             _cv {},
             _mutex {}
     {

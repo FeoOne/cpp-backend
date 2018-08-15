@@ -44,7 +44,7 @@ namespace engine {
 
         std::string_view p { path };
         auto request { http_request::make_shared(message, p, query, client) };
-        recipient()->enqueue(http_request_event::make_shared(request));
+        get_recipient()->enqueue(http_request_event::make_shared(request));
 
         soup_server_pause_message(get_server(), message);
     }

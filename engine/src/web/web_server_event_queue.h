@@ -15,7 +15,7 @@ namespace engine {
     class web_server_event_queue : public event_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_event_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(web_server_event_queue)
+        FW_DELETE_ALL_DEFAULT(web_server_event_queue)
 
         web_server_event_queue() = default;
         virtual ~web_server_event_queue() = default;

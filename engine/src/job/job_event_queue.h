@@ -15,9 +15,9 @@ namespace engine {
     class job_event_queue final : public event_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(job_event_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(job_event_queue)
+        FW_DELETE_ALL_DEFAULT(job_event_queue)
 
-        job_event_queue();
+        job_event_queue(const execution_loop::sptr& loop);
         virtual ~job_event_queue() = default;
 
         event::sptr dequeue() noexcept final;

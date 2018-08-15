@@ -9,13 +9,14 @@
 #define ENGINE_EVENT_QUEUE_H
 
 #include "event/event.h"
+#include "core/execution_loop.h"
 
 namespace engine {
 
     class event_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(event_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(event_queue)
+        FW_DELETE_ALL_DEFAULT(event_queue)
 
         virtual ~event_queue() = default;
 
@@ -23,7 +24,7 @@ namespace engine {
         bool empty() const noexcept { return _queue.empty(); }
 
     protected:
-        event_queue() = default;
+        explicit event_queue(const execution_loop::sptr& loop) noexcept : _loop { loop } {}
 
         void push(const event::sptr& e) noexcept;
         event::sptr pop() noexcept;

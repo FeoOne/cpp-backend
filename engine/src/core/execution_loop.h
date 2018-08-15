@@ -8,8 +8,8 @@
 #ifndef ENGINE_EXECUTION_LOOP_H
 #define ENGINE_EXECUTION_LOOP_H
 
-#include "core/executor.h"
 #include "event/event_queue.h"
+#include "event/event_handler.h"
 
 namespace engine {
 
@@ -25,16 +25,22 @@ namespace engine {
 
         virtual bool stopped() const noexcept = 0;
 
+        virtual void wakeup() noexcept;
+
+        void register_event_handler(event::key_type key, const event_handler::sptr& handler) noexcept;
+
     protected:
         explicit execution_loop(const event_queue::sptr& queue) noexcept : _queue { queue } {}
 
-        event_queue::sptr queue() const noexcept { return _queue; }
+        event_queue::sptr get_queue() const noexcept { return _queue; }
 
-        void add_route(event::key_type key, const executor::sptr& exec) noexcept;
         void handle_event(const event::sptr& e) const noexcept;
 
     private:
+        using event_handler_map = std::unordered_map<event::key_type, event_handler::sptr>;
+
         event_queue::sptr       _queue;
+        event_handler_map       _handlers;
 
     };
 

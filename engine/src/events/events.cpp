@@ -11,15 +11,10 @@ namespace engine {
 
     const std::string_view& event_name_from_key(event::key_type key) noexcept
     {
-#ifndef NDEBUG
         static std::unordered_map<event::key_type, std::string_view> names {
             { context_did_start_event::key(), "context_did_start_event" }
         };
         return names[key];
-#else
-        static std::string_view name { "event" };
-        return name;
-#endif
     }
 
 }

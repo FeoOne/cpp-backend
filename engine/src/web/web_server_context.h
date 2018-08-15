@@ -28,8 +28,8 @@ namespace engine {
     private:
         SoupServer *        _server;
 
-        void _before_run() noexcept final;
-        void _after_run() noexcept final;
+        void before_run() noexcept final;
+        void after_run() noexcept final;
 
         void _create_server() noexcept;
         void _destroy_server() noexcept;

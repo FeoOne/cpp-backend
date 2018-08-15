@@ -26,13 +26,13 @@ namespace engine {
     }
 
     // virtual
-    void system_context::_before_run() noexcept
+    void system_context::before_run() noexcept
     {
 
     }
 
     // virtual
-    void system_context::_after_run() noexcept
+    void system_context::after_run() noexcept
     {
 
     }

@@ -99,17 +99,17 @@ namespace engine {
                 _should_restart = false;
             }
 
-            _before_run();
+            before_run();
             _notify_about_start();
             _loop->run();
-            _after_run();
+            after_run();
         } while (_should_restart);
     }
 
     void execution_context::_notify_about_start() noexcept
     {
         auto e = context_did_start_event::make_shared(shared_from_this());
-        recipient()->enqueue(e);
+        get_recipient()->enqueue(e);
     }
 
 }
