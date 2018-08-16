@@ -15,8 +15,10 @@ namespace engine {
     public:
         FW_DECLARE_SMARTPOINTERS(work_context)
         FW_DELETE_ALL_DEFAULT(work_context)
+        FW_CRUCIAL_BASE_DEFINITION()
 
         explicit work_context(work_loop::uptr&& loop) noexcept;
+        virtual ~work_context() = default;
 
         void start() noexcept;
         void stop() noexcept;

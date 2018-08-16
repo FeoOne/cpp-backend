@@ -14,7 +14,9 @@ namespace backend {
 
     class backend_const {
     public:
-        static constexpr std::string_view HTTP_INVOICE_PATH { "/invoice" };
+        static constexpr std::string_view   APP_DESCRIPTION     { "- bitpayments backend server." };
+
+        static constexpr std::string_view   HTTP_INVOICE_PATH   { "/invoice" };
 
     };
 

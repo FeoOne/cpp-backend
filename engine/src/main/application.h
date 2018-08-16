@@ -11,18 +11,26 @@
 #include <framework.h>
 
 #include "main/engine_option_processor.h"
+#include "work/worker_pool.h"
 
 namespace engine {
 
-    class application {
+    class application final {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
 
-        explicit application(int argc, char **argv, const std::string_view& description) noexcept;
+        static int start(int argc, char **argv, const std::string_view& description) noexcept;
 
     private:
         framework::config::uptr         _config;
         engine_option_processor::uptr   _option_processor;
+        worker_pool::uptr               _workers;
+
+        explicit application(int argc, char **argv, const std::string_view& description) noexcept;
+
+        int start() noexcept;
+
+        void create_workers() noexcept;
 
     };
 

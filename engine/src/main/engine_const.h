@@ -20,9 +20,14 @@ namespace engine {
         static constexpr std::string_view   WEB_SERVER_HEADER { "bitpt-httpd" };
         static constexpr std::string_view   WEB_SERVER_DEFAULT_HTTP_ROUTE { "/" };
 
-        static constexpr std::string_view   JOB_CONTEXT_NAME { "job" };
-        static constexpr std::string_view   SYSTEM_CONTEXT_NAME { "system" };
-        static constexpr std::string_view   WEB_SERVER_CONTEXT_NAME { "web-server" };
+        static constexpr std::string_view   WORKER_NAME_JOB { "job" };
+        static constexpr std::string_view   WORKER_NAME_SYSTEM { "system" };
+        static constexpr std::string_view   WORKER_NAME_WEBSERVER { "webserver" };
+
+        static constexpr std::string_view   CONFIG_KEY_WORKERS { "workers" };
+        static constexpr std::string_view   CONFIG_KEY_NAME { "name" };
+
+        static constexpr std::string_view   TASK_QUEUE_WEBSERVER { "com.queue.webserver" };
 
     };
 

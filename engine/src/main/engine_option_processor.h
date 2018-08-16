@@ -22,6 +22,8 @@ namespace engine {
                                          const std::string_view& app_description) noexcept;
         virtual ~engine_option_processor() = default;
 
+        const std::string_view& config_path() const noexcept { return _config_path; }
+
     private:
         std::string_view        _config_path;
 

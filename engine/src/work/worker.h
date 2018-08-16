@@ -26,7 +26,7 @@ namespace engine {
             DETACHED,
         };
 
-        explicit worker(work_context::uptr&& context) noexcept;
+        explicit worker(const framework::config_setting::sptr& config, work_context::uptr&& context) noexcept;
         ~worker();
 
         void start(detach_state state) noexcept;
@@ -37,9 +37,10 @@ namespace engine {
         void join() noexcept;
 
     private:
-        pthread_t               _thread;
-        work_context::uptr      _context;
-        bool                    _should_restart;
+        pthread_t                           _thread;
+        framework::config_setting::sptr     _config;
+        work_context::uptr                  _context;
+        bool                                _should_restart;
 
         void exec_routine() noexcept;
 

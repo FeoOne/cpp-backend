@@ -18,16 +18,16 @@ namespace engine {
     {
         push_group("core", "Core options.", "Options related to core. This is detailed group description.");
 
-        gchar *config_path; // @todo Check memory leak.
+        gchar *path { nullptr }; // @todo Check memory leak.
         add_option(command_line_option_type::STRING,
-                   &config_path,
+                   &path,
                    "config_path",
                    'c',
                    "Path to config.",
                    "PATH",
                    false,
                    false);
-        _config_path = { config_path };
+        _config_path = { path };
     }
 
     // virtual

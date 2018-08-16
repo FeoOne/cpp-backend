@@ -6,6 +6,8 @@
 
 namespace engine {
 
+    FW_CRUCIAL_BASE_DECLARATION(work_context)
+
     work_context::work_context(work_loop::uptr&& loop) noexcept :
             _loop { std::move(loop) }
     {

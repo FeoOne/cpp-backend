@@ -12,8 +12,9 @@ namespace engine {
 
     using namespace framework;
 
-    worker::worker(work_context::uptr&& context) noexcept :
+    worker::worker(const config_setting::sptr& config, work_context::uptr&& context) noexcept :
             _thread { nullptr },
+            _config { config },
             _context { std::move(context) },
             _should_restart { false }
     {

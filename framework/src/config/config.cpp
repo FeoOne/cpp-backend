@@ -23,8 +23,12 @@ namespace framework {
 
     config_setting::sptr config_setting::operator[](const char *key) const noexcept
     {
-        //assert(config_setting_is_group(_setting) == CONFIG_TRUE);
         return config_setting::make_shared(config_setting_get_member(_setting, key));
+    }
+
+    config_setting::sptr config_setting::operator[](const std::string_view& key) const noexcept
+    {
+        return config_setting::make_shared(config_setting_get_member(_setting, key.data()));
     }
 
     bool config_setting::to_bool() const noexcept
@@ -113,19 +117,25 @@ namespace framework {
     {
         destroy();
 
+        lognotice("Loading config from path: '%s'...", filename.data());
+
         config_t config;
         config_init(&config);
         if (config_read_file(&config, filename.data()) == CONFIG_TRUE) {
+            lognotice("Config successfully loaded.");
+
             _config.value(config);
             setting(config.root);
         } else {
-            logcrit("Failed to load log: %s", filename.data());
+            logemerg("Failed to load config.");
         }
     }
 
     void config::destroy() noexcept
     {
         if (_config.is_set()) {
+            lognotice("Destroy currently loaded cofig.");
+
             config_destroy(_config.pointer());
             _config.reset();
         }

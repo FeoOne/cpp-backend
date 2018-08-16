@@ -5,18 +5,11 @@
  * @brief
  */
 
-#include <cstdlib>
+#include <engine.h>
 
-#include "main/application.h"
-
-using namespace backend;
+#include "main/backend_const.h"
 
 int main(int argc, char **argv)
 {
-    application::uptr app = application::make_unique();
-    app->load_config("/Users/Feo/GDrive/FeoSoftware/bitpt/config/backend.cfg");
-    app->prepare();
-    app->run();
-
-    return EXIT_SUCCESS;
+    return engine::application::start(argc, argv, "");
 }

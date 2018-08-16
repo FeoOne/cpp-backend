@@ -8,6 +8,8 @@
 #include <framework.h>
 
 #include "main/application.h"
+#include "main/engine_const.h"
+#include "web/webserver_context.h"
 
 namespace engine {
 
@@ -15,8 +17,47 @@ namespace engine {
 
     application::application(int argc, char **argv, const std::string_view& description) noexcept :
             _config { config::make_unique() },
-            _option_processor { engine_option_processor::make_unique(argc, argv, description) }
+            _option_processor { engine_option_processor::make_unique(argc, argv, description) },
+            _workers {}
     {
+
+    }
+
+    int application::start() noexcept
+    {
+        _option_processor->parse();
+        _config->read(_option_processor->config_path());
+
+        create_workers();
+
+        return EXIT_SUCCESS;
+    }
+
+    void application::create_workers() noexcept
+    {
+        const std::unordered_map<std::string_view, std::function<worker::uptr(const config_setting::sptr&)>> creators {
+            {
+                engine_const::WORKER_NAME_WEBSERVER,
+                [](const config_setting::sptr& config){
+                    return worker::make_unique(config, webserver_context::make_unique());
+                }
+            }
+        };
+
+        auto workers_config = (*_config)[engine_const::CONFIG_KEY_WORKERS];
+        for (size_t i = 0; i < workers_config->size(); ++i) {
+            auto config { (*workers_config)[i] };
+            std::string_view name { (*config)[engine_const::CONFIG_KEY_NAME]->to_string() };
+
+            _workers->push(creators.at(name)(config));
+        }
+    }
+
+    // static
+    int application::start(int argc, char **argv, const std::string_view& description) noexcept
+    {
+        log_manager::setup();
+        return application::make_unique(argc, argv, description)->start();
     }
 
 #if 0

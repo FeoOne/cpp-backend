@@ -32,6 +32,7 @@ namespace framework {
 
         config_setting::sptr operator[](size_t index) const noexcept;
         config_setting::sptr operator[](const char *key) const noexcept;
+        config_setting::sptr operator[](const std::string_view& key) const noexcept;
 
         bool to_bool() const noexcept;
         s32 to_s32() const noexcept;
