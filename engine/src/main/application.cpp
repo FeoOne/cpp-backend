@@ -7,19 +7,15 @@
 
 #include <framework.h>
 
-#include "events/events.h"
-#include "main/engine_const.h"
-#include "job/job_context.h"
-#include "system/system_context.h"
-#include "web/web_server_context.h"
-
 #include "main/application.h"
 
 namespace engine {
 
     using namespace framework;
 
-    application::application(int argc, char **argv)
+    application::application(int argc, char **argv, const std::string_view& description) noexcept :
+            _config { config::make_unique() },
+            _option_processor { engine_option_processor::make_unique(argc, argv, description) }
     {
     }
 

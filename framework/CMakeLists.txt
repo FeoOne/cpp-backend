@@ -16,11 +16,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
-            ${Config_INCLUDE_DIR}
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${Config_INCLUDE_DIR}
+            ${GLib_INCLUDE_DIRS}
         )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
+            ${GLib_LIBRARY}
         )

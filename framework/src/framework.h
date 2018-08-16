@@ -11,9 +11,8 @@
 #include <set>
 #include <list>
 #include <array>
-#include <queue>
+#include <stack>
 #include <deque>
-#include <vector>
 #include <atomic>
 #include <thread>
 #include <cassert>
@@ -33,5 +32,6 @@
 #include "memory/memory.h"
 
 #include "config/config.h"
+#include "config/command_line_option_processor.h"
 
 #endif /* FRAMEWORK_FRAMEWORK_H */

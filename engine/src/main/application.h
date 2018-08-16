@@ -10,8 +10,7 @@
 
 #include <framework.h>
 
-#include "work/worker.h"
-#include "event/event_recipient.h"
+#include "main/engine_option_processor.h"
 
 namespace engine {
 
@@ -19,10 +18,11 @@ namespace engine {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
 
-        application(int argc, char **argv);
+        explicit application(int argc, char **argv, const std::string_view& description) noexcept;
 
     private:
         framework::config::uptr         _config;
+        engine_option_processor::uptr   _option_processor;
 
     };
 
