@@ -12,16 +12,16 @@
 
 namespace engine {
 
-    class execution_service {
+    class work_service {
     public:
-        FW_DECLARE_SMARTPOINTERS(execution_service)
-        FW_DELETE_ALL_DEFAULT(execution_service)
+        FW_DECLARE_SMARTPOINTERS(work_service)
+        FW_DELETE_ALL_DEFAULT(work_service)
         FW_CRUCIAL_BASE_DEFINITION()
 
-        virtual ~execution_service() = default;
+        virtual ~work_service() = default;
 
     protected:
-        explicit execution_service(const event_recipient::sptr& recipient) noexcept;
+        explicit work_service(const event_recipient::sptr& recipient) noexcept;
 
         event_recipient::sptr get_recipient() const noexcept { return _recipient; }
 

@@ -11,9 +11,9 @@
 #include <libsoup/soup.h>
 
 #include "web/go_memory.h"
-#include "core/execution_service.h"
+#include "work/work_service.h"
 
-#define WEB_SERVER_SERVICE_BASE     framework::crucial<execution_service, T>
+#define WEB_SERVER_SERVICE_BASE     framework::crucial<work_service, T>
 
 namespace engine {
 

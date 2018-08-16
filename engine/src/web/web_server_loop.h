@@ -10,11 +10,11 @@
 
 #include <glib/gstdio.h>
 
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 
 namespace engine {
 
-    class web_server_loop final : public execution_loop {
+    class web_server_loop final : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_loop)
         FW_DELETE_ALL_DEFAULT(web_server_loop)

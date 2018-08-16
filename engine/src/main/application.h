@@ -10,11 +10,23 @@
 
 #include <framework.h>
 
-#include "core/execution_context.h"
+#include "work/worker.h"
 #include "event/event_recipient.h"
 
 namespace engine {
 
+    class application {
+    public:
+        FW_DECLARE_SMARTPOINTERS(application)
+
+        application(int argc, char **argv);
+
+    private:
+        framework::config::uptr         _config;
+
+    };
+
+#if 0
     class application {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
@@ -31,12 +43,12 @@ namespace engine {
         virtual void _before_run() noexcept = 0;
         virtual void _after_run() noexcept = 0;
 
-        void _add_context(const std::string_view &name, const execution_context::sptr &context) noexcept;
+        void _add_context(const std::string_view &name, const worker::sptr &context) noexcept;
         void _remove_contexts(const std::string_view &name) noexcept;
-        std::vector<execution_context::sptr> _get_contexts(const std::string_view &name) noexcept;
+        std::vector<worker::sptr> _get_contexts(const std::string_view &name) noexcept;
 
     private:
-        using context_map = std::unordered_map<std::string_view, std::vector<execution_context::sptr>>;
+        using context_map = std::unordered_map<std::string_view, std::vector<worker::sptr>>;
         using event_queue_map = std::unordered_map<std::string_view, event_queue::sptr>;
 
         framework::config::sptr                 _config;
@@ -48,11 +60,12 @@ namespace engine {
         void _create_event_queues() noexcept;
         void _setup_routes() noexcept;
 
-        execution_context::sptr _create_job_context(const framework::config_setting::sptr& config) noexcept;
-        execution_context::sptr _create_system_context(const framework::config_setting::sptr& config) noexcept;
-        execution_context::sptr _create_web_server_context(const framework::config_setting::sptr& config) noexcept;
+        worker::sptr _create_job_context(const framework::config_setting::sptr& config) noexcept;
+        worker::sptr _create_system_context(const framework::config_setting::sptr& config) noexcept;
+        worker::sptr _create_web_server_context(const framework::config_setting::sptr& config) noexcept;
 
     };
+#endif
 
 }
 

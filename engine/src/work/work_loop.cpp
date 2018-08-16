@@ -7,11 +7,18 @@
 
 #include "events/events.h"
 
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 
 namespace engine {
 
-    void execution_loop::handle_event(const event::sptr& eve) const noexcept
+    // virtual
+    void work_loop::on_task_added() noexcept
+    {
+
+    }
+
+#if 0
+    void work_loop::handle_event(const event::sptr& eve) const noexcept
     {
         auto it = _handlers.find(eve->get_key());
         if (it != _handlers.end()) {
@@ -19,7 +26,7 @@ namespace engine {
         }
     }
 
-    void execution_loop::register_event_handler(event::key_type key, const event_handler::sptr& handler) noexcept
+    void work_loop::register_event_handler(event::key_type key, const event_handler::sptr& handler) noexcept
     {
         auto it = _handlers.find(key);
         if (it == _handlers.end()) {
@@ -28,5 +35,6 @@ namespace engine {
             logerror("Handler for key %lu '%s' already exists.", key, event_name_from_key(key).data());
         }
     }
+#endif
 
 }

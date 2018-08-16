@@ -16,7 +16,7 @@ namespace engine {
     system_context::system_context(const event_queue::sptr& queue,
                                    const event_recipient::sptr& recipient,
                                    const config_setting::sptr& config) noexcept :
-            execution_context(system_loop::make_unique(queue), queue, recipient, config)
+            worker(system_loop::make_unique(queue), queue, recipient, config)
     {
     }
 

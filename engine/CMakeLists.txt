@@ -5,11 +5,11 @@ project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 find_package(config REQUIRED)
 find_package(soup REQUIRED)
 find_package(uv REQUIRED)
-find_package(flatbuffers REQUIRED)
+#find_package(flatbuffers REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} src/work/work_context.cpp src/work/work_context.h)
 
 enable_cxx17(${PROJECT_NAME})
 setup_compile_options(${PROJECT_NAME})

@@ -17,7 +17,7 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(system_event_queue)
         FW_DELETE_ALL_DEFAULT(system_event_queue)
 
-        explicit system_event_queue(const execution_loop::sptr& loop) noexcept;
+        explicit system_event_queue(const work_loop::sptr& loop) noexcept;
         virtual ~system_event_queue() = default;
 
         event::sptr dequeue() noexcept final;

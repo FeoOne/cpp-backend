@@ -16,7 +16,7 @@ namespace engine {
     job_context::job_context(const event_queue::sptr& queue,
                              const event_recipient::sptr& recipient,
                              const config_setting::sptr& config) noexcept :
-            execution_context(job_loop::make_unique(queue), queue, recipient, config)
+            worker(job_loop::make_unique(queue), queue, recipient, config)
     {
     }
 

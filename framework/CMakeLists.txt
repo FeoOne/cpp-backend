@@ -3,6 +3,7 @@ set(PROJECT_NAME framework)
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
 find_package(config REQUIRED)
+find_package(glib REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 

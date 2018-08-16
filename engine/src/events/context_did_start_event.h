@@ -9,7 +9,7 @@
 #define ENGINE_CONTEXT_STARTED_EVENT_H
 
 #include "event/event.h"
-#include "core/execution_context.h"
+#include "work/worker.h"
 
 namespace engine {
 
@@ -18,13 +18,13 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(context_did_start_event)
         FW_DELETE_ALL_DEFAULT(context_did_start_event)
 
-        explicit context_did_start_event(const execution_context::wptr& context) noexcept : _context { context } {}
+        explicit context_did_start_event(const worker::wptr& context) noexcept : _context { context } {}
         virtual ~context_did_start_event() = default;
 
-        execution_context::wptr get_context() noexcept { return _context; }
+        worker::wptr get_context() noexcept { return _context; }
 
     private:
-        execution_context::wptr     _context;
+        worker::wptr     _context;
 
     };
 

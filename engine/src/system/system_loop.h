@@ -8,11 +8,11 @@
 #ifndef ENGINE_SYSTEM_LOOP_H
 #define ENGINE_SYSTEM_LOOP_H
 
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 
 namespace engine {
 
-    class system_loop : public execution_loop {
+    class system_loop : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(system_loop)
         FW_DELETE_ALL_DEFAULT(system_loop)

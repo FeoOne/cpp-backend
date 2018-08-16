@@ -19,6 +19,11 @@ namespace engine {
 
     using namespace framework;
 
+    application::application(int argc, char **argv)
+    {
+    }
+
+#if 0
     application::application() :
             _config { config::make_shared() },
             _contexts {},
@@ -66,7 +71,7 @@ namespace engine {
     }
 
     void application::_add_context(const std::string_view &name,
-                                   const execution_context::sptr &context) noexcept
+                                   const worker::sptr &context) noexcept
     {
         _contexts[name].push_back(context);
     }
@@ -76,7 +81,7 @@ namespace engine {
         _contexts.erase(name);
     }
 
-    std::vector<execution_context::sptr> application::_get_contexts(const std::string_view &name) noexcept
+    std::vector<worker::sptr> application::_get_contexts(const std::string_view &name) noexcept
     {
         return _contexts[name];
     }
@@ -86,7 +91,7 @@ namespace engine {
 #define ADD_ENTRY(n, m)         { engine_const::n, std::bind(&application::m, this, std::placeholders::_1) }
 
         std::unordered_map<std::string_view,
-                           std::function<execution_context::sptr(const config_setting::sptr&)>> functors {
+                           std::function<worker::sptr(const config_setting::sptr&)>> functors {
             ADD_ENTRY(JOB_CONTEXT_NAME, _create_job_context),
             ADD_ENTRY(SYSTEM_CONTEXT_NAME, _create_system_context),
             ADD_ENTRY(WEB_SERVER_CONTEXT_NAME, _create_web_server_context)
@@ -127,19 +132,19 @@ namespace engine {
         }
     }
 
-    execution_context::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
+    worker::sptr application::_create_job_context(const config_setting::sptr& config) noexcept
     {
         return job_context::make_shared(_queues[engine_const::JOB_CONTEXT_NAME], _recipient, config);
     }
 
-    execution_context::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
+    worker::sptr application::_create_system_context(const config_setting::sptr& config) noexcept
     {
         return system_context::make_shared(_queues[engine_const::SYSTEM_CONTEXT_NAME], _recipient, config);
     }
 
-    execution_context::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
+    worker::sptr application::_create_web_server_context(const config_setting::sptr& config) noexcept
     {
         return web_server_context::make_shared(_queues[engine_const::WEB_SERVER_CONTEXT_NAME], _recipient, config);
     }
-
+#endif
 }

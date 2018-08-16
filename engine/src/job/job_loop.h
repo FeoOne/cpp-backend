@@ -8,12 +8,12 @@
 #ifndef ENGINE_JOB_LOOP_H
 #define ENGINE_JOB_LOOP_H
 
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 #include "event/event_queue.h"
 
 namespace engine {
 
-    class job_loop : public execution_loop {
+    class job_loop : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(job_loop)
         FW_DELETE_ALL_DEFAULT(job_loop)

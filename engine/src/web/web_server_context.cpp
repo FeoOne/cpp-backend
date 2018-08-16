@@ -22,7 +22,7 @@ namespace engine {
     web_server_context::web_server_context(const event_queue::sptr &queue,
                                            const event_recipient::sptr &recipient,
                                            const config_setting::sptr &config) noexcept :
-            execution_context(web_server_loop::make_unique(queue), queue, recipient, config),
+            worker(web_server_loop::make_unique(queue), queue, recipient, config),
             _server { nullptr }
     {
     }

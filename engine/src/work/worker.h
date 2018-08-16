@@ -8,24 +8,56 @@
 #ifndef ENGINE_EXECUTION_CONTEXT_H
 #define ENGINE_EXECUTION_CONTEXT_H
 
+#include <pthread/pthread.h>
+
 #include <framework.h>
 
-#include "event/event_queue.h"
-#include "event/event_recipient.h"
-#include "core/execution_loop.h"
-#include "core/execution_service.h"
+#include "work/work_context.h"
 
 namespace engine {
 
-    class execution_context : public std::enable_shared_from_this<execution_context> {
+    class worker final {
     public:
-        FW_DECLARE_SMARTPOINTERS(execution_context)
-        FW_DELETE_ALL_DEFAULT(execution_context)
+        FW_DECLARE_SMARTPOINTERS(worker)
+        FW_DELETE_ALL_DEFAULT(worker)
 
-        virtual ~execution_context() = default;
+        enum class detach_state {
+            JOINABLE,
+            DETACHED,
+        };
+
+        explicit worker(work_context::uptr&& context) noexcept;
+        ~worker();
+
+        void start(detach_state state) noexcept;
+        void stop() noexcept;
+
+        void restart() noexcept;
+
+        void join() noexcept;
+
+    private:
+        pthread_t               _thread;
+        work_context::uptr      _context;
+        bool                    _should_restart;
+
+        void exec_routine() noexcept;
+
+        static void *exec_routine(void *ptr) noexcept;
+
+    };
+
+#if 0
+    class worker : public std::enable_shared_from_this<worker> {
+    public:
+        FW_DECLARE_SMARTPOINTERS(worker)
+        FW_DELETE_ALL_DEFAULT(worker)
+
+        virtual ~worker() = default;
 
         void start() noexcept;
         void stop() noexcept;
+
         void restart() noexcept;
 
         void join() noexcept;
@@ -38,7 +70,7 @@ namespace engine {
         }
 
     protected:
-        explicit execution_context(execution_loop::uptr&& loop,
+        explicit worker(work_loop::uptr&& loop,
                                    const event_queue::sptr& queue,
                                    const event_recipient::sptr& recipient,
                                    const framework::config_setting::sptr& config) noexcept;
@@ -47,18 +79,18 @@ namespace engine {
         event_queue::sptr get_queue() noexcept { return _queue; }
         event_recipient::sptr get_recipient() noexcept { return _recipient; }
 
-        void add_service(const execution_service::sptr &service) noexcept;
-        void remove_service(execution_service::key_type key) noexcept;
-        execution_service::sptr get_service(execution_service::key_type key) noexcept;
+        void add_service(const work_service::sptr &service) noexcept;
+        void remove_service(work_service::key_type key) noexcept;
+        work_service::sptr get_service(work_service::key_type key) noexcept;
 
         virtual void before_run() noexcept = 0;
         virtual void after_run() noexcept = 0;
 
     private:
-        using service_map = std::unordered_map<execution_service::key_type, execution_service::sptr>;
+        using service_map = std::unordered_map<work_service::key_type, work_service::sptr>;
 
         std::thread                         _thread;
-        execution_loop::uptr                _loop;
+        work_loop::uptr                _loop;
         bool                                _should_restart;
         event_queue::sptr                   _queue;
         event_recipient::sptr               _recipient;
@@ -71,6 +103,7 @@ namespace engine {
         void _notify_about_start() noexcept;
 
     };
+#endif
 
 }
 

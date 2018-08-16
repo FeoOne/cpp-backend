@@ -8,12 +8,12 @@
 #ifndef ENGINE_JOB_CONTEXT_H
 #define ENGINE_JOB_CONTEXT_H
 
-#include "core/execution_context.h"
+#include "work/worker.h"
 #include "job/job_event_queue.h"
 
 namespace engine {
 
-    class job_context : public execution_context {
+    class job_context : public worker {
     public:
         FW_DECLARE_SMARTPOINTERS(job_context)
         FW_DELETE_ALL_DEFAULT(job_context)

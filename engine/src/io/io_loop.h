@@ -10,11 +10,11 @@
 
 #include <uv.h>
 
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 
 namespace engine {
 
-    class io_loop : public execution_loop {
+    class io_loop : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(io_loop)
         FW_DELETE_ALL_DEFAULT(io_loop)

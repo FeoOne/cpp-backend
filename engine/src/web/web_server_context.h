@@ -10,12 +10,12 @@
 
 #include <libsoup/soup.h>
 
-#include "core/execution_context.h"
+#include "work/worker.h"
 #include "web/web_server_event_queue.h"
 
 namespace engine {
 
-    class web_server_context final : public execution_context {
+    class web_server_context final : public worker {
     public:
         FW_DECLARE_SMARTPOINTERS(web_server_context)
         FW_DELETE_ALL_DEFAULT(web_server_context)

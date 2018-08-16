@@ -12,7 +12,7 @@
 namespace engine {
 
     web_server_loop::web_server_loop(const event_queue::sptr& queue) noexcept :
-            execution_loop(queue),
+            work_loop(queue),
             _loop { g_main_loop_new(nullptr, FALSE) },
             _should_work { false }
     {

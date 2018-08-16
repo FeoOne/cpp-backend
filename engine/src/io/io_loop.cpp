@@ -12,7 +12,7 @@
 namespace engine {
 
     io_loop::io_loop(const event_queue::sptr& queue) noexcept :
-            execution_loop(queue),
+            work_loop(queue),
             _loop { std::make_unique<uv_loop_t>() },
             _async_handler { std::make_unique<uv_async_t>() }
     {

@@ -8,9 +8,13 @@
 #ifndef FRAMEWORK_LOG_MANAGER_H
 #define FRAMEWORK_LOG_MANAGER_H
 
+#include "main/tools.h"
 #include "memory/memory.h"
 
 #include "logger/logger.h"
+
+#define logassert(cond) \
+    do { if (!(cond)) { logdebug("Assertion failed '" FW_STR(cond) "'."); abort(); } } while (false)
 
 #define logdebug(format, ...)           framework::log_manager::logger()->log(framework::logger::level_t::DEBUG,   \
                                                                               __FILE__,                            \

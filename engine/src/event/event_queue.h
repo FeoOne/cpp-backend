@@ -9,7 +9,7 @@
 #define ENGINE_EVENT_QUEUE_H
 
 #include "event/event.h"
-#include "core/execution_loop.h"
+#include "work/work_loop.h"
 
 namespace engine {
 
@@ -24,7 +24,7 @@ namespace engine {
         bool empty() const noexcept { return _queue.empty(); }
 
     protected:
-        explicit event_queue(const execution_loop::sptr& loop) noexcept : _loop { loop } {}
+        explicit event_queue(const work_loop::sptr& loop) noexcept : _loop { loop } {}
 
         void push(const event::sptr& e) noexcept;
         event::sptr pop() noexcept;
