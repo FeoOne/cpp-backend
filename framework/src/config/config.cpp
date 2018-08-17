@@ -61,6 +61,12 @@ namespace framework {
         return config_setting_get_string(_setting);
     }
 
+    std::string_view config_setting::to_string_view() const noexcept
+    {
+        assert(config_setting_type(_setting) == CONFIG_TYPE_STRING);
+        return { config_setting_get_string(_setting) };
+    }
+
     bool config_setting::lookup_bool(const char *key, bool *value) const noexcept
     {
         int i;

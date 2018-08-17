@@ -11,12 +11,6 @@
 
 namespace engine {
 
-    // virtual
-    void work_loop::on_task_added() noexcept
-    {
-
-    }
-
 #if 0
     void work_loop::handle_event(const event::sptr& eve) const noexcept
     {

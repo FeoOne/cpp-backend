@@ -15,9 +15,10 @@ namespace engine {
     class engine_const {
     public:
         static constexpr size_t             TASK_TYPE_MAX_COUNT { 32 };
+        static constexpr size_t             WORK_CONTEXT_TYPE_MAX_COUNT { 8 };
 
         static constexpr size_t             WEB_SERVER_PORT { 8888 };
-        static constexpr std::string_view   WEB_SERVER_HEADER { "bitpt-httpd" };
+        static constexpr std::string_view   WEB_SERVER_HEADER { " bitpayments-httpd" };
         static constexpr std::string_view   WEB_SERVER_DEFAULT_HTTP_ROUTE { "/" };
 
         static constexpr std::string_view   WORKER_NAME_JOB { "job" };
@@ -27,7 +28,7 @@ namespace engine {
         static constexpr std::string_view   CONFIG_KEY_WORKERS { "workers" };
         static constexpr std::string_view   CONFIG_KEY_NAME { "name" };
 
-        static constexpr std::string_view   TASK_QUEUE_WEBSERVER { "com.queue.webserver" };
+        static constexpr std::string_view   DOMAIN_TASK_QUEUE_WEBSERVER { "com.queue.webserver" };
 
     };
 

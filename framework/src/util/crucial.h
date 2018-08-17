@@ -5,8 +5,8 @@
  * @brief
  */
 
-#ifndef FRAMEWORK_TYPED_H
-#define FRAMEWORK_TYPED_H
+#ifndef FRAMEWORK_CRUCIAL_H
+#define FRAMEWORK_CRUCIAL_H
 
 #include <utility>
 
@@ -55,4 +55,4 @@ namespace framework {
 
 }
 
-#endif /* FRAMEWORK_TYPED_H */
+#endif /* FRAMEWORK_CRUCIAL_H */

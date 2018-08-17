@@ -8,17 +8,18 @@
 #ifndef ENGINE_EXECUTION_LOOP_H
 #define ENGINE_EXECUTION_LOOP_H
 
-#include "task/task_queue_delegate.h"
+#include <framework.h>
 
 namespace engine {
 
-    class work_loop : public task_queue_delegate {
+    class work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(work_loop)
 
-        void on_task_added() noexcept final;
+        virtual ~work_loop() = default;
 
-    private:
+        virtual void start() noexcept = 0;
+        virtual void stop() noexcept = 0;
 
     };
 

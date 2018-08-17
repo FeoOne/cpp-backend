@@ -17,8 +17,8 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(webserver_context)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_context)
 
-        webserver_context();
-        //explicit webserver_context() noexcept;
+        explicit webserver_context(const framework::config_setting::sptr& config,
+                                   const task_router::sptr& router) noexcept;
         virtual ~webserver_context() = default;
 
     private:

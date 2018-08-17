@@ -15,7 +15,7 @@ namespace engine {
 
         virtual ~task_queue_delegate() = default;
 
-        virtual void on_task_added() noexcept = 0;
+        virtual void on_new_task() noexcept = 0;
 
     protected:
         task_queue_delegate() = default;

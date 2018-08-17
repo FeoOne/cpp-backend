@@ -5,15 +5,16 @@
  * @brief
  */
 
-#include "webserver_context.h"
+#include "web/webserver_loop.h"
+
+#include "web/webserver_context.h"
 
 namespace engine {
 
-    //webserver_context::webserver_context(work_loop::uptr&& loop) noexcept :
-    webserver_context::webserver_context() :
-            crucial(nullptr)
+    webserver_context::webserver_context(const framework::config_setting::sptr& config,
+                                         const task_router::sptr& router) noexcept :
+            crucial(config, router, webserver_loop::make_unique())
     {
-
     }
 
 }

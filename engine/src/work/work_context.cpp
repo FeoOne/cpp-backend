@@ -8,7 +8,11 @@ namespace engine {
 
     FW_CRUCIAL_BASE_DECLARATION(work_context)
 
-    work_context::work_context(work_loop::uptr&& loop) noexcept :
+    work_context::work_context(const framework::config_setting::sptr& config,
+                               const task_router::sptr& router,
+                               work_loop::uptr&& loop) noexcept :
+            _config { config },
+            _router { router },
             _loop { std::move(loop) }
     {
     }

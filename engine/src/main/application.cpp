@@ -6,9 +6,11 @@
  */
 
 #include <framework.h>
+#include <web/webserver_queue.h>
 
 #include "main/application.h"
 #include "main/engine_const.h"
+#include "web/webserver_queue.h"
 #include "web/webserver_context.h"
 
 namespace engine {
@@ -16,11 +18,12 @@ namespace engine {
     using namespace framework;
 
     application::application(int argc, char **argv, const std::string_view& description) noexcept :
-            _config { config::make_unique() },
             _option_processor { engine_option_processor::make_unique(argc, argv, description) },
-            _workers {}
+            _config { config::make_unique() },
+            _workers {},
+            _router { task_router::make_shared() },
+            _queues {}
     {
-
     }
 
     int application::start() noexcept
@@ -28,18 +31,30 @@ namespace engine {
         _option_processor->parse();
         _config->read(_option_processor->config_path());
 
+        create_queues();
         create_workers();
+
+
 
         return EXIT_SUCCESS;
     }
 
+    void application::create_queues() noexcept
+    {
+        _router->add_queue(webserver_context::key(), webserver_queue::make_shared());
+
+        // @todo Register task routes
+    }
+
     void application::create_workers() noexcept
     {
-        const std::unordered_map<std::string_view, std::function<worker::uptr(const config_setting::sptr&)>> creators {
+        const std::unordered_map<std::string_view,
+                std::function<work_context::sptr(const config_setting::sptr&,
+                                                 const task_router::sptr&)>> create_context {
             {
                 engine_const::WORKER_NAME_WEBSERVER,
-                [](const config_setting::sptr& config){
-                    return worker::make_unique(config, webserver_context::make_unique());
+                [](const config_setting::sptr& config, const task_router::sptr& router) {
+                    return webserver_context::make_shared(config, router);
                 }
             }
         };
@@ -47,9 +62,10 @@ namespace engine {
         auto workers_config = (*_config)[engine_const::CONFIG_KEY_WORKERS];
         for (size_t i = 0; i < workers_config->size(); ++i) {
             auto config { (*workers_config)[i] };
-            std::string_view name { (*config)[engine_const::CONFIG_KEY_NAME]->to_string() };
+            auto name { (*config)[engine_const::CONFIG_KEY_NAME]->to_string_view() };
+            auto context { create_context.at(name)(config, _router) };
 
-            _workers->push(creators.at(name)(config));
+            _workers->push(worker::make_unique(context));
         }
     }
 

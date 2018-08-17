@@ -9,6 +9,7 @@
 #define ENGINE_WORKER_POOL_H
 
 #include "work/worker.h"
+#include "main/engine_const.h"
 
 namespace engine {
 
@@ -23,7 +24,7 @@ namespace engine {
         void push(worker::uptr&& worker) noexcept;
 
     private:
-        std::vector<worker::uptr>       _workers;
+        std::array<std::vector<worker::uptr>, engine_const::WORK_CONTEXT_TYPE_MAX_COUNT>    _workers;
 
     };
 

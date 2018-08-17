@@ -15,10 +15,10 @@
 #include <deque>
 #include <atomic>
 #include <thread>
+#include <limits>
 #include <cassert>
 #include <functional>
 #include <condition_variable>
-#include <experimental/optional>
 
 #include "util/crucial.h"
 #include "util/optional.h"

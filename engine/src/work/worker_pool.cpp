@@ -11,7 +11,7 @@ namespace engine {
 
     void worker_pool::push(worker::uptr&& worker) noexcept
     {
-        _workers.push_back(std::move(worker));
+        _workers[worker->_context->get_key()].push_back(std::move(worker));
     }
 
 }

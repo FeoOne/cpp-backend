@@ -12,6 +12,7 @@
 
 #include "main/engine_option_processor.h"
 #include "work/worker_pool.h"
+#include "task/task_router.h"
 
 namespace engine {
 
@@ -19,17 +20,28 @@ namespace engine {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
 
+        /**
+         * Entry point.
+         * @param argc Command line argument count.
+         * @param argv Command line arguments vector.
+         * @param description Application description for help output.
+         * @return Run status.
+         */
         static int start(int argc, char **argv, const std::string_view& description) noexcept;
 
     private:
-        framework::config::uptr         _config;
         engine_option_processor::uptr   _option_processor;
+        framework::config::uptr         _config;
         worker_pool::uptr               _workers;
+        task_router::sptr               _router;
+
+        std::unordered_map<work_context::key_type, task_queue::sptr>    _queues;
 
         explicit application(int argc, char **argv, const std::string_view& description) noexcept;
 
         int start() noexcept;
 
+        void create_queues() noexcept;
         void create_workers() noexcept;
 
     };

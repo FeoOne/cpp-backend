@@ -15,10 +15,14 @@ namespace engine {
     class task_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(task_queue)
+        FW_DELETE_ALL_DEFAULT(task_queue)
 
-        explicit task_queue(const std::string_view& domain) noexcept;
+        virtual ~task_queue() = default;
 
         void set_delegate(const task_queue_delegate::sptr& delegate) noexcept { _delegate = delegate; }
+
+    protected:
+        explicit task_queue(const std::string_view& domain) noexcept;
 
         void push(const task::sptr& task) noexcept;
         task::sptr pop() noexcept;
@@ -29,7 +33,6 @@ namespace engine {
         task_queue_delegate::wptr       _delegate;
 
         std::queue<task::sptr>          _queue;
-        dispatch_queue_t                _dispatch_queue;
 
     };
 
