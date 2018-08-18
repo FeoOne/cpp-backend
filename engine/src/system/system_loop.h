@@ -17,13 +17,14 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(system_loop)
         FW_DELETE_ALL_DEFAULT(system_loop)
 
-        explicit system_loop(const task_queue::sptr& queue) noexcept;
+        explicit system_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
         virtual ~system_loop();
 
         void start() noexcept final;
         void stop() noexcept final;
 
     private:
+        std::atomic_bool        _should_work;
 
     };
 

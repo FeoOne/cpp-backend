@@ -8,10 +8,11 @@
 #include "work/work_loop.h"
 #include "work/work_service.h"
 #include "task/task_router.h"
+#include "task/task_handler.h"
 
 namespace engine {
 
-    class work_context : public work_service_provider {
+    class work_context : public work_service_provider, public task_handler {
     public:
         FW_DECLARE_SMARTPOINTERS(work_context)
         FW_DELETE_ALL_DEFAULT(work_context)
@@ -49,6 +50,8 @@ namespace engine {
         work_loop::sptr                                         _loop;
         std::array<work_service::sptr,
                 engine_const::WORK_SERVICE_TYPE_MAX_COUNT>      _services;
+
+        void handle_task(const task::sptr& task) noexcept final {}
 
     };
 

@@ -18,7 +18,9 @@ namespace engine {
 
     webserver_context::webserver_context(const config_setting::sptr& config,
                                          const task_router::sptr& router) noexcept :
-            crucial(config, router, webserver_loop::make_shared(router->get_queue<webserver_context>()))
+            crucial(config,
+                    router,
+                    webserver_loop::make_shared(router->get_queue<webserver_context>(), this))
     {
         add_service(webserver_service::make_shared(get_config(), get_router(), this));
         add_service(http_service::make_shared(get_config(), get_router(), this));

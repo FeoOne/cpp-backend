@@ -8,7 +8,6 @@ namespace engine {
 
     task_queue::task_queue(const std::string_view& domain) noexcept :
             _domain { domain },
-            _delegate {},
             _queue {}
     {
     }

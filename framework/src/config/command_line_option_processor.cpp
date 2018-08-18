@@ -100,8 +100,6 @@ namespace framework {
     {
         GError *error { nullptr };
 
-        lognotice("Parsing command line options...");
-
         while (!_groups.empty()) {
             auto group = _groups.front();
             _groups.pop();

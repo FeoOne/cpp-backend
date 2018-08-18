@@ -17,6 +17,8 @@
 
 #define FW_FORMAT_BOOL(b)   (b ? "true" : "false")
 
+#define FW_ULOCK(n, m)      std::unique_lock<decltype(m)> n(m)
+
 #define FW_UNUSED           [[maybe_unused]]
 
 #endif /* FRAMEWORK_TOOLS_H */

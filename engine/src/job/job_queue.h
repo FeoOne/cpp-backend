@@ -27,7 +27,7 @@ namespace engine {
 
     private:
         std::condition_variable     _cv;
-        std::mutex                  _mutex;
+        mutable std::mutex          _mutex;
 
     };
 

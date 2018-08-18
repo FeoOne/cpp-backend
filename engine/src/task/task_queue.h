@@ -6,7 +6,6 @@
 #define ENGINE_TASK_QUEUE_H
 
 #include "task/task.h"
-#include "task/task_queue_delegate.h"
 #include "main/engine_const.h"
 
 namespace engine {
@@ -17,8 +16,6 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT(task_queue)
 
         virtual ~task_queue() = default;
-
-        void set_delegate(const task_queue_delegate::sptr& delegate) noexcept { _delegate = delegate; }
 
         virtual void enqueue(const task::sptr& task) noexcept = 0;
         virtual task::sptr dequeue() noexcept = 0;
@@ -35,7 +32,6 @@ namespace engine {
 
     private:
         std::string_view                _domain;
-        task_queue_delegate::wptr       _delegate;
         std::queue<task::sptr>          _queue;
 
     };

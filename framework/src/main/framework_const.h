@@ -21,6 +21,12 @@ namespace framework {
 
         static constexpr std::string_view   SOURCE_DIR  { FW_SOURCE_DIR };
 
+        static constexpr size_t             VERSION_MAJOR { FW_VERSION_MAJOR };
+        static constexpr size_t             VERSION_MINOR { FW_VERSION_MINOR };
+        static constexpr size_t             VERSION_MAINTENANCE { FW_VERSION_MAINTENANCE };
+        static constexpr size_t             VERSION_BUILD { FW_VERSION_BUILD };
+        static constexpr std::string_view   VERSION_FULL { FW_VERSION_FULL };
+
     };
 
 }

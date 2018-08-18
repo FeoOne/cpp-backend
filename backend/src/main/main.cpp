@@ -11,5 +11,5 @@
 
 int main(int argc, char **argv)
 {
-    return engine::application::start(argc, argv, "");
+    return engine::application::start(argc, argv, backend::backend_const::APP_DESCRIPTION);
 }

@@ -11,8 +11,9 @@ namespace engine {
 
     using namespace std::chrono_literals;
 
-    system_loop::system_loop(const task_queue::sptr& queue) noexcept :
-            work_loop(queue)
+    system_loop::system_loop(const task_queue::sptr& queue, task_handler *handler) noexcept :
+            work_loop(queue, handler),
+            _should_work { false }
     {
     }
 
@@ -24,15 +25,20 @@ namespace engine {
     // virtual
     void system_loop::start() noexcept
     {
-        while (true) {
-            std::this_thread::sleep_for(1s);
+        _should_work.store(true, std::memory_order_relaxed);
+        while (_should_work.load(std::memory_order_relaxed)) {
+            auto task = get_queue()->dequeue();
+            // @todo Process task.
         }
     }
 
     // virtual
     void system_loop::stop() noexcept
     {
-
+        bool expected = true;
+        do {
+            expected = !_should_work.compare_exchange_weak(expected, false);
+        } while (expected);
     }
 
 }

@@ -19,13 +19,21 @@ namespace engine {
     // virtual
     void job_queue::enqueue(const task::sptr& task) noexcept
     {
-
-        push(task);
+        {
+            FW_ULOCK(lock, _mutex);
+            push(task);
+        }
+        _cv.notify_one();
     }
 
     // virtual
     task::sptr job_queue::dequeue() noexcept
     {
+        FW_ULOCK(lock, _mutex);
+
+        _cv.wait(lock, [this]() {
+            return !is_empty();
+        });
 
         return pop();
     }
@@ -33,7 +41,7 @@ namespace engine {
     // virtual
     bool job_queue::empty() const noexcept
     {
-
+        FW_ULOCK(lock, _mutex);
         return is_empty();
     }
 

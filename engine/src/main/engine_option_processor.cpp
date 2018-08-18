@@ -21,7 +21,7 @@ namespace engine {
 
         add_option(command_line_option_type::STRING,
                    &_config_path,
-                   "config_path",
+                   "config-path",
                    'c',
                    "Path to config.",
                    "PATH",

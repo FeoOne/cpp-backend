@@ -25,6 +25,10 @@ namespace engine {
 
         bool empty() const noexcept final;
 
+    private:
+        std::condition_variable     _cv;
+        mutable std::mutex          _mutex;
+
     };
 
 }

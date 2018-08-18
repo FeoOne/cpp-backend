@@ -15,7 +15,9 @@ namespace engine {
 
     system_context::system_context(const config_setting::sptr& config,
                                    const task_router::sptr& router) noexcept :
-            crucial(config, router, system_loop::make_shared(router->get_queue<system_context>()))
+            crucial(config,
+                    router,
+                    system_loop::make_shared(router->get_queue<system_context>(), this))
     {
     }
 
