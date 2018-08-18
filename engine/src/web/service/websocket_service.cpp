@@ -1,16 +1,29 @@
 /**
- * @file websocket_handle_service.cpp
+ * @file websocket_service.cpp
  * @author Feo
- * @date 11/08/2018
+ * @date 18/08/2018
  * @brief
  */
 
-#include "web/service/websocket_handle_service.h"
+#include "web/service/webserver_service.h"
+
+#include "web/service/websocket_service.h"
 
 namespace engine {
 
-    websocket_handle_service::websocket_handle_service(const event_recipient::sptr& recipient, SoupServer *server) noexcept :
-            web_server_service(recipient, server)
+    websocket_service::websocket_service(const framework::config_setting::sptr& config,
+                                         const task_router::sptr& router,
+                                         const work_service_provider *service_provider) noexcept :
+            crucial(config, router, service_provider)
+    {
+    }
+
+    // virtual
+    websocket_service::~websocket_service()
+    {
+    }
+
+    void websocket_service::setup() noexcept
     {
 //        soup_server_add_websocket_handler(_server,
 //                                          "/websocket",
@@ -21,34 +34,30 @@ namespace engine {
 //                                          nullptr);
     }
 
-    // virtual
-    websocket_handle_service::~websocket_handle_service()
+    void websocket_service::reset() noexcept
     {
 //        soup_server_remove_handler(_server, "/websocket");
     }
 
-    void websocket_handle_service::_handler(SoupServer *server,
-                                            SoupWebsocketConnection *connection,
-                                            const char *path,
-                                            SoupClientContext *client) noexcept
+    void websocket_service::handler(SoupServer *server,
+                                    SoupWebsocketConnection *connection,
+                                    const char *path,
+                                    SoupClientContext *client) noexcept
     {
         // @todo Compare server pointers for extra error check.
         logdebug("WebSocket handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
-
-
     }
 
-    //static
-    void websocket_handle_service::_handler(SoupServer *server,
+    // static
+    void websocket_service::handler_routine(SoupServer *server,
                                             SoupWebsocketConnection *connection,
                                             const char *path,
                                             SoupClientContext *client,
                                             gpointer context) noexcept
     {
-        auto self = static_cast<websocket_handle_service *>(context);
-        self->_handler(server, connection, path, client);
+        static_cast<websocket_service *>(context)->handler(server, connection, path, client);
     }
 
 }

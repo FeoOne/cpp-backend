@@ -37,6 +37,8 @@ namespace engine {
         void join() noexcept;
 
     private:
+        friend class worker_pool;
+
         pthread_t                           _thread;
         framework::config_setting::sptr     _config;
         work_context::uptr                  _context;

@@ -9,14 +9,13 @@
 
 #include "job/job_context.h"
 
+using namespace framework;
+
 namespace engine {
 
-    using namespace framework;
-
-    job_context::job_context(const event_queue::sptr& queue,
-                             const event_recipient::sptr& recipient,
-                             const config_setting::sptr& config) noexcept :
-            worker(job_loop::make_unique(queue), queue, recipient, config)
+    job_context::job_context(const config_setting::sptr& config,
+                             const task_router::sptr& router) noexcept :
+            crucial(config, router, job_loop::make_shared(router->get_queue<job_context>()))
     {
     }
 
@@ -26,13 +25,13 @@ namespace engine {
     }
 
     // virtual
-    void job_context::before_run() noexcept
+    void job_context::setup() noexcept
     {
 
     }
 
     // virtual
-    void job_context::after_run() noexcept
+    void job_context::reset() noexcept
     {
 
     }

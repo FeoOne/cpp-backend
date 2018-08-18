@@ -6,12 +6,15 @@
  */
 
 #include <framework.h>
-#include <web/webserver_queue.h>
 
 #include "main/application.h"
 #include "main/engine_const.h"
+#include "job/job_queue.h"
+#include "job/job_context.h"
 #include "web/webserver_queue.h"
 #include "web/webserver_context.h"
+#include "system/system_queue.h"
+#include "system/system_context.h"
 
 namespace engine {
 
@@ -20,7 +23,7 @@ namespace engine {
     application::application(int argc, char **argv, const std::string_view& description) noexcept :
             _option_processor { engine_option_processor::make_unique(argc, argv, description) },
             _config { config::make_unique() },
-            _workers {},
+            _workers { worker_pool::make_unique() },
             _router { task_router::make_shared() },
             _queues {}
     {
@@ -34,13 +37,16 @@ namespace engine {
         create_queues();
         create_workers();
 
-
+        _workers->start();
+        _workers->get_worker<system_context>()->join();
 
         return EXIT_SUCCESS;
     }
 
     void application::create_queues() noexcept
     {
+        _router->add_queue(job_context::key(), job_queue::make_shared());
+        _router->add_queue(system_context::key(), system_queue::make_shared());
         _router->add_queue(webserver_context::key(), webserver_queue::make_shared());
 
         // @todo Register task routes
@@ -49,12 +55,24 @@ namespace engine {
     void application::create_workers() noexcept
     {
         const std::unordered_map<std::string_view,
-                std::function<work_context::sptr(const config_setting::sptr&,
+                std::function<work_context::uptr(const config_setting::sptr&,
                                                  const task_router::sptr&)>> create_context {
+            {
+                engine_const::WORKER_NAME_JOB,
+                [](const config_setting::sptr& config, const task_router::sptr& router) {
+                    return job_context::make_unique(config, router);
+                }
+            },
+            {
+                engine_const::WORKER_NAME_SYSTEM,
+                [](const config_setting::sptr& config, const task_router::sptr& router) {
+                    return system_context::make_unique(config, router);
+                }
+            },
             {
                 engine_const::WORKER_NAME_WEBSERVER,
                 [](const config_setting::sptr& config, const task_router::sptr& router) {
-                    return webserver_context::make_shared(config, router);
+                    return webserver_context::make_unique(config, router);
                 }
             }
         };
@@ -65,7 +83,7 @@ namespace engine {
             auto name { (*config)[engine_const::CONFIG_KEY_NAME]->to_string_view() };
             auto context { create_context.at(name)(config, _router) };
 
-            _workers->push(worker::make_unique(context));
+            _workers->push(worker::make_unique(config, std::move(context)));
         }
     }
 

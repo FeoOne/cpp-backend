@@ -11,7 +11,7 @@
 #include "work/work_context.h"
 
 namespace engine {
-
+#if 0
     class io_work_context : public work_context {
     public:
         FW_DECLARE_SMARTPOINTERS(io_work_context)
@@ -27,7 +27,7 @@ namespace engine {
 
 
     };
-
+#endif
 }
 
 #endif /* ENGINE_IO_CONTEXT_H */

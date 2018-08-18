@@ -14,21 +14,20 @@ namespace engine {
     class webserver_loop : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(webserver_loop)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_loop)
+        FW_DELETE_ALL_DEFAULT(webserver_loop)
 
-        webserver_loop();
+        explicit webserver_loop(const task_queue::sptr& queue) noexcept;
         virtual ~webserver_loop();
 
         void start() noexcept final;
         void stop() noexcept final;
 
     private:
-        uv_loop_t           _loop;
-        uv_async_t          _wakeup_handle;
+        GMainLoop *                 _loop;
 
-        void on_wakeup() noexcept;
+        gboolean on_idle() noexcept;
 
-        static void wakeup_routine(uv_async_t *async_handle) noexcept;
+        static gboolean idle_routine(gpointer pointer) noexcept;
 
     };
 

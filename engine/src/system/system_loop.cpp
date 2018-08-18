@@ -11,12 +11,9 @@ namespace engine {
 
     using namespace std::chrono_literals;
 
-    system_loop::system_loop(const event_queue::sptr& queue) noexcept :
-            work_loop(queue),
-            _is_stopped { true },
-            _should_work { false }
+    system_loop::system_loop(const task_queue::sptr& queue) noexcept :
+            work_loop(queue)
     {
-
     }
 
     // virtual
@@ -25,26 +22,17 @@ namespace engine {
     }
 
     // virtual
-    void system_loop::run() noexcept
+    void system_loop::start() noexcept
     {
-        _should_work = true;
-        _is_stopped = false;
-        while (_should_work) {
+        while (true) {
             std::this_thread::sleep_for(1s);
         }
-        _is_stopped = true;
     }
 
     // virtual
     void system_loop::stop() noexcept
     {
-        _should_work = false;
-    }
 
-    // virtual
-    bool system_loop::stopped() const noexcept
-    {
-        return _is_stopped;
     }
 
 }

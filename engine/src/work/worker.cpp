@@ -5,7 +5,6 @@
  * @brief
  */
 
-#include <events/context_did_start_event.h>
 #include "work/worker.h"
 
 namespace engine {
@@ -40,7 +39,7 @@ namespace engine {
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
         logassert(status == 0);
         status = pthread_attr_setscope(&attributes, PTHREAD_SCOPE_PROCESS); // make thread unbound
-        logassert(status == 0);
+        logcond(status == ENOTSUP, "Tune pthread scope not supported.");
         status = pthread_create(&_thread, &attributes, &worker::exec_routine, this);
         logassert(status == 0);
     }
@@ -66,7 +65,9 @@ namespace engine {
     void worker::exec_routine() noexcept
     {
         do {
+            _context->setup();
             _context->start();
+            _context->reset();
         } while (_should_restart);
     }
 

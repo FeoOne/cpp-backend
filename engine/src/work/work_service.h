@@ -8,9 +8,30 @@
 #ifndef ENGINE_EXECUTION_SERVICE_H
 #define ENGINE_EXECUTION_SERVICE_H
 
-#include "event/event_recipient.h"
+#include "task/task_router.h"
 
 namespace engine {
+
+    class work_service;
+
+    class work_service_provider {
+    public:
+        FW_DECLARE_SMARTPOINTERS(work_service_provider)
+        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_service_provider)
+
+        virtual ~work_service_provider() = default;
+
+        template<typename Service>
+        typename Service::sptr get_service() const noexcept {
+            return std::static_pointer_cast<Service>(get_service(Service::key()));
+        }
+
+    protected:
+        work_service_provider() = default;
+
+        virtual std::shared_ptr<work_service> get_service(framework::crucial_key_type key) const noexcept = 0;
+
+    };
 
     class work_service {
     public:
@@ -20,13 +41,22 @@ namespace engine {
 
         virtual ~work_service() = default;
 
-    protected:
-        explicit work_service(const event_recipient::sptr& recipient) noexcept;
+        virtual void setup() noexcept = 0;
+        virtual void reset() noexcept = 0;
 
-        event_recipient::sptr get_recipient() const noexcept { return _recipient; }
+    protected:
+        explicit work_service(const framework::config_setting::sptr& config,
+                              const task_router::sptr& router,
+                              const work_service_provider *service_provider) noexcept;
+
+        framework::config_setting::sptr get_config() const noexcept { return _config; }
+        task_router::sptr get_router() const noexcept { return _router; }
+        const work_service_provider *get_service_provider() const noexcept { return _service_provider; }
 
     private:
-        event_recipient::sptr      _recipient;
+        framework::config_setting::sptr     _config;
+        task_router::sptr                   _router;
+        const work_service_provider *       _service_provider;
 
     };
 

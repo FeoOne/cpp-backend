@@ -17,8 +17,8 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(http_response)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response)
 
-        http_response();
-        ~http_response();
+        http_response() = default;
+        ~http_response() = default;
 
     private:
 

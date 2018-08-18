@@ -9,10 +9,14 @@
 
 namespace engine {
 
-    FW_CRUCIAL_BASE_DECLARATION(execution_service)
+    FW_CRUCIAL_BASE_DECLARATION(work_service)
 
-    work_service::work_service(const event_recipient::sptr& recipient) noexcept :
-            _recipient { recipient }
+    work_service::work_service(const framework::config_setting::sptr& config,
+                               const task_router::sptr& router,
+                               const work_service_provider *service_provider) noexcept :
+            _config { config },
+            _router { router },
+            _service_provider { service_provider }
     {
     }
 

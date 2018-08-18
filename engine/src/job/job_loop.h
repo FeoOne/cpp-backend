@@ -9,7 +9,6 @@
 #define ENGINE_JOB_LOOP_H
 
 #include "work/work_loop.h"
-#include "event/event_queue.h"
 
 namespace engine {
 
@@ -18,17 +17,14 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(job_loop)
         FW_DELETE_ALL_DEFAULT(job_loop)
 
-        explicit job_loop(const event_queue::sptr& queue) noexcept;
-        virtual ~job_loop() = default;
+        explicit job_loop(const task_queue::sptr& queue) noexcept;
+        virtual ~job_loop();
 
-        void run() noexcept final;
+        void start() noexcept final;
         void stop() noexcept final;
 
-        bool stopped() const noexcept final;
-
     private:
-        std::atomic_bool            _is_stopped;
-        std::atomic_bool            _should_work;
+
 
     };
 

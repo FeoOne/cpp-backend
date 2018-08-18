@@ -16,7 +16,7 @@
 
 #define FW_CRUCIAL_BASE_DEFINITION()                    \
     public:                                             \
-        using key_type = size_t;                        \
+        using key_type = framework::crucial_key_type;   \
     protected:                                          \
         static key_type _key_counter;                   \
     public:                                             \
@@ -26,6 +26,8 @@
     base::key_type base::_key_counter { 0 };
 
 namespace framework {
+
+    using crucial_key_type = size_t;
 
     template<typename Base, typename Derived>
     class crucial : public Base {

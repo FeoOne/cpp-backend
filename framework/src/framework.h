@@ -34,4 +34,6 @@
 #include "config/config.h"
 #include "config/command_line_option_processor.h"
 
+#include "external/glib_ex.h"
+
 #endif /* FRAMEWORK_FRAMEWORK_H */

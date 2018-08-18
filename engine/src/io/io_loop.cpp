@@ -5,12 +5,10 @@
  * @brief
  */
 
-#include "events/events.h"
-
 #include "io/io_loop.h"
 
 namespace engine {
-
+#if 0
     io_loop::io_loop(const event_queue::sptr& queue) noexcept :
             work_loop(queue),
             _loop { std::make_unique<uv_loop_t>() },
@@ -81,5 +79,5 @@ namespace engine {
         // @todo Handle error.
         reinterpret_cast<io_loop *>(handle->data)->notify_callback();
     }
-
+#endif
 }

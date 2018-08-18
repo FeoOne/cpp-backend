@@ -5,11 +5,14 @@
  * @brief
  */
 
-#include "events/events.h"
-
 #include "work/work_loop.h"
 
 namespace engine {
+
+    work_loop::work_loop(const task_queue::sptr& queue) noexcept :
+            _queue { queue }
+    {
+    }
 
 #if 0
     void work_loop::handle_event(const event::sptr& eve) const noexcept

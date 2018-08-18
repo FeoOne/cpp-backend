@@ -13,7 +13,7 @@
 #include "work/work_loop.h"
 
 namespace engine {
-
+#if 0
     class io_loop : public work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(io_loop)
@@ -38,7 +38,7 @@ namespace engine {
         static void notify_callback(uv_async_t *handle) noexcept;
 
     };
-
+#endif
 }
 
 #endif /* PROJECT_IO_LOOP_H */

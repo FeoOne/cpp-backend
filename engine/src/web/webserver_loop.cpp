@@ -1,54 +1,51 @@
-//
-// Created by Feo on 17/08/2018.
-//
+/**
+ * @file webserver_loop.cpp
+ * @author Feo
+ * @date 17/08/2018
+ * @brief
+ */
 
 #include "web/webserver_loop.h"
 
 namespace engine {
 
-    webserver_loop::webserver_loop()
+    webserver_loop::webserver_loop(const task_queue::sptr& queue) noexcept :
+            work_loop(queue),
+            _loop { g_main_loop_new(nullptr, FALSE) }
     {
-        int status = uv_loop_init(&_loop);
-        logassert(status == 0);
-
-        status = uv_async_init(&_loop, &_wakeup_handle, &webserver_loop::wakeup_routine);
-        logassert(status == 0);
-        _wakeup_handle.data = this;
     }
 
     // virtual
     webserver_loop::~webserver_loop()
     {
-        int status = uv_loop_close(&_loop);
-        logassert(status == 0);
+        g_main_loop_unref(_loop);
     }
 
+    // virtual
     void webserver_loop::start() noexcept
     {
-        int status = uv_run(&_loop, UV_RUN_DEFAULT);
-        lognotice("Loop stopped with %d active handlers.", status);
+        g_idle_add(&webserver_loop::idle_routine, this);
+        g_main_loop_run(_loop);
     }
 
+    // virtual
     void webserver_loop::stop() noexcept
     {
-        uv_stop(&_loop);
+        g_main_loop_quit(_loop); // @todo Is thread safe?
     }
 
-    void webserver_loop::on_new_task() noexcept
+    gboolean webserver_loop::on_idle() noexcept
     {
-        int status = uv_async_send(&_wakeup_handle);
-        logassert(status == 0);
-    }
-
-    void webserver_loop::on_wakeup() noexcept
-    {
-        // @todo Process task queue
+        if (!get_queue()->empty()) {
+            auto task = get_queue()->dequeue();
+            // @todo Handle task.
+        }
     }
 
     // static
-    void webserver_loop::wakeup_routine(uv_async_t *async_handle) noexcept
+    gboolean webserver_loop::idle_routine(gpointer pointer) noexcept
     {
-        reinterpret_cast<webserver_loop *>(async_handle->data)->on_wakeup();
+        return reinterpret_cast<webserver_loop *>(pointer)->on_idle(); // @todo Error handling.
     }
 
 }

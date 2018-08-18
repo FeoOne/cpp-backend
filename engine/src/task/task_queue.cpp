@@ -7,7 +7,9 @@
 namespace engine {
 
     task_queue::task_queue(const std::string_view& domain) noexcept :
-            _delegate {}
+            _domain { domain },
+            _delegate {},
+            _queue {}
     {
     }
 
@@ -23,7 +25,7 @@ namespace engine {
         return task;
     }
 
-    bool task_queue::empty() const noexcept
+    bool task_queue::is_empty() const noexcept
     {
         return _queue.empty();
     }

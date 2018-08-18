@@ -2,6 +2,10 @@ set(PROJECT_NAME framework)
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/framework_const_gen.h.in
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/main/framework_const_gen.h
+        )
+
 find_package(config REQUIRED)
 find_package(glib REQUIRED)
 

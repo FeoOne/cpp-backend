@@ -15,6 +15,8 @@
 
 #define logassert(cond) \
     do { if (!(cond)) { logdebug("Assertion failed '" FW_STR(cond) "'."); abort(); } } while (false)
+#define logcond(cond, format, ...) \
+    do { if ((cond)) { logwarn("Check condition: '" FW_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
 
 #define logdebug(format, ...)           framework::log_manager::logger()->log(framework::logger::level_t::DEBUG,   \
                                                                               __FILE__,                            \

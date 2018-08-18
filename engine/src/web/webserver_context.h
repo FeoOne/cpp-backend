@@ -15,11 +15,14 @@ namespace engine {
     class webserver_context : public framework::crucial<work_context, webserver_context> {
     public:
         FW_DECLARE_SMARTPOINTERS(webserver_context)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_context)
+        FW_DELETE_ALL_DEFAULT(webserver_context)
 
         explicit webserver_context(const framework::config_setting::sptr& config,
                                    const task_router::sptr& router) noexcept;
-        virtual ~webserver_context() = default;
+        virtual ~webserver_context();
+
+        void setup() noexcept final;
+        void reset() noexcept final;
 
     private:
 

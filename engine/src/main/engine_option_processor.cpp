@@ -14,25 +14,29 @@ namespace engine {
     engine_option_processor::engine_option_processor(int argc,
                                                      char **argv,
                                                      const std::string_view& app_description) noexcept :
-            command_line_option_processor(argc, argv, app_description)
+            command_line_option_processor(argc, argv, app_description),
+            _config_path { nullptr }
     {
         push_group("core", "Core options.", "Options related to core. This is detailed group description.");
 
-        gchar *path { nullptr }; // @todo Check memory leak.
         add_option(command_line_option_type::STRING,
-                   &path,
+                   &_config_path,
                    "config_path",
                    'c',
                    "Path to config.",
                    "PATH",
                    false,
                    false);
-        _config_path = { path };
     }
 
     // virtual
 //    engine_option_processor::~engine_option_processor()
 //    {
 //    }
+
+    std::string_view engine_option_processor::config_path() const noexcept
+    {
+        return (_config_path != nullptr) ? _config_path : "";
+    }
 
 }

@@ -9,13 +9,21 @@
 
 namespace engine {
 
-    class webserver_queue : public task_queue {
+    class webserver_queue final : public task_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(webserver_queue)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_queue)
 
         webserver_queue();
         virtual ~webserver_queue() = default;
+
+        void enqueue(const task::sptr& task) noexcept final;
+        task::sptr dequeue() noexcept final;
+
+        bool empty() const noexcept final;
+
+    public:
+        mutable std::timed_mutex        _mutex;
 
     };
 

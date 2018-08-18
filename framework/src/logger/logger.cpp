@@ -7,7 +7,7 @@
 
 #include <time.h>
 
-#include "main/ftamework_const.h"
+#include "main/framework_const.h"
 
 #include "logger/logger.h"
 
@@ -41,16 +41,16 @@ namespace framework {
 
         struct tm *timeinfo { localtime(&rawtime) };
 
-        char buffer[ftamework_const::LOGGER_MAX_MESSAGE_LENGTH];
-        char format_buffer[ftamework_const::LOGGER_MAX_MESSAGE_LENGTH];
+        char buffer[framework_const::LOGGER_MAX_MESSAGE_LENGTH];
+        char format_buffer[framework_const::LOGGER_MAX_MESSAGE_LENGTH];
 
         va_list args;
         va_start(args, format);
-        vsnprintf(format_buffer, ftamework_const::LOGGER_MAX_MESSAGE_LENGTH, format, args);
+        vsnprintf(format_buffer, framework_const::LOGGER_MAX_MESSAGE_LENGTH, format, args);
         va_end(args);
 
         std::snprintf(buffer,
-                      ftamework_const::LOGGER_MAX_MESSAGE_LENGTH,
+                      framework_const::LOGGER_MAX_MESSAGE_LENGTH,
                       "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s\n",
                       timeinfo->tm_year + 1900,
                       timeinfo->tm_mon + 1,
@@ -58,7 +58,7 @@ namespace framework {
                       timeinfo->tm_hour,
                       timeinfo->tm_min,
                       timeinfo->tm_sec,
-                      file,
+                      &file[framework_const::SOURCE_DIR.size() + 1],
                       line,
                       //function,
                       levels[level].data(),

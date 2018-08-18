@@ -5,35 +5,50 @@
 #ifndef ENGINE_WORK_CONTEXT_H
 #define ENGINE_WORK_CONTEXT_H
 
-#include <framework.h>
-
 #include "work/work_loop.h"
+#include "work/work_service.h"
 #include "task/task_router.h"
 
 namespace engine {
 
-    class work_context {
+    class work_context : public work_service_provider {
     public:
         FW_DECLARE_SMARTPOINTERS(work_context)
         FW_DELETE_ALL_DEFAULT(work_context)
         FW_CRUCIAL_BASE_DEFINITION()
 
+        using work_service_provider::get_service;
+
         explicit work_context(const framework::config_setting::sptr& config,
                               const task_router::sptr& router,
-                              work_loop::uptr&& loop) noexcept;
+                              const work_loop::sptr& loop) noexcept;
         virtual ~work_context() = default;
 
         void start() noexcept;
         void stop() noexcept;
 
+        virtual void setup() noexcept = 0;
+        virtual void reset() noexcept = 0;
+
     protected:
         framework::config_setting::sptr get_config() const noexcept { return _config; }
         task_router::sptr get_router() const noexcept { return _router; }
+        work_loop::sptr get_loop() const noexcept { return _loop; }
+
+        void add_service(const work_service::sptr& service) noexcept;
+        work_service::sptr get_service(work_service::key_type key) const noexcept final;
+
+        template<typename Service>
+        void remove_service() noexcept {
+            _services[Service::key()].reset();
+        }
 
     private:
-        framework::config_setting::sptr     _config;
-        task_router::sptr                   _router;
-        work_loop::uptr                     _loop;
+        framework::config_setting::sptr                         _config;
+        task_router::sptr                                       _router;
+        work_loop::sptr                                         _loop;
+        std::array<work_service::sptr,
+                engine_const::WORK_SERVICE_TYPE_MAX_COUNT>      _services;
 
     };
 

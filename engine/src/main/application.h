@@ -19,6 +19,9 @@ namespace engine {
     class application final {
     public:
         FW_DECLARE_SMARTPOINTERS(application)
+        FW_DELETE_ALL_DEFAULT(application)
+
+        explicit application(int argc, char **argv, const std::string_view& description) noexcept;
 
         /**
          * Entry point.
@@ -36,8 +39,6 @@ namespace engine {
         task_router::sptr               _router;
 
         std::unordered_map<work_context::key_type, task_queue::sptr>    _queues;
-
-        explicit application(int argc, char **argv, const std::string_view& description) noexcept;
 
         int start() noexcept;
 

@@ -8,24 +8,22 @@
 #ifndef ENGINE_JOB_CONTEXT_H
 #define ENGINE_JOB_CONTEXT_H
 
-#include "work/worker.h"
-#include "job/job_event_queue.h"
+#include "work/work_context.h"
 
 namespace engine {
 
-    class job_context : public worker {
+    class job_context :public framework::crucial<work_context, job_context> {
     public:
         FW_DECLARE_SMARTPOINTERS(job_context)
         FW_DELETE_ALL_DEFAULT(job_context)
 
-        explicit job_context(const event_queue::sptr& queue,
-                             const event_recipient::sptr& recipient,
-                             const framework::config_setting::sptr& config) noexcept;
+        explicit job_context(const framework::config_setting::sptr& config,
+                             const task_router::sptr& router) noexcept;
         virtual ~job_context();
 
     private:
-        void before_run() noexcept final;
-        void after_run() noexcept final;
+        void setup() noexcept final;
+        void reset() noexcept final;
 
     };
 

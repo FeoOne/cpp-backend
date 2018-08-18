@@ -9,14 +9,13 @@
 
 #include "system/system_context.h"
 
+using namespace framework;
+
 namespace engine {
 
-    using namespace framework;
-
-    system_context::system_context(const event_queue::sptr& queue,
-                                   const event_recipient::sptr& recipient,
-                                   const config_setting::sptr& config) noexcept :
-            worker(system_loop::make_unique(queue), queue, recipient, config)
+    system_context::system_context(const config_setting::sptr& config,
+                                   const task_router::sptr& router) noexcept :
+            crucial(config, router, system_loop::make_shared(router->get_queue<system_context>()))
     {
     }
 
@@ -26,13 +25,13 @@ namespace engine {
     }
 
     // virtual
-    void system_context::before_run() noexcept
+    void system_context::setup() noexcept
     {
 
     }
 
     // virtual
-    void system_context::after_run() noexcept
+    void system_context::reset() noexcept
     {
 
     }

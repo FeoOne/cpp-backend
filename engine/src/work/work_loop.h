@@ -10,51 +10,28 @@
 
 #include <framework.h>
 
+#include "task/task_queue.h"
+
 namespace engine {
 
     class work_loop {
     public:
         FW_DECLARE_SMARTPOINTERS(work_loop)
+        FW_DELETE_ALL_DEFAULT(work_loop)
 
+        explicit work_loop(const task_queue::sptr& queue) noexcept;
         virtual ~work_loop() = default;
 
         virtual void start() noexcept = 0;
         virtual void stop() noexcept = 0;
 
-    };
-
-#if 0
-    class work_loop {
-    public:
-        FW_DECLARE_SMARTPOINTERS(work_loop)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_loop)
-
-        virtual ~work_loop() = default;
-
-        virtual void run() noexcept = 0;
-        virtual void stop() noexcept = 0;
-
-        virtual bool stopped() const noexcept = 0;
-
-        virtual void wakeup() noexcept;
-
-        void register_event_handler(event::key_type key, const event_handler::sptr& handler) noexcept;
-
     protected:
-        explicit work_loop(const event_queue::sptr& queue) noexcept : _queue { queue } {}
-
-        event_queue::sptr get_queue() const noexcept { return _queue; }
-
-        void handle_event(const event::sptr& e) const noexcept;
+        task_queue::sptr get_queue() const noexcept { return _queue; }
 
     private:
-        using event_handler_map = std::unordered_map<event::key_type, event_handler::sptr>;
-
-        event_queue::sptr       _queue;
-        event_handler_map       _handlers;
+        task_queue::sptr        _queue;
 
     };
-#endif
 
 }
 

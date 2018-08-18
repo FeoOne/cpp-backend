@@ -1,0 +1,13 @@
+/**
+ * @file framework_const_gen.h
+ * @author Feo
+ * @date 19/08/2018
+ * @brief
+ */
+
+#ifndef FRAMEWORK_FRAMEWORK_CONST_GEN_H
+#define FRAMEWORK_FRAMEWORK_CONST_GEN_H
+
+#define FW_SOURCE_DIR       "${CMAKE_SOURCE_DIR}"
+
+#endif /* FRAMEWORK_FRAMEWORK_CONST_GEN_H */
