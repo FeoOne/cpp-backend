@@ -44,6 +44,8 @@ namespace engine {
         virtual void setup() noexcept = 0;
         virtual void reset() noexcept = 0;
 
+        virtual void handle_task(const task::sptr& task) noexcept = 0;
+
     protected:
         explicit work_service(const framework::config_setting::sptr& config,
                               const task_router::sptr& router,

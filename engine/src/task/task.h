@@ -15,8 +15,10 @@ namespace engine {
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task)
         FW_CRUCIAL_BASE_DEFINITION()
 
-        task() = default;
         virtual ~task() = default;
+
+    protected:
+        task() = default;
 
     };
 

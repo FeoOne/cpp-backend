@@ -12,18 +12,16 @@
 
 namespace engine {
 
-    class job_context :public framework::crucial<work_context, job_context> {
+    class job_context : public framework::crucial<work_context, job_context> {
     public:
         FW_DECLARE_SMARTPOINTERS(job_context)
         FW_DELETE_ALL_DEFAULT(job_context)
 
+        virtual ~job_context() = default;
+
+    protected:
         explicit job_context(const framework::config_setting::sptr& config,
                              const task_router::sptr& router) noexcept;
-        virtual ~job_context();
-
-    private:
-        void setup() noexcept final;
-        void reset() noexcept final;
 
     };
 

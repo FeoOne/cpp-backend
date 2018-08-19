@@ -18,10 +18,10 @@ namespace engine {
 
         virtual ~task_handler() = default;
 
+        virtual void handle_task(const task::sptr& task) noexcept = 0;
+
     protected:
         task_handler() = default;
-
-        virtual void handle_task(const task::sptr& task) noexcept = 0;
 
     };
 

@@ -26,7 +26,7 @@ namespace engine {
         _should_work.store(true, std::memory_order_relaxed);
         while (_should_work.load(std::memory_order_relaxed)) {
             auto task = get_queue()->dequeue();
-            // @todo Process task.
+            get_task_handler()->handle_task(task);
         }
     }
 

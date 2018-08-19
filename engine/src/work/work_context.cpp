@@ -16,6 +16,7 @@ namespace engine {
             _loop { loop }
     {
         _services.fill(nullptr);
+        _handler_keys.fill(std::numeric_limits<task::key_type>::max());
     }
 
     void work_context::start() noexcept
@@ -28,6 +29,11 @@ namespace engine {
         _loop->stop();
     }
 
+    void work_context::handle_task(const task::sptr& task) noexcept
+    {
+        _services[_handler_keys[task->get_key()]]->handle_task(task);
+    }
+
     work_service::sptr work_context::get_service(work_service::key_type key) const noexcept
     {
         return _services[key];
@@ -36,6 +42,12 @@ namespace engine {
     void work_context::add_service(const work_service::sptr& service) noexcept
     {
         _services[service->get_key()] = service;
+    }
+
+    void work_context::register_task_handler(task::key_type task_key,
+                                             work_service::key_type service_key) noexcept
+    {
+        _handler_keys[task_key] = service_key;
     }
 
 }

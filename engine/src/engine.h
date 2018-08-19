@@ -24,5 +24,7 @@
 #include "web/webserver_context.h"
 #include "web/service/http_service.h"
 #include "web/service/websocket_service.h"
+#include "web/task/http_request_task.h"
+#include "web/task/http_response_task.h"
 
 #endif /* ENGINE_ENGINE_H */

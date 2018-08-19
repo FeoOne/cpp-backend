@@ -21,6 +21,9 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(application)
         FW_DELETE_ALL_DEFAULT(application)
 
+        using context_creator = std::function<work_context::uptr(const framework::config_setting::sptr&,
+                                                                 const task_router::sptr&)>;
+
         explicit application(int argc, char **argv, const std::string_view& description) noexcept;
 
         /**
@@ -30,13 +33,19 @@ namespace engine {
          * @param description Application description for help output.
          * @return Run status.
          */
-        static int start(int argc, char **argv, const std::string_view& description) noexcept;
+        static int start(int argc,
+                         char **argv,
+                         context_creator&& job_context_creator,
+                         const std::string_view& description) noexcept;
 
     private:
+        using context_creator_map = std::unordered_map<std::string_view, context_creator>;
+
         engine_option_processor::uptr   _option_processor;
         framework::config::uptr         _config;
         worker_pool::uptr               _workers;
         task_router::sptr               _router;
+        context_creator_map             _context_creators;
 
         std::unordered_map<work_context::key_type, task_queue::sptr>    _queues;
 
@@ -46,47 +55,6 @@ namespace engine {
         void create_workers() noexcept;
 
     };
-
-#if 0
-    class application {
-    public:
-        FW_DECLARE_SMARTPOINTERS(application)
-
-        application();
-        virtual ~application();
-
-        void load_config(const std::string_view& filename) noexcept;
-
-        void prepare() noexcept;
-        void run() noexcept;
-
-    protected:
-        virtual void _before_run() noexcept = 0;
-        virtual void _after_run() noexcept = 0;
-
-        void _add_context(const std::string_view &name, const worker::sptr &context) noexcept;
-        void _remove_contexts(const std::string_view &name) noexcept;
-        std::vector<worker::sptr> _get_contexts(const std::string_view &name) noexcept;
-
-    private:
-        using context_map = std::unordered_map<std::string_view, std::vector<worker::sptr>>;
-        using event_queue_map = std::unordered_map<std::string_view, event_queue::sptr>;
-
-        framework::config::sptr                 _config;
-        context_map                             _contexts;
-        event_queue_map                         _queues;
-        event_recipient::sptr                   _recipient;
-
-        void _create_contexts() noexcept;
-        void _create_event_queues() noexcept;
-        void _setup_routes() noexcept;
-
-        worker::sptr _create_job_context(const framework::config_setting::sptr& config) noexcept;
-        worker::sptr _create_system_context(const framework::config_setting::sptr& config) noexcept;
-        worker::sptr _create_web_server_context(const framework::config_setting::sptr& config) noexcept;
-
-    };
-#endif
 
 }
 

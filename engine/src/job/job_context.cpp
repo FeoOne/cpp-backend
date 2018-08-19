@@ -21,21 +21,4 @@ namespace engine {
     {
     }
 
-    // virtual
-    job_context::~job_context()
-    {
-    }
-
-    // virtual
-    void job_context::setup() noexcept
-    {
-
-    }
-
-    // virtual
-    void job_context::reset() noexcept
-    {
-
-    }
-
 }

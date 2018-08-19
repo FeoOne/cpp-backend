@@ -9,6 +9,7 @@
 #include "web/service/webserver_service.h"
 #include "web/service/http_service.h"
 #include "web/service/websocket_service.h"
+#include "web/task/http_response_task.h"
 
 #include "web/webserver_context.h"
 
@@ -25,6 +26,8 @@ namespace engine {
         add_service(webserver_service::make_shared(get_config(), get_router(), this));
         add_service(http_service::make_shared(get_config(), get_router(), this));
         add_service(websocket_service::make_shared(get_config(), get_router(), this));
+
+        register_task_handler(http_response_task::key(), http_service::key());
     }
 
     // virtual

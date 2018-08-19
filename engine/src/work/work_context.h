@@ -28,6 +28,8 @@ namespace engine {
         void start() noexcept;
         void stop() noexcept;
 
+        void handle_task(const task::sptr& task) noexcept final;
+
         virtual void setup() noexcept = 0;
         virtual void reset() noexcept = 0;
 
@@ -35,6 +37,8 @@ namespace engine {
         framework::config_setting::sptr get_config() const noexcept { return _config; }
         task_router::sptr get_router() const noexcept { return _router; }
         work_loop::sptr get_loop() const noexcept { return _loop; }
+
+        void register_task_handler(task::key_type task_key, work_service::key_type service_key) noexcept;
 
         void add_service(const work_service::sptr& service) noexcept;
         work_service::sptr get_service(work_service::key_type key) const noexcept final;
@@ -50,8 +54,8 @@ namespace engine {
         work_loop::sptr                                         _loop;
         std::array<work_service::sptr,
                 engine_const::WORK_SERVICE_TYPE_MAX_COUNT>      _services;
-
-        void handle_task(const task::sptr& task) noexcept final {}
+        std::array<task::key_type,
+                engine_const::TASK_TYPE_MAX_COUNT>              _handler_keys;
 
     };
 

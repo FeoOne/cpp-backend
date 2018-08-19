@@ -38,7 +38,7 @@ namespace engine {
     {
         if (!get_queue()->empty()) {
             auto task = get_queue()->dequeue();
-            // @todo Handle task.
+            get_task_handler()->handle_task(task);
         }
     }
 

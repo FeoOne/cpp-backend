@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "web/task/http_request_task.h"
+#include "web/task/http_response_task.h"
 #include "web/service/webserver_service.h"
 
 #include "web/service/http_service.h"
@@ -40,6 +42,12 @@ namespace engine {
                                    engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
+    // virtual
+    void http_service::handle_task(const task::sptr& task) noexcept
+    {
+
+    }
+
     void http_service::handler(SoupServer *server,
                                SoupMessage *message,
                                const char *path,
@@ -51,11 +59,11 @@ namespace engine {
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
-//        std::string_view p { path };
-//        auto request { http_request::make_shared(message, p, query, client) };
-//        get_recipient()->enqueue(http_request_event::make_shared(request));
-//
-//        soup_server_pause_message(get_server(), message);
+        std::string_view p { path };
+        auto request { http_request::make_shared(message, p, query, client) };
+        get_router()->enqueue(http_request_task::make_shared(request));
+
+        soup_server_pause_message(get_service_provider()->get_service<webserver_service>()->get_server(), message);
     }
 
     // static
