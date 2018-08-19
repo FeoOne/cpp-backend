@@ -21,6 +21,8 @@ namespace engine {
         explicit http_request_task(const http_request::sptr& request) noexcept : _request { request } {}
         virtual ~http_request_task() = default;
 
+        http_request::sptr get_request() const noexcept { return _request; }
+
     private:
         http_request::sptr      _request;
 

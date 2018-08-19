@@ -64,12 +64,6 @@ namespace engine {
         _server = nullptr;
     }
 
-    // virtual
-    void webserver_service::handle_task(const task::sptr& task) noexcept
-    {
-
-    }
-
     void webserver_service::print_server_info() const noexcept {
         GSList *uris { soup_server_get_uris(_server) };
         for (GSList *u { uris }; u != nullptr; u = u->next) {

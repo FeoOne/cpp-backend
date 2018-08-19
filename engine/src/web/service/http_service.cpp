@@ -18,6 +18,8 @@ namespace engine {
                                const work_service_provider *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
+        add_task_handler(engine::http_response_task::key(),
+                         std::bind(&http_service::handle_http_response_task, this, std::placeholders::_1));
     }
 
     // virtual
@@ -42,10 +44,15 @@ namespace engine {
                                    engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
-    // virtual
-    void http_service::handle_task(const task::sptr& task) noexcept
+    void http_service::handle_http_response_task(const engine::task::sptr& t) noexcept
     {
+        auto task = std::static_pointer_cast<engine::http_response_task>(t);
+        auto response = task->get_response();
+        auto request = response->get_request();
 
+        soup_message_set_status(request->get_message(), SOUP_STATUS_NOT_FOUND);
+        soup_server_unpause_message(get_service_provider()->get_service<webserver_service>()->get_server(),
+                                    request->get_message());
     }
 
     void http_service::handler(SoupServer *server,
@@ -68,11 +75,11 @@ namespace engine {
 
     // static
     void http_service::handler_routine(SoupServer *server,
-                               SoupMessage *message,
-                               const char *path,
-                               GHashTable *query,
-                               SoupClientContext *client,
-                               gpointer context) noexcept
+                                       SoupMessage *message,
+                                       const char *path,
+                                       GHashTable *query,
+                                       SoupClientContext *client,
+                                       gpointer context) noexcept
     {
         static_cast<http_service *>(context)->handler(server, message, path, query, client);
     }

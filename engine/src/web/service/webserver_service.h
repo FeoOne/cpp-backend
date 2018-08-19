@@ -27,8 +27,6 @@ namespace engine {
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void handle_task(const task::sptr& task) noexcept final;
-
         SoupServer *get_server() noexcept { return _server; }
 
     private:

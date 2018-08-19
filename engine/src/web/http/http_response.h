@@ -10,6 +10,8 @@
 
 #include <framework.h>
 
+#include "web/http/http_request.h"
+
 namespace engine {
 
     class http_response {
@@ -17,10 +19,13 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(http_response)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response)
 
-        http_response() = default;
+        explicit http_response(const http_request::sptr& request, SoupStatus status) noexcept;
         ~http_response() = default;
 
+        http_request::sptr get_request() const noexcept { return _request; }
+
     private:
+        http_request::sptr      _request;
 
     };
 

@@ -25,9 +25,8 @@ namespace backend {
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void handle_task(const engine::task::sptr& task) noexcept final;
-
     private:
+        void handle_http_request_task(const engine::task::sptr& t) noexcept;
 
     };
 

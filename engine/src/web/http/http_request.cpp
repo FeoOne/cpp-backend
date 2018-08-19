@@ -12,14 +12,13 @@ namespace engine {
     http_request::http_request(SoupMessage *message,
                                const std::string_view& path,
                                GHashTable *query,
-                               SoupClientContext *client) noexcept
+                               SoupClientContext *client) noexcept :
+            _message { message }
     {
-
     }
 
     http_request::~http_request()
     {
-
     }
 
 }

@@ -39,12 +39,6 @@ namespace engine {
 //        soup_server_remove_handler(_server, "/websocket");
     }
 
-    // virtual
-    void websocket_service::handle_task(const task::sptr& task) noexcept
-    {
-
-    }
-
     void websocket_service::handler(SoupServer *server,
                                     SoupWebsocketConnection *connection,
                                     const char *path,

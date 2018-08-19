@@ -25,7 +25,10 @@ namespace engine {
                               SoupClientContext *client) noexcept;
         ~http_request();
 
+        SoupMessage *get_message() noexcept { return _message; }
+
     private:
+        SoupMessage *           _message;
 
     };
 

@@ -21,6 +21,8 @@ namespace engine {
         explicit http_response_task(const http_response::sptr& response) noexcept : _response { response } {}
         virtual ~http_response_task() = default;
 
+        http_response::sptr get_response() const noexcept { return _response; }
+
     private:
         http_response::sptr     _response;
 

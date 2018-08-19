@@ -44,9 +44,11 @@ namespace engine {
         virtual void setup() noexcept = 0;
         virtual void reset() noexcept = 0;
 
-        virtual void handle_task(const task::sptr& task) noexcept = 0;
+        void handle_task(const task::sptr& task) noexcept;
 
     protected:
+        using task_handler = std::function<void(const task::sptr&)>;
+
         explicit work_service(const framework::config_setting::sptr& config,
                               const task_router::sptr& router,
                               const work_service_provider *service_provider) noexcept;
@@ -55,10 +57,14 @@ namespace engine {
         task_router::sptr get_router() const noexcept { return _router; }
         const work_service_provider *get_service_provider() const noexcept { return _service_provider; }
 
+        void add_task_handler(task::key_type task_key, task_handler&& handler) noexcept;
+
     private:
-        framework::config_setting::sptr     _config;
-        task_router::sptr                   _router;
-        const work_service_provider *       _service_provider;
+        framework::config_setting::sptr             _config;
+        task_router::sptr                           _router;
+        const work_service_provider *               _service_provider;
+        std::array<task_handler,
+                engine_const::TASK_TYPE_MAX_COUNT>  _task_handlers;
 
     };
 

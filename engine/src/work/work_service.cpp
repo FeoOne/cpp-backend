@@ -18,6 +18,17 @@ namespace engine {
             _router { router },
             _service_provider { service_provider }
     {
+        _task_handlers.fill(nullptr);
+    }
+
+    void work_service::handle_task(const task::sptr& task) noexcept
+    {
+        _task_handlers[task->get_key()](task);
+    }
+
+    void work_service::add_task_handler(task::key_type task_key, task_handler&& handler) noexcept
+    {
+        _task_handlers[task_key] = std::move(handler);
     }
 
 }

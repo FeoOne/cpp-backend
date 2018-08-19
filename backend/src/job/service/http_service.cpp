@@ -14,6 +14,8 @@ namespace backend {
                                const engine::work_service_provider *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
+        add_task_handler(engine::http_request_task::key(),
+                         std::bind(&http_service::handle_http_request_task, this, std::placeholders::_1));
     }
 
     // virtual
@@ -33,10 +35,11 @@ namespace backend {
 
     }
 
-    // virtual
-    void http_service::handle_task(const engine::task::sptr& task) noexcept
+    void http_service::handle_http_request_task(const engine::task::sptr& t) noexcept
     {
-
+        auto task = std::static_pointer_cast<engine::http_request_task>(t);
+        auto response = engine::http_response::make_shared(task->get_request(), SoupStatus::SOUP_STATUS_OK);
+        get_router()->enqueue(engine::http_response_task::make_shared(response));
     }
 
 }

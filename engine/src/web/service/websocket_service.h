@@ -27,8 +27,6 @@ namespace engine {
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void handle_task(const task::sptr& task) noexcept final;
-
     private:
         void handler(SoupServer *server,
                      SoupWebsocketConnection *connection,

@@ -27,9 +27,9 @@ namespace engine {
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void handle_task(const task::sptr& task) noexcept final;
-
     private:
+        void handle_http_response_task(const engine::task::sptr& t) noexcept;
+
         void handler(SoupServer *server,
                      SoupMessage *message,
                      const char *path,
