@@ -13,7 +13,8 @@ namespace engine {
                                const std::string_view& path,
                                GHashTable *query,
                                SoupClientContext *client) noexcept :
-            _message { message }
+            _message { message },
+            _path { path }
     {
     }
 

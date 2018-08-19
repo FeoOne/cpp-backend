@@ -26,6 +26,12 @@ namespace backend {
         void reset() noexcept final;
 
     private:
+        engine::web_view_loader::uptr                               _web_view_loader;
+        engine::web_view_manager::uptr                              _web_view_manager;
+
+        std::unordered_map<std::string_view,
+                std::function<void(engine::http_response::sptr&)>>  _handlers;
+
         void handle_http_request_task(const engine::task::sptr& t) noexcept;
 
     };

@@ -17,6 +17,8 @@
 #include <thread>
 #include <limits>
 #include <cassert>
+#include <fstream>
+#include <iostream>
 #include <functional>
 #include <condition_variable>
 

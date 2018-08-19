@@ -26,9 +26,11 @@ namespace engine {
         ~http_request();
 
         SoupMessage *get_message() noexcept { return _message; }
+        const std::string_view& get_path() const { return _path; }
 
     private:
         SoupMessage *           _message;
+        std::string_view        _path;
 
     };
 

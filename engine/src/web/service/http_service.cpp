@@ -50,7 +50,6 @@ namespace engine {
         auto response = task->get_response();
         auto request = response->get_request();
 
-        soup_message_set_status(request->get_message(), SOUP_STATUS_NOT_FOUND);
         soup_server_unpause_message(get_service_provider()->get_service<webserver_service>()->get_server(),
                                     request->get_message());
     }

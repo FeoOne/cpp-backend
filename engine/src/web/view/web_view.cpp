@@ -5,4 +5,24 @@
  * @brief
  */
 
-#include "web_view.h"
+#include "web/view/web_view.h"
+
+namespace engine {
+
+    web_view::web_view(std::string&& content) noexcept :
+            _content { std::move(content) }
+    {
+
+    }
+
+    web_view::~web_view()
+    {
+
+    }
+
+    void web_view::process() noexcept
+    {
+
+    }
+
+}

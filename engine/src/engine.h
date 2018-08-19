@@ -26,5 +26,7 @@
 #include "web/service/websocket_service.h"
 #include "web/task/http_request_task.h"
 #include "web/task/http_response_task.h"
+#include "web/view/web_view_loader.h"
+#include "web/view/web_view_manager.h"
 
 #endif /* ENGINE_ENGINE_H */

@@ -98,6 +98,15 @@ namespace framework {
         return (config_setting_lookup_string(_setting, key, value) == CONFIG_TRUE);
     }
 
+    config_setting::sptr config_setting::root() const noexcept
+    {
+        config_setting_t *setting = _setting;
+        while (!config_setting_is_root(setting)) {
+            setting = setting->parent;
+        }
+        return config_setting::make_shared(setting);
+    }
+
     size_t config_setting::size() const noexcept
     {
         assert(config_setting_is_aggregate(_setting) == CONFIG_TRUE);

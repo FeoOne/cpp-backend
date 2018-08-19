@@ -29,6 +29,7 @@ namespace engine {
 
         static constexpr std::string_view   CONFIG_KEY_WORKERS { "workers" };
         static constexpr std::string_view   CONFIG_KEY_NAME { "name" };
+        static constexpr std::string_view   CONFIG_KEY_WEBSERVER_VIEW_ROOT { "view_root" };
 
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_JOB { "com.queue.job" };
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_SYSTEM { "com.queue.system" };

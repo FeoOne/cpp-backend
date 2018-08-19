@@ -16,6 +16,7 @@
 #include "string/string.h"
 #include "scalar/scalar.h"
 #include "util/optional.h"
+#include "logger/log_manager.h"
 
 namespace framework {
 
@@ -46,6 +47,8 @@ namespace framework {
         bool lookup_s64(const char *key, s64 *value) const noexcept;
         bool lookup_double(const char *key, double *value) const noexcept;
         bool lookup_string(const char *key, const char **value) const noexcept;
+
+        config_setting::sptr root() const noexcept;
 
         size_t size() const noexcept;
 
