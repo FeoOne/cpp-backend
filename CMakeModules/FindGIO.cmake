@@ -196,3 +196,5 @@ find_package_handle_standard_args(GIO
         GIO_VERSION)
 
 unset(GIO_DEPS_FOUND_VARS)
+
+mark_as_advanced(GIO_LIBRARY GIO_INCLUDE_DIRS)

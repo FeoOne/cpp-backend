@@ -15,3 +15,5 @@ if (CONFIG_FOUND)
 else()
     message(FATAL_ERROR "Couldn't find libconfig.")
 endif()
+
+mark_as_advanced(Config_LIBRARIES Config_INCLUDE_DIR)

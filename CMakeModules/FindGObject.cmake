@@ -79,3 +79,5 @@ find_package_handle_standard_args(GObject
       GObject_VERSION)
 
 unset(GObject_DEPS_FOUND_VARS)
+
+mark_as_advanced(GObject_LIBRARY GObject_INCLUDE_DIRS)

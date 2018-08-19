@@ -7,9 +7,9 @@
 
 #include "system/system_loop.h"
 
-namespace engine {
+using namespace std::chrono_literals;
 
-    using namespace std::chrono_literals;
+namespace engine {
 
     system_loop::system_loop(const task_queue::sptr& queue, task_handler *handler) noexcept :
             work_loop(queue, handler),

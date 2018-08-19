@@ -8,7 +8,7 @@
 #ifndef ENGINE_WEB_VIEW_MANAGER_H
 #define ENGINE_WEB_VIEW_MANAGER_H
 
-#include "web/view/web_view.h"
+#include "web/page/web_view.h"
 
 namespace engine {
 

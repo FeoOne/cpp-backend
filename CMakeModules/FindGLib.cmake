@@ -81,3 +81,5 @@ find_package_handle_standard_args(GLib
         GLib_INCLUDE_DIRS
         VERSION_VAR
         GLib_VERSION)
+
+mark_as_advanced(GLib_LIBRARY GLib_INCLUDE_DIRS)

@@ -15,3 +15,5 @@ if (UV_FOUND)
 else()
     message(FATAL_ERROR "Couldn't find libuv.")
 endif()
+
+mark_as_advanced(UV_LIBRARIES UV_INCLUDE_DIRS)

@@ -11,7 +11,7 @@
 #include <framework.h>
 
 #include "web/http/http_request.h"
-#include "web/view/web_view.h"
+#include "web/page/web_view.h"
 
 namespace engine {
 

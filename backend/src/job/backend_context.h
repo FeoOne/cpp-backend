@@ -1,12 +1,12 @@
 /**
- * @file job_context.h
+ * @file n_context.h
  * @author Feo
  * @date 19/08/2018
  * @brief
  */
 
-#ifndef BACKEND_JOB_CONTEXT_H
-#define BACKEND_JOB_CONTEXT_H
+#ifndef BACKEND_BACKEND_CONTEXT_H
+#define BACKEND_BACKEND_CONTEXT_H
 
 #include <engine.h>
 
@@ -29,4 +29,4 @@ namespace backend {
 
 }
 
-#endif /* BACKEND_JOB_CONTEXT_H */
+#endif /* BACKEND_BACKEND_CONTEXT_H */

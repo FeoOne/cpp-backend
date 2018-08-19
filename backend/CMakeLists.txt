@@ -2,9 +2,11 @@ set(PROJECT_NAME backend)
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
-find_package(config REQUIRED)
-find_package(soup REQUIRED)
-find_package(uv REQUIRED)
+find_package(NLOHMANJSON REQUIRED)
+find_package(CONFIG REQUIRED)
+find_package(GLIB REQUIRED)
+find_package(SOUP REQUIRED)
+find_package(UV REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -18,6 +20,7 @@ target_include_directories(${PROJECT_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${engine_SOURCE_DIR}/src
             ${framework_SOURCE_DIR}/src
+            ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
             ${GLib_INCLUDE_DIRS}

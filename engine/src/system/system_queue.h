@@ -12,7 +12,7 @@
 
 namespace engine {
 
-    class system_queue : public task_queue {
+    class system_queue final : public task_queue {
     public:
         FW_DECLARE_SMARTPOINTERS(system_queue)
         FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(system_queue)

@@ -6,8 +6,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/framework_const_gen.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main/framework_const_gen.h
         )
 
-find_package(config REQUIRED)
-find_package(glib REQUIRED)
+find_package(NLOHMANJSON REQUIRED)
+find_package(CONFIG REQUIRED)
+find_package(GLIB REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -21,6 +22,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GLib_INCLUDE_DIRS}
         )

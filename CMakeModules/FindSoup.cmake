@@ -84,3 +84,5 @@ find_package_handle_standard_args(Soup
         Soup_VERSION)
 
 unset(Soup_DEPS_FOUND_VARS)
+
+mark_as_advanced(Soup_LIBRARY Soup_INCLUDE_DIRS)

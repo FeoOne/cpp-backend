@@ -15,9 +15,7 @@ namespace engine {
 
     job_context::job_context(const config_setting::sptr& config,
                              const task_router::sptr& router) noexcept :
-            crucial(config,
-                    router,
-                    job_loop::make_shared(router->get_queue<job_context>(), this))
+            crucial(config, router, job_loop::make_shared(router->get_queue<job_context>(), this))
     {
     }
 

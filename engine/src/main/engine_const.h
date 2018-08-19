@@ -35,6 +35,9 @@ namespace engine {
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_SYSTEM { "com.queue.system" };
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_WEBSERVER { "com.queue.webserver" };
 
+        static constexpr std::string_view   MIME_TYPE_HTML { "text/html" };
+        static constexpr std::string_view   MIME_TYPE_JSON { "application/json" };
+
     };
 
 }

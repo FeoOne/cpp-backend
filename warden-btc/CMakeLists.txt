@@ -1,4 +1,4 @@
-set(PROJECT_NAME engine)
+set(PROJECT_NAME warden-btc)
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
@@ -7,21 +7,18 @@ find_package(CONFIG REQUIRED)
 find_package(GLIB REQUIRED)
 find_package(SOUP REQUIRED)
 find_package(UV REQUIRED)
-find_package(PQ REQUIRED)
-#find_package(flatbuffers REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} src/work/work_context.cpp src/work/work_context.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 enable_cxx17(${PROJECT_NAME})
 setup_compile_options(${PROJECT_NAME})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION})
-
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${engine_SOURCE_DIR}/src
             ${framework_SOURCE_DIR}/src
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
@@ -29,8 +26,6 @@ target_include_directories(${PROJECT_NAME}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
-            ${UV_INCLUDE_DIRS}
-
             ${FLATBUFFERS_INCLUDE_DIR}
         )
 
@@ -41,6 +36,6 @@ target_link_libraries(${PROJECT_NAME}
             ${GLib_LIBRARY}
             ${GObject_LIBRARY}
             ${Soup_LIBRARY}
-            ${UV_LIBRARIES}
             framework
+            engine
         )
