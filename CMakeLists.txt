@@ -13,5 +13,5 @@ setup_version()
 
 add_subdirectory(framework)
 add_subdirectory(engine)
-add_subdirectory(backend)
-add_subdirectory(thanos)
+add_subdirectory(module-quill)
+add_subdirectory(module-thanos)
