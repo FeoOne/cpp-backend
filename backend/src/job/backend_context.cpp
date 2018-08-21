@@ -23,18 +23,19 @@ namespace backend {
     // virtual
     backend_context::~backend_context()
     {
+        remove_service<http_service>();
     }
 
     // virtual
     void backend_context::setup() noexcept
     {
-
+        get_service<http_service>()->setup();
     }
 
     // virtual
     void backend_context::reset() noexcept
     {
-
+        get_service<http_service>()->reset();
     }
 
 }

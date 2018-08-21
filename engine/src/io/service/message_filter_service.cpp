@@ -16,8 +16,7 @@ namespace engine {
                                                    const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
-        add_task_handler(outgoing_message_task::key(),
-                         std::bind(&message_filter_service::handle_outgoing_packet_task, this, std::placeholders::_1));
+        EG_BIND_TASK_HANDLER(outgoing_message_task, message_filter_service, handle_outgoing_packet_task);
     }
 
     // virtual

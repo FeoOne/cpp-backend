@@ -21,11 +21,12 @@ namespace engine {
 
     void http_response::set_view(const web_view::sptr& view) noexcept
     {
+        const auto& content = view->compile_and_get_body();
         soup_message_set_response(_request->get_message(),
                                   "text/html",
                                   SOUP_MEMORY_COPY,
-                                  view->get_body().c_str(),
-                                  view->get_body().length());
+                                  content.c_str(),
+                                  content.length());
     }
 
 }

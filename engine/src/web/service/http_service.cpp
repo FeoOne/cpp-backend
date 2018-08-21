@@ -18,8 +18,7 @@ namespace engine {
                                const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
-        add_task_handler(http_response_task::key(),
-                         std::bind(&http_service::handle_http_response_task, this, std::placeholders::_1));
+        EG_BIND_TASK_HANDLER(http_response_task, http_service, handle_http_response_task);
     }
 
     // virtual

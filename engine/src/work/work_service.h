@@ -11,6 +11,9 @@
 #include "task/task_router.h"
 #include "work/work_context_delegate.h"
 
+#define EG_BIND_TASK_HANDLER(task, service, routine) \
+    add_task_handler(task::key(), std::bind(&service::routine, this, std::placeholders::_1))
+
 namespace engine {
 
     class work_service {

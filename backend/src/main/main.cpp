@@ -14,7 +14,6 @@ int main(int argc, char **argv)
 {
     return engine::application::start(argc,
                                       argv,
-                                      EG_CONTEXT_CREATOR(backend::backend_context), // @todo Rework wrapped lambda
-                                                                                    // to temlated functor.
+                                      EG_CONTEXT_CREATOR(backend::backend_context),
                                       backend::backend_const::APP_DESCRIPTION);
 }

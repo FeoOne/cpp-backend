@@ -9,6 +9,10 @@
 
 namespace engine {
 
+    web_page::web_page(const web_view::sptr& layout) noexcept :
+            _layout { layout }
+    {
 
+    }
 
 }

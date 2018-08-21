@@ -7,6 +7,8 @@
 
 #include "io/io_loop.h"
 #include "io/connection/tcp_connection.h"
+#include "io/task/new_connection_task.h"
+#include "io/task/close_connection_task.h"
 
 #include "io/service/tcp_service.h"
 

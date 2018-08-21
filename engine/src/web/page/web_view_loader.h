@@ -8,6 +8,7 @@
 #ifndef ENGINE_WEB_VIEW_LOADER_H
 #define ENGINE_WEB_VIEW_LOADER_H
 
+#include "main/engine_const.h"
 #include "web/page/web_view.h"
 
 namespace engine {

@@ -17,18 +17,21 @@ namespace engine {
         FW_DECLARE_SMARTPOINTERS(view_template)
         FW_DELETE_ALL_DEFAULT(view_template)
 
-        explicit view_template(std::string_view key, size_t start_pos, size_t end_pos) noexcept :
+        explicit view_template(std::string key, size_t start_pos, size_t end_pos) noexcept :
                 _key { key },
                 _start_pos { start_pos },
                 _end_pos { end_pos }
         {
-            lognotice("%lu %lu", _start_pos, _end_pos);
         }
 
         ~view_template() = default;
 
+        const std::string& get_key() const noexcept { return _key; }
+        size_t get_start_pos() const noexcept { return _start_pos; }
+        size_t get_count() const noexcept { return _end_pos - _start_pos; }
+
     private:
-        std::string_view        _key;
+        std::string             _key;
         size_t                  _start_pos;
         size_t                  _end_pos;
 
@@ -42,13 +45,44 @@ namespace engine {
         explicit web_view(std::string&& content) noexcept;
         ~web_view();
 
-        const std::string& get_body() const noexcept { return _content; }
+        const std::string& compile_and_get_body() noexcept;
+
+        void set_argument(const std::string& key, const std::string& value) noexcept;
+        void set_argument(const std::string& key, const web_view::sptr& view) noexcept;
 
     private:
-        std::string                         _content;
-        std::vector<view_template::sptr>    _templates;
+        class argument {
+        public:
+            FW_DECLARE_SMARTPOINTERS(argument)
+            FW_DELETE_ALL_DEFAULT(argument)
+
+            enum class type_t {
+                STRING,
+                VIEW,
+            };
+
+            explicit argument(const std::string& value) noexcept : _type { type_t::STRING }, _value { value } {}
+            explicit argument(const web_view::sptr& view) noexcept : _type { type_t::VIEW }, _view { view } {}
+
+            type_t get_type() const noexcept { return _type; }
+
+            const std::string& get_value() const noexcept { return _value; }
+            web_view::sptr get_view() const noexcept { return _view; }
+
+        private:
+            type_t      _type;
+
+            std::string         _value;
+            web_view::sptr      _view;
+
+        };
+
+        std::string                                         _content;
+        std::vector<view_template::sptr>                    _templates;
+        std::unordered_map<std::string, argument::sptr>     _arguments;
 
         void process() noexcept;
+        void compile() noexcept;
 
     };
 

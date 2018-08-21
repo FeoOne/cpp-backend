@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include <glib.h>
+
 #include "web/page/web_view_loader.h"
 
 namespace engine {
@@ -24,26 +26,23 @@ namespace engine {
         web_view::sptr  view { nullptr };
         std::string     path { std::string(_root_path) + "/" + filename };
 
-//        auto it = _cache.find(filename);
-//        if (it != _cache.end()) {
-//            view = web_view::make_shared(it->second);
-//        } else {
-//            std::ifstream stream(path, std::ios::in);
-//            if (stream.is_open()) {
-//                stream.seekg(0, std::ios::end);
-//                auto size = stream.tellg();
-//                std::string content(static_cast<size_t>(size), ' ');
-//                stream.seekg(0, std::ios::beg);
-//                stream.read(&content[0], size);
-//
-//                view = web_view::make_shared(std::move(content));
-//
-//
-//                _cache.insert({ filename, content });
-//            } else {
-//                logerror("Failed to load web view for with filename '%s'.", filename.c_str());
-//            }
-//        }
+        auto it = _cache.find(filename);
+        if (it != _cache.end()) {
+            std::string content(it->second);
+            view = web_view::make_shared(std::move(content));
+        } else {
+            GError *error   { nullptr };
+            gchar *buffer;
+            gsize length;
+
+            if (g_file_get_contents(path.c_str(), &buffer, &length, &error) == TRUE) {
+                std::string content(buffer, length);
+                g_free(buffer);
+                view = web_view::make_shared(std::move(content));
+            } else {
+                logerror("Failed load page '%s': %s.", path.c_str(), error->message);
+            }
+        }
 
         return view;
     }

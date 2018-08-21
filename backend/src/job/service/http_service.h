@@ -10,6 +10,9 @@
 
 #include <engine.h>
 
+#define EG_DEFINE_ACTION(name) \
+    engine::http_response::sptr action_##name(const engine::http_request::sptr& request) noexcept
+
 namespace backend {
 
     class http_service final : public framework::crucial<engine::work_service, http_service> {
@@ -26,16 +29,22 @@ namespace backend {
         void reset() noexcept final;
 
     private:
-        engine::web_view_loader::uptr                               _web_view_loader;
-        engine::web_view_manager::uptr                              _web_view_manager;
+        using action = std::function<engine::http_response::sptr(const engine::http_request::sptr&)>;
 
-        std::unordered_map<std::string_view,
-                std::function<void(engine::http_response::sptr&)>>  _handlers;
+        engine::web_view_loader::uptr                       _web_view_loader;
+        engine::web_view_manager::uptr                      _web_view_manager;
+
+        std::unordered_map<std::string_view, action>        _actions;
 
         void handle_http_request_task(const engine::task::sptr& t) noexcept;
+
+        EG_DEFINE_ACTION(not_found);
+        EG_DEFINE_ACTION(index);
 
     };
 
 }
+
+#undef EG_DEFINE_ACTION
 
 #endif /* BACKEND_HTTP_SERVICE_H */

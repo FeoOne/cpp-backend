@@ -14,10 +14,16 @@ namespace engine {
 
     class web_page {
     public:
-        web_page(const web_view::sptr& root_view);
-        ~web_page();
+        FW_DECLARE_SMARTPOINTERS(web_page)
+        FW_DELETE_ALL_DEFAULT(web_page)
+
+        explicit web_page(const web_view::sptr& layout) noexcept;
+        virtual ~web_page() = default;
+
+
 
     private:
+        web_view::sptr      _layout;
 
     };
 

@@ -9,6 +9,12 @@
 
 #include "main/application.h"
 #include "main/engine_const.h"
+#include "io/io_queue.h"
+#include "io/io_context.h"
+#include "io/task/new_connection_task.h"
+#include "io/task/close_connection_task.h"
+#include "io/task/incoming_message_task.h"
+#include "io/task/outgoing_message_task.h"
 #include "job/job_queue.h"
 #include "job/job_context.h"
 #include "web/webserver_queue.h"
@@ -27,9 +33,13 @@ namespace engine {
             _config { config::make_unique() },
             _workers { worker_pool::make_unique() },
             _router { task_router::make_shared() },
-            _context_creators {},
-            _queues {}
+            _queues {},
+            _context_creators {}
     {
+        _context_creators.insert({ engine_const::WORKER_NAME_IO,
+                                   [](const config_setting::sptr& config, const task_router::sptr& router) {
+                                       return io_context::make_unique(config, router);
+                                   } });
         _context_creators.insert({ engine_const::WORKER_NAME_SYSTEM,
                                    [](const config_setting::sptr& config, const task_router::sptr& router) {
                                        return system_context::make_unique(config, router);
@@ -46,6 +56,7 @@ namespace engine {
         _config->read(_option_processor->config_path());
 
         create_queues();
+        create_routes();
         create_workers();
 
         _workers->start();
@@ -56,12 +67,23 @@ namespace engine {
 
     void application::create_queues() noexcept
     {
+        _router->add_queue(io_context::key(), io_queue::make_shared());
         _router->add_queue(job_context::key(), job_queue::make_shared());
         _router->add_queue(system_context::key(), system_queue::make_shared());
         _router->add_queue(webserver_context::key(), webserver_queue::make_shared());
+    }
 
+    void application::create_routes() noexcept
+    {
+        // web routes
         _router->register_route(http_request_task::key(), job_context::key());
         _router->register_route(http_response_task::key(), webserver_context::key());
+
+        // io routes
+        _router->register_route(new_connection_task::key(), job_context::key());
+        _router->register_route(close_connection_task::key(), job_context::key());
+        _router->register_route(incoming_message_task::key(), job_context::key());
+        _router->register_route(outgoing_message_task::key(), io_context::key());
     }
 
     void application::create_workers() noexcept

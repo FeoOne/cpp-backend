@@ -8,7 +8,7 @@ find_package(GLIB REQUIRED)
 find_package(SOUP REQUIRED)
 find_package(UV REQUIRED)
 find_package(PQ REQUIRED)
-#find_package(flatbuffers REQUIRED)
+find_package(flatbuffers REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 

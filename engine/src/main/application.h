@@ -39,19 +39,17 @@ namespace engine {
                          const std::string_view& description) noexcept;
 
     private:
-        using context_creator_map = std::unordered_map<std::string_view, context_creator>;
-
-        engine_option_processor::uptr   _option_processor;
-        framework::config::uptr         _config;
-        worker_pool::uptr               _workers;
-        task_router::sptr               _router;
-        context_creator_map             _context_creators;
-
+        engine_option_processor::uptr                                   _option_processor;
+        framework::config::uptr                                         _config;
+        worker_pool::uptr                                               _workers;
+        task_router::sptr                                               _router;
         std::unordered_map<work_context::key_type, task_queue::sptr>    _queues;
+        std::unordered_map<std::string_view, context_creator>           _context_creators;
 
         int start() noexcept;
 
         void create_queues() noexcept;
+        void create_routes() noexcept;
         void create_workers() noexcept;
 
     };
