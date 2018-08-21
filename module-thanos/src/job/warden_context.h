@@ -5,10 +5,10 @@
  * @brief
  */
 
-#ifndef WARDEN_BTC_WARDEN_CONTEXT_H
-#define WARDEN_BTC_WARDEN_CONTEXT_H
+#ifndef THANOS_WARDEN_CONTEXT_H
+#define THANOS_WARDEN_CONTEXT_H
 
-#include <engine.h>
+#include <rocket.h>
 
 namespace warden {
 
@@ -23,4 +23,4 @@ namespace warden {
 
 }
 
-#endif /* WARDEN_BTC_WARDEN_CONTEXT_H */
+#endif /* THANOS_WARDEN_CONTEXT_H */

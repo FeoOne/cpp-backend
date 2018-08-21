@@ -5,14 +5,14 @@
  * @brief
  */
 
-#include <engine.h>
+#include <rocket.h>
 
 #include "main/warden_const.h"
 #include "job/warden_context.h"
 
 int main(int argc, char **argv)
 {
-    return engine::application::start(argc,
+    return rocket::application::start(argc,
                                       argv,
                                       EG_CONTEXT_CREATOR(backend::backend_context),
                                       backend::backend_const::APP_DESCRIPTION);

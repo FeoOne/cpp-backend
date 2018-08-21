@@ -1,4 +1,6 @@
-set(PROJECT_NAME backend)
+set(PROJECT_NAME quill)
+
+message(STATUS "Configure ${PROJECT_NAME}...")
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
@@ -18,8 +20,8 @@ setup_compile_options(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${engine_SOURCE_DIR}/src
-            ${framework_SOURCE_DIR}/src
+            ${rocket_SOURCE_DIR}/src
+            ${groot_SOURCE_DIR}/src
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
@@ -36,6 +38,6 @@ target_link_libraries(${PROJECT_NAME}
             ${GLib_LIBRARY}
             ${GObject_LIBRARY}
             ${Soup_LIBRARY}
-            framework
-            engine
+            groot
+            rocket
         )
