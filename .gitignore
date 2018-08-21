@@ -6,3 +6,6 @@ cmake-build-*
 
 # auto generated code
 framework/src/main/framework_const_gen.h
+
+# local files
+config/*
