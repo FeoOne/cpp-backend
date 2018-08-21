@@ -9,6 +9,7 @@
 #define ENGINE_TCP_SERVICE_H
 
 #include "work/work_service.h"
+#include "io/connection/connection_manager.h"
 
 namespace engine {
 
@@ -26,7 +27,9 @@ namespace engine {
         void reset() noexcept final;
 
     private:
-        uv_loop_t *         _loop;
+        uv_loop_t *                 _loop;
+
+        connection_manager::uptr    _connections;
 
         void listen(const framework::endpoint::sptr& endpoint,
                     u16 backlog,
@@ -36,8 +39,12 @@ namespace engine {
         void setup_sockaddr(const framework::endpoint::sptr& endpoint, framework::socket_address *addr) noexcept;
 
         void on_connection(framework::network_handle *handle, int status) noexcept;
+        void on_connect(uv_connect_t *request, int status) noexcept;
+        void on_shutdown(uv_shutdown_t *request, int status) noexcept;
 
         static void connection_routine(uv_stream_t *stream, int status) noexcept;
+        static void connect_routine(uv_connect_t *request, int status) noexcept;
+        static void shutdown_routine(uv_shutdown_t *request, int status) noexcept;
 
     };
 

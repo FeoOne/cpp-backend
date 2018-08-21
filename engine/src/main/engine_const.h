@@ -38,6 +38,8 @@ namespace engine {
         static constexpr std::string_view   MIME_TYPE_HTML { "text/html" };
         static constexpr std::string_view   MIME_TYPE_JSON { "application/json" };
 
+        static constexpr size_t             CONNECTION_RESERVE_COUNT { 10000 };
+
     };
 
 }
