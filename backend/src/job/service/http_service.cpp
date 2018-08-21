@@ -11,7 +11,7 @@ namespace backend {
 
     http_service::http_service(const framework::config_setting::sptr& config,
                                const engine::task_router::sptr& router,
-                               const engine::work_service_provider *service_provider) noexcept :
+                               const engine::work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider),
             _web_view_loader {
                     engine::web_view_loader::make_unique(

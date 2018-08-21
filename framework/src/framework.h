@@ -29,6 +29,9 @@
 
 #include "time/time.h"
 
+#include "scalar/string.h"
+#include "scalar/numeric.h"
+
 #include "logger/log_manager.h"
 
 #include "memory/memory.h"
@@ -36,6 +39,10 @@
 #include "config/config.h"
 #include "config/command_line_option_processor.h"
 
+#include "network/network.h"
+#include "network/endpoint.h"
+
+#include "external/uv_ex.h"
 #include "external/glib_ex.h"
 
 #endif /* FRAMEWORK_FRAMEWORK_H */

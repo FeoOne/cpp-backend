@@ -12,7 +12,7 @@
 
 #include "main/tools.h"
 #include "memory/memory.h"
-#include "scalar/scalar.h"
+#include "scalar/numeric.h"
 
 #define FW_CRUCIAL_BASE_DEFINITION()                    \
     public:                                             \

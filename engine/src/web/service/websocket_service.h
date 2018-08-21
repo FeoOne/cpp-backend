@@ -21,7 +21,7 @@ namespace engine {
 
         explicit websocket_service(const framework::config_setting::sptr& config,
                                    const task_router::sptr& router,
-                                   const work_service_provider *service_provider) noexcept;
+                                   const work_context_delegate *service_provider) noexcept;
         virtual ~websocket_service();
 
         void setup() noexcept final;

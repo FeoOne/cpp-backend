@@ -13,10 +13,10 @@ namespace engine {
 
     work_service::work_service(const framework::config_setting::sptr& config,
                                const task_router::sptr& router,
-                               const work_service_provider *service_provider) noexcept :
+                               const work_context_delegate *service_provider) noexcept :
             _config { config },
             _router { router },
-            _service_provider { service_provider }
+            _context_delegate { service_provider }
     {
         _task_handlers.fill(nullptr);
     }

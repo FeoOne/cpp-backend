@@ -12,7 +12,7 @@
 #include <glib.h>
 
 #include "memory/memory.h"
-#include "string/string.h"
+#include "scalar/string.h"
 
 namespace framework {
 

@@ -13,7 +13,7 @@ namespace engine {
 
     websocket_service::websocket_service(const framework::config_setting::sptr& config,
                                          const task_router::sptr& router,
-                                         const work_service_provider *service_provider) noexcept :
+                                         const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
     }

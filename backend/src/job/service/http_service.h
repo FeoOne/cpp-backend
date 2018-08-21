@@ -19,7 +19,7 @@ namespace backend {
 
         explicit http_service(const framework::config_setting::sptr& config,
                               const engine::task_router::sptr& router,
-                              const engine::work_service_provider *service_provider) noexcept;
+                              const engine::work_context_delegate *service_provider) noexcept;
         virtual ~http_service();
 
         void setup() noexcept final;

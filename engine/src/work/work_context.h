@@ -5,20 +5,21 @@
 #ifndef ENGINE_WORK_CONTEXT_H
 #define ENGINE_WORK_CONTEXT_H
 
-#include "work/work_loop.h"
-#include "work/work_service.h"
 #include "task/task_router.h"
 #include "task/task_handler.h"
+#include "work/work_loop.h"
+#include "work/work_service.h"
+#include "work/work_context_delegate.h"
 
 namespace engine {
 
-    class work_context : public work_service_provider, public task_handler {
+    class work_context : public work_context_delegate, public task_handler {
     public:
         FW_DECLARE_SMARTPOINTERS(work_context)
         FW_DELETE_ALL_DEFAULT(work_context)
         FW_CRUCIAL_BASE_DEFINITION()
 
-        using work_service_provider::get_service;
+        using work_context_delegate::get_service;
 
         explicit work_context(const framework::config_setting::sptr& config,
                               const task_router::sptr& router,
@@ -36,7 +37,7 @@ namespace engine {
     protected:
         framework::config_setting::sptr get_config() const noexcept { return _config; }
         task_router::sptr get_router() const noexcept { return _router; }
-        work_loop::sptr get_loop() const noexcept { return _loop; }
+        work_loop::sptr get_loop() const noexcept final { return _loop; }
 
         void register_task_handler(task::key_type task_key, work_service::key_type service_key) noexcept;
 

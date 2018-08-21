@@ -30,7 +30,6 @@ target_include_directories(${PROJECT_NAME}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
             ${UV_INCLUDE_DIRS}
-
             ${FLATBUFFERS_INCLUDE_DIR}
         )
 

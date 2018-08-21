@@ -13,8 +13,8 @@
 #include <libconfig.h>
 
 #include "memory/memory.h"
-#include "string/string.h"
-#include "scalar/scalar.h"
+#include "scalar/string.h"
+#include "scalar/numeric.h"
 #include "util/optional.h"
 #include "logger/log_manager.h"
 

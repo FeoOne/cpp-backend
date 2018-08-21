@@ -21,7 +21,9 @@ namespace engine {
                 _key { key },
                 _start_pos { start_pos },
                 _end_pos { end_pos }
-        {}
+        {
+            lognotice("%lu %lu", _start_pos, _end_pos);
+        }
 
         ~view_template() = default;
 

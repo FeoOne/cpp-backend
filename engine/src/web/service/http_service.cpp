@@ -15,10 +15,10 @@ namespace engine {
 
     http_service::http_service(const framework::config_setting::sptr& config,
                                const task_router::sptr& router,
-                               const work_service_provider *service_provider) noexcept :
+                               const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
-        add_task_handler(engine::http_response_task::key(),
+        add_task_handler(http_response_task::key(),
                          std::bind(&http_service::handle_http_response_task, this, std::placeholders::_1));
     }
 
@@ -30,7 +30,7 @@ namespace engine {
     // virtual
     void http_service::setup() noexcept
     {
-        soup_server_add_handler(get_service_provider()->get_service<webserver_service>()->get_server(),
+        soup_server_add_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
                                 engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data(),
                                 &http_service::handler_routine,
                                 this,
@@ -40,7 +40,7 @@ namespace engine {
     // virtual
     void http_service::reset() noexcept
     {
-        soup_server_remove_handler(get_service_provider()->get_service<webserver_service>()->get_server(),
+        soup_server_remove_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
                                    engine_const::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
@@ -50,7 +50,7 @@ namespace engine {
         auto response = task->get_response();
         auto request = response->get_request();
 
-        soup_server_unpause_message(get_service_provider()->get_service<webserver_service>()->get_server(),
+        soup_server_unpause_message(get_context_delegate()->get_service<webserver_service>()->get_server(),
                                     request->get_message());
     }
 
@@ -69,7 +69,7 @@ namespace engine {
         auto request { http_request::make_shared(message, p, query, client) };
         get_router()->enqueue(http_request_task::make_shared(request));
 
-        soup_server_pause_message(get_service_provider()->get_service<webserver_service>()->get_server(), message);
+        soup_server_pause_message(get_context_delegate()->get_service<webserver_service>()->get_server(), message);
     }
 
     // static

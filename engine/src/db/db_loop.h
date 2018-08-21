@@ -26,7 +26,12 @@ namespace engine {
         void stop() noexcept final;
 
     private:
+        uv_loop_t       _loop;
+        uv_async_t      _async_handle;
 
+        void on_async() noexcept;
+
+        static void async_routine(uv_async_t *handle) noexcept;
 
     };
 

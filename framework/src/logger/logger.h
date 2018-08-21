@@ -15,7 +15,7 @@
 
 #include "memory/memory.h"
 
-#include "scalar/scalar.h"
+#include "scalar/numeric.h"
 
 namespace framework {
 

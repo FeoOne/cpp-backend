@@ -9,29 +9,9 @@
 #define ENGINE_EXECUTION_SERVICE_H
 
 #include "task/task_router.h"
+#include "work/work_context_delegate.h"
 
 namespace engine {
-
-    class work_service;
-
-    class work_service_provider {
-    public:
-        FW_DECLARE_SMARTPOINTERS(work_service_provider)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_service_provider)
-
-        virtual ~work_service_provider() = default;
-
-        template<typename Service>
-        typename Service::sptr get_service() const noexcept {
-            return std::static_pointer_cast<Service>(get_service(Service::key()));
-        }
-
-    protected:
-        work_service_provider() = default;
-
-        virtual std::shared_ptr<work_service> get_service(framework::crucial_key_type key) const noexcept = 0;
-
-    };
 
     class work_service {
     public:
@@ -51,18 +31,18 @@ namespace engine {
 
         explicit work_service(const framework::config_setting::sptr& config,
                               const task_router::sptr& router,
-                              const work_service_provider *service_provider) noexcept;
+                              const work_context_delegate *service_provider) noexcept;
 
         framework::config_setting::sptr get_config() const noexcept { return _config; }
         task_router::sptr get_router() const noexcept { return _router; }
-        const work_service_provider *get_service_provider() const noexcept { return _service_provider; }
+        const work_context_delegate *get_context_delegate() const noexcept { return _context_delegate; }
 
         void add_task_handler(task::key_type task_key, task_handler&& handler) noexcept;
 
     private:
         framework::config_setting::sptr             _config;
         task_router::sptr                           _router;
-        const work_service_provider *               _service_provider;
+        const work_context_delegate *               _context_delegate;
         std::array<task_handler,
                 engine_const::TASK_TYPE_MAX_COUNT>  _task_handlers;
 

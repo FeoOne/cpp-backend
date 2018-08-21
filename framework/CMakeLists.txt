@@ -9,6 +9,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/framework_const_gen.h.in
 find_package(NLOHMANJSON REQUIRED)
 find_package(CONFIG REQUIRED)
 find_package(GLIB REQUIRED)
+find_package(UV REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -25,10 +26,12 @@ target_include_directories(${PROJECT_NAME}
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GLib_INCLUDE_DIRS}
+            ${UV_INCLUDE_DIRS}
         )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
             ${GLib_LIBRARY}
+            ${UV_LIBRARIES}
         )

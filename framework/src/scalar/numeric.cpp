@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "scalar/scalar.h"
+#include "scalar/numeric.h"
 
 namespace framework {
 
