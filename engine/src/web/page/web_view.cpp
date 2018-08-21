@@ -79,7 +79,7 @@ namespace engine {
             auto it = _arguments.find(tpl->get_key());
             if (it != _arguments.end()) {
                 auto arg = it->second;
-                if (arg->get_type() == argument::type_t::VIEW) {
+                if (arg->get_type() == argument::type_t::VIEW && arg->get_view()) {
                     arg->get_view()->compile();
                     _content = _content.replace(tpl->get_start_pos() + offset,
                                                 tpl->get_count(),

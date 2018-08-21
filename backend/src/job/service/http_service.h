@@ -40,6 +40,7 @@ namespace backend {
 
         EG_DEFINE_ACTION(not_found);
         EG_DEFINE_ACTION(index);
+        EG_DEFINE_ACTION(invoice);
 
     };
 

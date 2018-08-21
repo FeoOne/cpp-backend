@@ -61,8 +61,18 @@ namespace engine {
                 VIEW,
             };
 
-            explicit argument(const std::string& value) noexcept : _type { type_t::STRING }, _value { value } {}
-            explicit argument(const web_view::sptr& view) noexcept : _type { type_t::VIEW }, _view { view } {}
+            explicit argument(const std::string& value) noexcept :
+                    _type { type_t::STRING },
+                    _view { nullptr },
+                    _value { value }
+            {
+            }
+            explicit argument(const web_view::sptr& view) noexcept :
+                    _type { type_t::VIEW },
+                    _view { view },
+                    _value { "" }
+            {
+            }
 
             type_t get_type() const noexcept { return _type; }
 
@@ -72,8 +82,8 @@ namespace engine {
         private:
             type_t      _type;
 
-            std::string         _value;
             web_view::sptr      _view;
+            std::string         _value;
 
         };
 

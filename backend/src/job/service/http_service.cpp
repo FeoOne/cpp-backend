@@ -39,6 +39,7 @@ namespace backend {
     {
         EG_ADD_ACTION("/404", not_found);
         EG_ADD_ACTION("/", index);
+        EG_ADD_ACTION("/invoice", invoice);
     }
 
     // virtual
@@ -81,8 +82,28 @@ namespace backend {
 
         auto root = _web_view_loader->load("layout/base.html");
         auto body = _web_view_loader->load("index/body.html");
+        auto style = _web_view_loader->load("style/style.css");
 
         root->set_argument("TITLE", "bitpayments");
+        root->set_argument("STYLE", style);
+        root->set_argument("BODY", body);
+
+        response->set_status(SOUP_STATUS_OK);
+        response->set_view(root);
+
+        return response;
+    }
+
+    EG_DECLARE_ACTION(invoice)
+    {
+        auto response = engine::http_response::make_shared(request);
+
+        auto root = _web_view_loader->load("layout/base.html");
+        auto body = _web_view_loader->load("invoice/body.html");
+        auto style = _web_view_loader->load("style/style.css");
+
+        root->set_argument("TITLE", "bitpayments - invoice");
+        root->set_argument("STYLE", style);
         root->set_argument("BODY", body);
 
         response->set_status(SOUP_STATUS_OK);

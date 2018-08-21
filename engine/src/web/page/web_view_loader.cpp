@@ -39,8 +39,12 @@ namespace engine {
                 std::string content(buffer, length);
                 g_free(buffer);
                 view = web_view::make_shared(std::move(content));
+
+#ifdef NDEBUG
+                _cache.insert({ filename, content });
+#endif
             } else {
-                logerror("Failed load page '%s': %s.", path.c_str(), error->message);
+                logerror("%s.", error->message);
             }
         }
 
