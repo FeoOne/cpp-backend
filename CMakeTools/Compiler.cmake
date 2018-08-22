@@ -13,7 +13,7 @@ function(enable_cxx17 TARGET)
         target_link_libraries(${TARGET} PRIVATE pthread)
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         set_target_properties(${TARGET} PROPERTIES
-                COMPILE_FLAGS "-std=c++17 -pthtrad"
+                COMPILE_FLAGS "-std=c++17 -pthread"
                 )
         target_link_libraries(${TARGET} PRIVATE pthread)
     endif()
