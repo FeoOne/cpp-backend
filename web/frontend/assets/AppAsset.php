@@ -17,7 +17,6 @@ class AppAsset extends AssetBundle
     public $js = [
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'rafaelvaloto\mdl\material\MaterialDesignLiteAsset',
     ];
 }
