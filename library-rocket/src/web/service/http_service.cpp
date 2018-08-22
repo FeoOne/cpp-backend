@@ -43,7 +43,7 @@ namespace rocket {
                                    consts::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
-    void http_service::handle_http_response_task(const rocket::task::sptr& t) noexcept
+    void http_service::handle_http_response_task(const task::sptr& t) noexcept
     {
         auto task = std::static_pointer_cast<rocket::http_response_task>(t);
         auto response = task->get_response();

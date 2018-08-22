@@ -40,6 +40,7 @@ namespace rocket {
             auto task = get_queue()->dequeue();
             get_task_handler()->handle_task(task);
         }
+        return TRUE; // @todo Return smart result, depend on state.
     }
 
     // static
