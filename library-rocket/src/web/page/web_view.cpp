@@ -92,7 +92,7 @@ namespace rocket {
                     offset += arg->get_value().length() - tpl->get_count();
                 }
             } else {
-                logerror("Failed to find argument '%s'.", tpl->get_key().c_str());
+                logerror("Failed to find value for argument '%s'.", tpl->get_key().c_str());
             }
         }
     }
