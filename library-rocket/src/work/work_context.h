@@ -15,9 +15,9 @@ namespace rocket {
 
     class work_context : public work_context_delegate, public task_handler {
     public:
-        FW_DECLARE_SMARTPOINTERS(work_context)
-        FW_DELETE_ALL_DEFAULT(work_context)
-        FW_CRUCIAL_BASE_DEFINITION()
+        GR_DECLARE_SMARTPOINTERS(work_context)
+        GR_DELETE_ALL_DEFAULT(work_context)
+        GR_CRUCIAL_BASE_DEFINITION()
 
         using work_context_delegate::get_service;
 

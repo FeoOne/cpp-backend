@@ -10,15 +10,17 @@
 
 #include <rocket.h>
 
-#define EG_DEFINE_ACTION(name) \
-    rocket::http_response::sptr action_##name(const rocket::http_request::sptr& request) noexcept
+#include "main/quill_consts.h"
+
+#define RC_DEFINE_ACTION(name, ver) \
+    rocket::http_response::sptr action_##name##_##ver(const rocket::http_request::sptr& request) noexcept
 
 namespace quill {
 
     class http_service final : public groot::crucial<rocket::work_service, http_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_service)
-        FW_DELETE_ALL_DEFAULT(http_service)
+        GR_DECLARE_SMARTPOINTERS(http_service)
+        GR_DELETE_ALL_DEFAULT(http_service)
 
         explicit http_service(const groot::config_setting::sptr& config,
                               const rocket::task_router::sptr& router,
@@ -38,14 +40,12 @@ namespace quill {
 
         void handle_http_request_task(const rocket::task::sptr& t) noexcept;
 
-        EG_DEFINE_ACTION(not_found);
-        EG_DEFINE_ACTION(index);
-        EG_DEFINE_ACTION(invoice);
+        RC_DEFINE_ACTION(invoice, v1);
 
     };
 
 }
 
-#undef EG_DEFINE_ACTION
+#undef RC_DEFINE_ACTION
 
 #endif /* QUILL_HTTP_SERVICE_H */

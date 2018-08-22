@@ -14,9 +14,9 @@
 #include "logger/logger.h"
 
 #define logassert(cond) \
-    do { if (!(cond)) { logdebug("Assertion failed '" FW_STR(cond) "'."); abort(); } } while (false)
+    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'."); abort(); } } while (false)
 #define logcond(cond, format, ...) \
-    do { if ((cond)) { logwarn("Check condition: '" FW_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
+    do { if ((cond)) { logwarn("Check condition: '" GR_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
 
 #define logdebug(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::DEBUG,        \
                                                                               __FILE__,                             \
@@ -77,7 +77,7 @@ namespace groot {
 
     class log_manager final {
     public:
-        FW_DELETE_ALL_DEFAULT(log_manager)
+        GR_DELETE_ALL_DEFAULT(log_manager)
 
         static void setup() noexcept;
 

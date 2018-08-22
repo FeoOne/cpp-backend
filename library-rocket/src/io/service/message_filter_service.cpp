@@ -16,7 +16,7 @@ namespace rocket {
                                                    const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
-        EG_BIND_TASK_HANDLER(outgoing_message_task, message_filter_service, handle_outgoing_packet_task);
+        RC_BIND_TASK_HANDLER(outgoing_message_task, message_filter_service, handle_outgoing_packet_task);
     }
 
     // virtual

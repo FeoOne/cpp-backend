@@ -38,16 +38,30 @@ namespace rocket {
 
         _server = soup_server_new(SOUP_SERVER_SERVER_HEADER, header, nullptr);
         if (_server != nullptr) {
-            auto result = soup_server_listen_all(_server,
-                                                 static_cast<guint>(port),
-                                                 static_cast<SoupServerListenOptions>(0),
-                                                 &error);
+            gboolean result { FALSE };
+            auto listen = (*get_config())[consts::CONFIG_KEY_LISTEN]->to_string_view();
+            if (listen == consts::CONFIG_WEBSERVER_LISTEN_ALL) {
+                result = soup_server_listen_all(_server,
+                                                static_cast<guint>(port),
+                                                static_cast<SoupServerListenOptions>(0),
+                                                &error);
+            } else if (listen == consts::CONFIG_WEBSERVER_LISTEN_LOCAL) {
+                result = soup_server_listen_local(_server,
+                                                  static_cast<guint>(port),
+                                                  static_cast<SoupServerListenOptions>(0),
+                                                  &error);
+            } else {
+                // @todo Implement parse custom address and listen it.
+            }
 
             if (result == TRUE) {
                 print_server_info();
                 loginfo("Web server started...");
             } else {
-                logerror("Failed to start web server.");
+                if (error != nullptr) {
+                    logerror("%s", error->message);
+                }
+                logcrit("Failed to start web server.");
 
                 soup_server_disconnect(_server);
                 _server = nullptr;
@@ -60,7 +74,7 @@ namespace rocket {
     void webserver_service::reset() noexcept
     {
         soup_server_disconnect(_server);
-        FW_GOBJECT_UNREF(_server);
+        GR_GOBJECT_UNREF(_server);
         _server = nullptr;
     }
 

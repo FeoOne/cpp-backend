@@ -14,7 +14,7 @@ namespace rocket {
 
     class connection {
     public:
-        FW_DECLARE_SMARTPOINTERS(connection)
+        GR_DECLARE_SMARTPOINTERS(connection)
 
         enum class side_t {
             LOCAL,

@@ -9,7 +9,7 @@
 
 namespace rocket {
 
-    FW_CRUCIAL_BASE_DECLARATION(work_service)
+    GR_CRUCIAL_BASE_DECLARATION(work_service)
 
     work_service::work_service(const groot::config_setting::sptr& config,
                                const task_router::sptr& router,

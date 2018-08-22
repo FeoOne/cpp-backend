@@ -25,8 +25,8 @@ namespace groot {
      */
     class config_setting {
     public:
-        FW_DECLARE_SMARTPOINTERS(config_setting)
-        FW_DELETE_ALL_DEFAULT(config_setting)
+        GR_DECLARE_SMARTPOINTERS(config_setting)
+        GR_DELETE_ALL_DEFAULT(config_setting)
 
         explicit config_setting(config_setting_t *setting) noexcept : _setting { setting } {}
         virtual ~config_setting() = default;
@@ -65,7 +65,7 @@ namespace groot {
      */
     class config : public config_setting {
     public:
-        FW_DECLARE_SMARTPOINTERS(config)
+        GR_DECLARE_SMARTPOINTERS(config)
 
         config();
         virtual ~config();

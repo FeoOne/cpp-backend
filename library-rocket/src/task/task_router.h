@@ -12,8 +12,8 @@ namespace rocket {
 
     class task_router {
     public:
-        FW_DECLARE_SMARTPOINTERS(task_router)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_router)
+        GR_DECLARE_SMARTPOINTERS(task_router)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_router)
 
         task_router();
         ~task_router() = default;

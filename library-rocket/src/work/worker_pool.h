@@ -15,8 +15,8 @@ namespace rocket {
 
     class worker_pool {
     public:
-        FW_DECLARE_SMARTPOINTERS(worker_pool)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(worker_pool)
+        GR_DECLARE_SMARTPOINTERS(worker_pool)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(worker_pool)
 
         worker_pool();
         ~worker_pool() = default;

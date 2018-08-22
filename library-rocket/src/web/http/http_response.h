@@ -17,8 +17,8 @@ namespace rocket {
 
     class http_response {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_response)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response)
+        GR_DECLARE_SMARTPOINTERS(http_response)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response)
 
         explicit http_response(const http_request::sptr& request) noexcept;
         ~http_response() = default;

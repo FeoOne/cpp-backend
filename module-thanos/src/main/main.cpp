@@ -14,6 +14,6 @@ int main(int argc, char **argv)
 {
     return rocket::application::start(argc,
                                       argv,
-                                      EG_CONTEXT_CREATOR(backend::backend_context),
+                                      RC_CONTEXT_CREATOR(backend::backend_context),
                                       backend::backend_const::APP_DESCRIPTION);
 }

@@ -17,8 +17,8 @@ namespace rocket {
 
     class work_context_delegate {
     public:
-        FW_DECLARE_SMARTPOINTERS(work_context_delegate)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_context_delegate)
+        GR_DECLARE_SMARTPOINTERS(work_context_delegate)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_context_delegate)
 
         virtual ~work_context_delegate() = default;
 

@@ -11,8 +11,8 @@ namespace rocket {
 
     class webserver_queue final : public task_queue {
     public:
-        FW_DECLARE_SMARTPOINTERS(webserver_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_queue)
+        GR_DECLARE_SMARTPOINTERS(webserver_queue)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(webserver_queue)
 
         webserver_queue();
         virtual ~webserver_queue() = default;

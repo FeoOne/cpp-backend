@@ -16,8 +16,8 @@ namespace rocket {
 
     class http_service final : public groot::crucial<work_service, http_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_service)
-        FW_DELETE_ALL_DEFAULT(http_service)
+        GR_DECLARE_SMARTPOINTERS(http_service)
+        GR_DELETE_ALL_DEFAULT(http_service)
 
         explicit http_service(const groot::config_setting::sptr& config,
                               const task_router::sptr& router,

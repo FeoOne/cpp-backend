@@ -14,8 +14,8 @@ namespace rocket {
 
     class job_queue final : public task_queue {
     public:
-        FW_DECLARE_SMARTPOINTERS(job_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(job_queue)
+        GR_DECLARE_SMARTPOINTERS(job_queue)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(job_queue)
 
         job_queue();
         virtual ~job_queue() = default;

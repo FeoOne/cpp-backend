@@ -15,8 +15,8 @@ namespace rocket {
 
     class work_loop {
     public:
-        FW_DECLARE_SMARTPOINTERS(work_loop)
-        FW_DELETE_ALL_DEFAULT(work_loop)
+        GR_DECLARE_SMARTPOINTERS(work_loop)
+        GR_DELETE_ALL_DEFAULT(work_loop)
 
         explicit work_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
         virtual ~work_loop() = default;

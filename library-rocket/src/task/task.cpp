@@ -6,6 +6,6 @@
 
 namespace rocket {
 
-    FW_CRUCIAL_BASE_DECLARATION(task)
+    GR_CRUCIAL_BASE_DECLARATION(task)
 
 }

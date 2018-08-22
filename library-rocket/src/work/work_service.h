@@ -11,16 +11,16 @@
 #include "task/task_router.h"
 #include "work/work_context_delegate.h"
 
-#define EG_BIND_TASK_HANDLER(task, service, routine) \
+#define RC_BIND_TASK_HANDLER(task, service, routine) \
     add_task_handler(task::key(), std::bind(&service::routine, this, std::placeholders::_1))
 
 namespace rocket {
 
     class work_service {
     public:
-        FW_DECLARE_SMARTPOINTERS(work_service)
-        FW_DELETE_ALL_DEFAULT(work_service)
-        FW_CRUCIAL_BASE_DEFINITION()
+        GR_DECLARE_SMARTPOINTERS(work_service)
+        GR_DELETE_ALL_DEFAULT(work_service)
+        GR_CRUCIAL_BASE_DEFINITION()
 
         virtual ~work_service() = default;
 

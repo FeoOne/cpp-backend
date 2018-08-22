@@ -21,8 +21,8 @@ namespace groot {
 
     class logger {
     public:
-        FW_DECLARE_SMARTPOINTERS(logger)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(logger)
+        GR_DECLARE_SMARTPOINTERS(logger)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(logger)
 
         enum class level_t {
             EMERG,
@@ -51,8 +51,8 @@ namespace groot {
 
     class stdout_logger final : public logger {
     public:
-        FW_DECLARE_SMARTPOINTERS(stdout_logger)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(stdout_logger)
+        GR_DECLARE_SMARTPOINTERS(stdout_logger)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(stdout_logger)
 
         stdout_logger() = default;
         virtual ~stdout_logger() = default;

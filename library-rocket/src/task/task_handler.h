@@ -14,7 +14,7 @@ namespace rocket {
 
     class task_handler {
     public:
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_handler)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_handler)
 
         virtual ~task_handler() = default;
 

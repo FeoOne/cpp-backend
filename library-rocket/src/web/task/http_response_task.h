@@ -15,8 +15,8 @@ namespace rocket {
 
     class http_response_task : public groot::crucial<task, http_response_task> {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_response_task)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response_task)
+        GR_DECLARE_SMARTPOINTERS(http_response_task)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response_task)
 
         explicit http_response_task(const http_response::sptr& response) noexcept : _response { response } {}
         virtual ~http_response_task() = default;

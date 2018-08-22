@@ -14,8 +14,8 @@ namespace rocket {
 
     class connection_manager final {
     public:
-        FW_DECLARE_SMARTPOINTERS(connection_manager)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(connection_manager)
+        GR_DECLARE_SMARTPOINTERS(connection_manager)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(connection_manager)
 
         connection_manager();
         ~connection_manager() = default;

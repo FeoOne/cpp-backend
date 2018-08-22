@@ -14,8 +14,8 @@ namespace rocket {
 
     class message_filter_service final : public groot::crucial<work_service, message_filter_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(message_filter_service)
-        FW_DELETE_ALL_DEFAULT(message_filter_service)
+        GR_DECLARE_SMARTPOINTERS(message_filter_service)
+        GR_DELETE_ALL_DEFAULT(message_filter_service)
 
         explicit message_filter_service(const groot::config_setting::sptr& config,
                                         const task_router::sptr& router,

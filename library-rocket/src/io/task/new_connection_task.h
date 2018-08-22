@@ -15,8 +15,8 @@ namespace rocket {
 
     class new_connection_task : public groot::crucial<task, new_connection_task> {
     public:
-        FW_DECLARE_SMARTPOINTERS(new_connection_task)
-        FW_DELETE_ALL_DEFAULT(new_connection_task)
+        GR_DECLARE_SMARTPOINTERS(new_connection_task)
+        GR_DELETE_ALL_DEFAULT(new_connection_task)
 
         explicit new_connection_task(const connection::sptr& connection) noexcept : _connection { connection } {}
         virtual ~new_connection_task() = default;

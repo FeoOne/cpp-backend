@@ -7,11 +7,13 @@
 
 #include "job/service/http_service.h"
 
-#define EG_DECLARE_ACTION(name) \
-    rocket::http_response::sptr http_service::action_##name(const rocket::http_request::sptr& request) noexcept
+#define RC_DECLARE_ACTION(name, ver)         \
+    rocket::http_response::sptr         \
+    http_service::action_##name##_##ver(const rocket::http_request::sptr& request) noexcept
 
-#define EG_ADD_ACTION(path, name) \
-    _actions.insert({ { path }, std::bind(&http_service::action_##name, this, std::placeholders::_1) })
+#define RC_ADD_ACTION(path, name, ver)          \
+    _actions.insert({ { "/api/" GR_STR(ver) "/" path }, \
+        std::bind(&http_service::action_##name##_##ver, this, std::placeholders::_1) })
 
 namespace quill {
 
@@ -26,7 +28,7 @@ namespace quill {
             },
             _web_view_manager { rocket::web_view_manager::make_unique() }
     {
-        EG_BIND_TASK_HANDLER(rocket::http_request_task, http_service, handle_http_request_task);
+        RC_BIND_TASK_HANDLER(rocket::http_request_task, http_service, handle_http_request_task);
     }
 
     // virtual
@@ -37,9 +39,7 @@ namespace quill {
     // virtual
     void http_service::setup() noexcept
     {
-        EG_ADD_ACTION("/404", not_found);
-        EG_ADD_ACTION("/", index);
-        EG_ADD_ACTION("/invoice", invoice);
+        RC_ADD_ACTION("invoice", invoice, v1);
     }
 
     // virtual
@@ -58,43 +58,13 @@ namespace quill {
         if (it != _actions.end()) {
             response = it->second(request);
         } else {
-            response = action_not_found(request);
+            logerror("Failed to process path: '%s'.", request->get_path().data());
         }
 
         get_router()->enqueue(rocket::http_response_task::make_shared(response));
     }
 
-    EG_DECLARE_ACTION(not_found)
-    {
-        auto response = rocket::http_response::make_shared(request);
-
-
-
-        response->set_status(SOUP_STATUS_NOT_FOUND);
-//        response->set_view(view);
-
-        return response;
-    }
-
-    EG_DECLARE_ACTION(index)
-    {
-        auto response = rocket::http_response::make_shared(request);
-
-        auto root = _web_view_loader->load("layout/base.html");
-        auto body = _web_view_loader->load("index/body.html");
-        auto style = _web_view_loader->load("style/style.css");
-
-        root->set_argument("TITLE", "bitpayments");
-        root->set_argument("STYLE", style);
-        root->set_argument("BODY", body);
-
-        response->set_status(SOUP_STATUS_OK);
-        response->set_view(root);
-
-        return response;
-    }
-
-    EG_DECLARE_ACTION(invoice)
+    RC_DECLARE_ACTION(invoice, v1)
     {
         auto response = rocket::http_response::make_shared(request);
 
@@ -102,17 +72,22 @@ namespace quill {
         auto body = _web_view_loader->load("invoice/body.html");
         auto style = _web_view_loader->load("style/style.css");
 
-        root->set_argument("TITLE", "bitpayments - invoice");
-        root->set_argument("STYLE", style);
-        root->set_argument("BODY", body);
+        if (root && body && style) {
+            root->set_argument("TITLE", "bitpayments - invoice");
+            root->set_argument("STYLE", style);
+            root->set_argument("BODY", body);
 
-        response->set_status(SOUP_STATUS_OK);
-        response->set_view(root);
+            response->set_status(SOUP_STATUS_OK);
+            response->set_view(root);
+        } else {
+            logerror("Failed to process action: '%s'.", request->get_path().data());
+            response->set_status(SOUP_STATUS_INTERNAL_SERVER_ERROR);
+        }
 
         return response;
     }
 
 }
 
-#undef EG_DECLARE_ACTION
-#undef EG_ADD_ACTION
+#undef RC_DECLARE_ACTION
+#undef RC_ADD_ACTION

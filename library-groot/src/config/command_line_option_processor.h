@@ -28,8 +28,8 @@ namespace groot {
 
     class command_line_option_processor {
     public:
-        FW_DECLARE_SMARTPOINTERS(command_line_option_processor)
-        FW_DELETE_ALL_DEFAULT(command_line_option_processor)
+        GR_DECLARE_SMARTPOINTERS(command_line_option_processor)
+        GR_DELETE_ALL_DEFAULT(command_line_option_processor)
 
         virtual ~command_line_option_processor();
 

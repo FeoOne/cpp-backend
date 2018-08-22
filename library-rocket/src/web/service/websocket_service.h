@@ -16,8 +16,8 @@ namespace rocket {
 
     class websocket_service final : public groot::crucial<work_service, websocket_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(websocket_service)
-        FW_DELETE_ALL_DEFAULT(websocket_service)
+        GR_DECLARE_SMARTPOINTERS(websocket_service)
+        GR_DELETE_ALL_DEFAULT(websocket_service)
 
         explicit websocket_service(const groot::config_setting::sptr& config,
                                    const task_router::sptr& router,

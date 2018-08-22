@@ -10,8 +10,8 @@
 
 #include <glib.h>
 
-#define FW_GOBJECT_REF(obj)         obj = static_cast<decltype(obj)>(g_object_ref(obj))
-#define FW_GOBJECT_UNREF(obj)       g_object_unref(obj);
+#define GR_GOBJECT_REF(obj)         obj = static_cast<decltype(obj)>(g_object_ref(obj))
+#define GR_GOBJECT_UNREF(obj)       g_object_unref(obj);
 
 namespace groot {
 

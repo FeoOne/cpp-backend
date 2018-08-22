@@ -22,8 +22,8 @@ namespace rocket {
 
     class worker final {
     public:
-        FW_DECLARE_SMARTPOINTERS(worker)
-        FW_DELETE_ALL_DEFAULT(worker)
+        GR_DECLARE_SMARTPOINTERS(worker)
+        GR_DELETE_ALL_DEFAULT(worker)
 
         enum class detach_state {
             JOINABLE,
@@ -57,8 +57,8 @@ namespace rocket {
 #if 0
     class worker : public std::enable_shared_from_this<worker> {
     public:
-        FW_DECLARE_SMARTPOINTERS(worker)
-        FW_DELETE_ALL_DEFAULT(worker)
+        GR_DECLARE_SMARTPOINTERS(worker)
+        GR_DELETE_ALL_DEFAULT(worker)
 
         virtual ~worker() = default;
 

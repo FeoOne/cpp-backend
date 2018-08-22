@@ -10,7 +10,7 @@
 
 #include "work/work_context.h"
 
-#define EG_CONTEXT_CREATOR(context)                     \
+#define RC_CONTEXT_CREATOR(context)                     \
     [](const groot::config_setting::sptr& config,   \
        const rocket::task_router::sptr& router) {       \
         return context::make_unique(config, router);    \
@@ -20,8 +20,8 @@ namespace rocket {
 
     class webserver_context : public groot::crucial<work_context, webserver_context> {
     public:
-        FW_DECLARE_SMARTPOINTERS(webserver_context)
-        FW_DELETE_ALL_DEFAULT(webserver_context)
+        GR_DECLARE_SMARTPOINTERS(webserver_context)
+        GR_DELETE_ALL_DEFAULT(webserver_context)
 
         explicit webserver_context(const groot::config_setting::sptr& config,
                                    const task_router::sptr& router) noexcept;

@@ -18,8 +18,8 @@ namespace rocket {
 
     class application final {
     public:
-        FW_DECLARE_SMARTPOINTERS(application)
-        FW_DELETE_ALL_DEFAULT(application)
+        GR_DECLARE_SMARTPOINTERS(application)
+        GR_DELETE_ALL_DEFAULT(application)
 
         using context_creator = std::function<work_context::uptr(const groot::config_setting::sptr&,
                                                                  const task_router::sptr&)>;

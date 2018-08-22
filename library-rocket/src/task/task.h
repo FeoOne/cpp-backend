@@ -11,9 +11,9 @@ namespace rocket {
 
     class task {
     public:
-        FW_DECLARE_SMARTPOINTERS(task)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task)
-        FW_CRUCIAL_BASE_DEFINITION()
+        GR_DECLARE_SMARTPOINTERS(task)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task)
+        GR_CRUCIAL_BASE_DEFINITION()
 
         virtual ~task() = default;
 

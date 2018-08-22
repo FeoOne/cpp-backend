@@ -16,8 +16,8 @@ namespace rocket {
 
     class io_loop : public work_loop {
     public:
-        FW_DECLARE_SMARTPOINTERS(io_loop)
-        FW_DELETE_ALL_DEFAULT(io_loop)
+        GR_DECLARE_SMARTPOINTERS(io_loop)
+        GR_DELETE_ALL_DEFAULT(io_loop)
 
         explicit io_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
         virtual ~io_loop();

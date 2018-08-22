@@ -15,8 +15,8 @@ namespace rocket {
 
     class web_view_loader {
     public:
-        FW_DECLARE_SMARTPOINTERS(web_view_loader)
-        FW_DELETE_ALL_DEFAULT(web_view_loader)
+        GR_DECLARE_SMARTPOINTERS(web_view_loader)
+        GR_DELETE_ALL_DEFAULT(web_view_loader)
 
         explicit web_view_loader(const std::string_view& root_path) noexcept;
         ~web_view_loader();

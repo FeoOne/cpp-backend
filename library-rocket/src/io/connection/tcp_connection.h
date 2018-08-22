@@ -14,8 +14,8 @@ namespace rocket {
 
     class tcp_connection final : public connection {
     public:
-        FW_DECLARE_SMARTPOINTERS(tcp_connection)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
+        GR_DECLARE_SMARTPOINTERS(tcp_connection)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
 
         explicit tcp_connection(groot::ip_version version,
                                 side_t side,

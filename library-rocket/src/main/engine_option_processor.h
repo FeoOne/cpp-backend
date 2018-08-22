@@ -14,8 +14,8 @@ namespace rocket {
 
     class engine_option_processor : public groot::command_line_option_processor {
     public:
-        FW_DECLARE_SMARTPOINTERS(engine_option_processor)
-        FW_DELETE_ALL_DEFAULT(engine_option_processor)
+        GR_DECLARE_SMARTPOINTERS(engine_option_processor)
+        GR_DELETE_ALL_DEFAULT(engine_option_processor)
 
         explicit engine_option_processor(int argc,
                                          char **argv,

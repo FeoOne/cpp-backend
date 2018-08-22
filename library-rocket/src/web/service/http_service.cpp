@@ -18,7 +18,7 @@ namespace rocket {
                                const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
-        EG_BIND_TASK_HANDLER(http_response_task, http_service, handle_http_response_task);
+        RC_BIND_TASK_HANDLER(http_response_task, http_service, handle_http_response_task);
     }
 
     // virtual
@@ -29,7 +29,12 @@ namespace rocket {
     // virtual
     void http_service::setup() noexcept
     {
-        soup_server_add_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
+        auto server = get_context_delegate()->get_service<webserver_service>()->get_server();
+        if (server == nullptr) {
+            logcrit("Failed to start http service w/o server.");
+        }
+
+        soup_server_add_handler(server,
                                 consts::WEB_SERVER_DEFAULT_HTTP_ROUTE.data(),
                                 &http_service::handler_routine,
                                 this,
