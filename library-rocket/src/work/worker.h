@@ -8,7 +8,11 @@
 #ifndef ROCKET_EXECUTION_CONTEXT_H
 #define ROCKET_EXECUTION_CONTEXT_H
 
+#if __APPLE__
 #include <pthread/pthread.h>
+#else
+#include <pthread.h>
+#endif
 
 #include <groot.h>
 
