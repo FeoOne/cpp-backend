@@ -5,8 +5,6 @@
 #ifndef ROCKET_WEBSERVER_QUEUE_H
 #define ROCKET_WEBSERVER_QUEUE_H
 
-#include <groot.h>
-
 #include "task/task_queue.h"
 
 namespace rocket {

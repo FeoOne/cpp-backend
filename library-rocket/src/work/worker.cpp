@@ -10,7 +10,7 @@
 namespace rocket {
 
     worker::worker(const groot::config_setting::sptr& config, work_context::uptr&& context) noexcept :
-            _thread { nullptr },
+            _thread {},
             _config { config },
             _context { std::move(context) },
             _should_restart { false }

@@ -44,7 +44,7 @@ namespace rocket {
         friend class worker_pool;
 
         pthread_t                           _thread;
-        groot::config_setting::sptr     _config;
+        groot::config_setting::sptr         _config;
         work_context::uptr                  _context;
         bool                                _should_restart;
 
