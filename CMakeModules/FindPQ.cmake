@@ -1,5 +1,5 @@
 find_path(PQ_INCLUDE_DIR NAMES libpq-fe.h)
-find_library(PQ_LIBRARIES NAMES libpq.dylib)
+find_library(PQ_LIBRARIES NAMES libpq.dylib libpq.so)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PQ DEFAULT_MSG PQ_LIBRARIES PQ_INCLUDE_DIR)

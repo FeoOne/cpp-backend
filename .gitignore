@@ -3,6 +3,8 @@
 
 # cmake
 cmake-build-*
+CMakeFiles
+CMakeCache.txt
 
 # auto generated code
 library-groot/src/main/groot_consts_gen.h
