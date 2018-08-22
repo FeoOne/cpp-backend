@@ -85,7 +85,13 @@ namespace groot {
 
     bool config_setting::lookup_s64(const char *key, s64 *value) const noexcept
     {
-        return (config_setting_lookup_int64(_setting, key, value) == CONFIG_TRUE);
+        long long i;
+        bool result { false };
+        if (config_setting_lookup_int64(_setting, key, &i) == CONFIG_TRUE) {
+            *value = i;
+            result = true;
+        }
+        return result;
     }
 
     bool config_setting::lookup_double(const char *key, double *value) const noexcept

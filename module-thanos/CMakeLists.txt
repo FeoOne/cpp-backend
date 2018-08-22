@@ -4,10 +4,10 @@ message(STATUS "Configure ${PROJECT_NAME}...")
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
-find_package(NLOHMANJSON REQUIRED)
-find_package(CONFIG REQUIRED)
-find_package(GLIB REQUIRED)
-find_package(SOUP REQUIRED)
+find_package(NlohmanJson REQUIRED)
+find_package(Config REQUIRED)
+find_package(GLib REQUIRED)
+find_package(Soup REQUIRED)
 find_package(UV REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")

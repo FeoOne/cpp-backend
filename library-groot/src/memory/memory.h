@@ -8,6 +8,8 @@
 #ifndef GROOT_MEMORY_H
 #define GROOT_MEMORY_H
 
+#include <memory>
+
 #define FW_DELETE_DEFAULT_CTOR(c)               c() = delete;
 #define FW_DELETE_DEFAULT_COPY_CTOR(c)          c(const c&) = delete;
 #define FW_DELETE_DEFAULT_MOVE_CTOR(c)          c(c&&) = delete;

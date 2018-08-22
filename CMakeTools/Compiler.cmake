@@ -11,6 +11,11 @@ function(enable_cxx17 TARGET)
                 COMPILE_FLAGS "-stdlib=libc++ -pthread"
                 )
         target_link_libraries(${TARGET} PRIVATE pthread)
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set_target_properties(${TARGET} PROPERTIES
+                COMPILE_FLAGS "-std=c++17 -pthtrad"
+                )
+        target_link_libraries(${TARGET} PRIVATE pthread)
     endif()
 endfunction(enable_cxx17)
 
@@ -18,23 +23,28 @@ function(setup_compile_options TARGET)
     target_compile_options(${TARGET} PRIVATE
             -Wall
             -Wextra
-            -Weverything
             -Wno-padded
             -Wno-return-type
+            -Wno-old-style-cast
+            -Wno-unused-parameter
+            -Wno-format-nonliteral
+            -Wno-zero-as-null-pointer-constant
+            )
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(${TARGET} PRIVATE
+            -Weverything
             -Wno-c++98-compat
             -Wno-weak-vtables
             -Wno-documentation
-            -Wno-old-style-cast
-            -Wno-unused-parameter
             -Wno-reserved-id-macro
-            -Wno-format-nonliteral
             -Wno-global-constructors
             -Wno-exit-time-destructors
             -Wno-c++98-compat-pedantic
             -Wno-c++98-c++11-c++14-compat
-            -Wno-zero-as-null-pointer-constant
             -Wno-documentation-unknown-command
             -Wno-c++98-c++11-c++14-compat-pedantic
             -Wno-gnu-zero-variadic-macro-arguments
             )
+    endif()
 endfunction(setup_compile_options)

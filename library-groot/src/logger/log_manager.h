@@ -18,38 +18,38 @@
 #define logcond(cond, format, ...) \
     do { if ((cond)) { logwarn("Check condition: '" FW_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
 
-#define logdebug(format, ...)           groot::log_manager::logger()->log(groot::logger::level_t::DEBUG,   \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
+#define logdebug(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::DEBUG,        \
+                                                                              __FILE__,                             \
+                                                                              __LINE__,                             \
+                                                                              __FUNCTION__,                         \
+                                                                              format,                               \
                                                                               ##__VA_ARGS__)
-#define loginfo(format, ...)            groot::log_manager::logger()->log(groot::logger::level_t::INFO,    \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
+#define loginfo(format, ...)            groot::log_manager::get_logger()->log(groot::logger::level_t::INFO,         \
+                                                                              __FILE__,                             \
+                                                                              __LINE__,                             \
+                                                                              __FUNCTION__,                         \
+                                                                              format,                               \
                                                                               ##__VA_ARGS__)
-#define lognotice(format, ...)          groot::log_manager::logger()->log(groot::logger::level_t::NOTICE,  \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
+#define lognotice(format, ...)          groot::log_manager::get_logger()->log(groot::logger::level_t::NOTICE,       \
+                                                                              __FILE__,                             \
+                                                                              __LINE__,                             \
+                                                                              __FUNCTION__,                         \
+                                                                              format,                               \
                                                                               ##__VA_ARGS__)
-#define logwarn(format, ...)            groot::log_manager::logger()->log(groot::logger::level_t::WARN,    \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
+#define logwarn(format, ...)            groot::log_manager::get_logger()->log(groot::logger::level_t::WARN,         \
+                                                                              __FILE__,                             \
+                                                                              __LINE__,                             \
+                                                                              __FUNCTION__,                         \
+                                                                              format,                               \
                                                                               ##__VA_ARGS__)
-#define logerror(format, ...)           groot::log_manager::logger()->log(groot::logger::level_t::ERROR,   \
-                                                                              __FILE__,                            \
-                                                                              __LINE__,                            \
-                                                                              __FUNCTION__,                        \
-                                                                              format,                              \
+#define logerror(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::ERROR,        \
+                                                                              __FILE__,                             \
+                                                                              __LINE__,                             \
+                                                                              __FUNCTION__,                         \
+                                                                              format,                               \
                                                                               ##__VA_ARGS__)
 #define logcrit(format, ...)            \
-    do { groot::log_manager::logger()->log(groot::logger::level_t::CRIT,    \
+    do { groot::log_manager::get_logger()->log(groot::logger::level_t::CRIT,        \
                                                __FILE__,                            \
                                                __LINE__,                            \
                                                __FUNCTION__,                        \
@@ -57,7 +57,7 @@
                                                ##__VA_ARGS__);                      \
         abort(); } while (false)
 #define logalert(format, ...)                                                       \
-    do { groot::log_manager::logger()->log(groot::logger::level_t::ALERT,   \
+    do { groot::log_manager::get_logger()->log(groot::logger::level_t::ALERT,       \
                                                __FILE__,                            \
                                                __LINE__,                            \
                                                __FUNCTION__,                        \
@@ -65,7 +65,7 @@
                                                ##__VA_ARGS__);                      \
         abort(); } while (false)
 #define logemerg(format, ...)                                                       \
-    do { groot::log_manager::logger()->log(groot::logger::level_t::EMERG,   \
+    do { groot::log_manager::get_logger()->log(groot::logger::level_t::EMERG,       \
                                                __FILE__,                            \
                                                __LINE__,                            \
                                                __FUNCTION__,                        \
@@ -81,7 +81,7 @@ namespace groot {
 
         static void setup() noexcept;
 
-        static const logger::uptr& logger() noexcept { return _logger; }
+        static const logger::uptr& get_logger() noexcept { return _logger; }
 
     private:
         static logger::uptr     _logger;

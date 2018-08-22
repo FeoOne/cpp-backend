@@ -2,6 +2,7 @@
 .idea
 
 # cmake
+cmake/*
 cmake-build-*
 CMakeFiles
 CMakeCache.txt

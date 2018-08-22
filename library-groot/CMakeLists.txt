@@ -8,9 +8,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h
         )
 
-find_package(NLOHMANJSON REQUIRED)
-find_package(CONFIG REQUIRED)
-find_package(GLIB REQUIRED)
+find_package(NlohmanJson REQUIRED)
+find_package(Config REQUIRED)
+find_package(GLib REQUIRED)
 find_package(UV REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
