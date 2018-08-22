@@ -11,15 +11,21 @@
 #include <set>
 #include <list>
 #include <array>
+#include <tuple>
 #include <stack>
 #include <deque>
+#include <chrono>
+#include <mutex>
 #include <atomic>
 #include <thread>
 #include <limits>
 #include <cassert>
+#include <utility>
 #include <fstream>
 #include <iostream>
+#include <exception>
 #include <functional>
+#include <type_traits>
 #include <condition_variable>
 
 #include "util/crucial.h"
