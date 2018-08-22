@@ -15,7 +15,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
         'https://fonts.googleapis.com/icon?family=Material+Icons',
         'http://fonts.googleapis.com/css?family=Roboto:400,100,500,300italic,500italic,700italic,900,300',
-        'https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css',
+        'https://code.getmdl.io/1.3.0/material.brown-blue.min.css',
     ];
     public $js = [
     ];
