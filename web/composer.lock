@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "630d5f1d19e73b0163f900453171fba5",
+    "content-hash": "c26e0feb318333e99b71f82a6246ce41",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -67,6 +67,25 @@
             "type": "bower-asset",
             "license": [
                 "MIT"
+            ]
+        },
+        {
+            "name": "bower-asset/material-design-lite",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:google/material-design-lite.git",
+                "reference": "17a19f0a677b26e2b7f1ce1e09dd58270e0558e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/material-design-lite/zipball/17a19f0a677b26e2b7f1ce1e09dd58270e0558e3",
+                "reference": "17a19f0a677b26e2b7f1ce1e09dd58270e0558e3",
+                "shasum": null
+            },
+            "type": "bower-asset",
+            "license": [
+                "Apache-2"
             ]
         },
         {
@@ -324,6 +343,52 @@
                 "html"
             ],
             "time": "2018-02-23T01:58:20+00:00"
+        },
+        {
+            "name": "rafaelvaloto/yii2-material-design-lite",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rafaelvaloto/yii2-material-design-lite.git",
+                "reference": "98cb74df1a269b0ece26ac8cb435e064897175cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rafaelvaloto/yii2-material-design-lite/zipball/98cb74df1a269b0ece26ac8cb435e064897175cc",
+                "reference": "98cb74df1a269b0ece26ac8cb435e064897175cc",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/material-design-lite": "*",
+                "yiisoft/yii2": "^2.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "rafaelvaloto\\mdl\\material\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "rafaelvaloto",
+                    "email": "rafaelvaloto@gmail.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "Extension AssetBundle google design material for yii2",
+            "keywords": [
+                "MDL",
+                "material-design-lite",
+                "yii",
+                "yii-material",
+                "yii2",
+                "yii2-material"
+            ],
+            "time": "2016-04-19T02:53:03+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
