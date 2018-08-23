@@ -22,7 +22,7 @@ class m180823_021225_l12n extends Migration
             );');
 
         $this->execute('INSERT INTO language(is_default, code, locale, name) VALUES (TRUE, \'en\', \'en-US\', \'English\');');
-        $this->execute('INSERT INTO language(is_default, code, locale, name) VALUES (TRUE, \'ru\', \'ru-RU\', \'Русский\');');
+        $this->execute('INSERT INTO language(is_default, code, locale, name) VALUES (FALSE, \'ru\', \'ru-RU\', \'Русский\');');
 
         $this->execute('CREATE TABLE content (
                 id serial,

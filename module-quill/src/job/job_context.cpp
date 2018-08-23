@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "job/service/http_service.h"
+#include "job/service/websocket_service.h"
 
 #include "job/job_context.h"
 
@@ -15,27 +15,27 @@ namespace quill {
                              const rocket::task_router::sptr& router) noexcept :
             rocket::job_context(config, router)
     {
-        add_service(http_service::make_shared(get_config(), get_router(), this));
+        add_service(websocket_service::make_shared(get_config(), get_router(), this));
 
-        register_task_handler(rocket::http_request_task::key(), http_service::key());
+        register_task_handler(rocket::http_request_task::key(), websocket_service::key());
     }
 
     // virtual
     job_context::~job_context()
     {
-        remove_service<http_service>();
+        remove_service<websocket_service>();
     }
 
     // virtual
     void job_context::setup() noexcept
     {
-        get_service<http_service>()->setup();
+        get_service<websocket_service>()->setup();
     }
 
     // virtual
     void job_context::reset() noexcept
     {
-        get_service<http_service>()->reset();
+        get_service<websocket_service>()->reset();
     }
 
 }

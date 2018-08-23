@@ -35,7 +35,7 @@ namespace rocket {
         }
 
         soup_server_add_handler(server,
-                                consts::WEB_SERVER_DEFAULT_HTTP_ROUTE.data(),
+                                consts::WEBSERVER_DEFAULT_HTTP_ROUTE.data(),
                                 &http_service::handler_routine,
                                 this,
                                 nullptr);
@@ -45,7 +45,7 @@ namespace rocket {
     void http_service::reset() noexcept
     {
         soup_server_remove_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
-                                   consts::WEB_SERVER_DEFAULT_HTTP_ROUTE.data());
+                                   consts::WEBSERVER_DEFAULT_HTTP_ROUTE.data());
     }
 
     void http_service::handle_http_response_task(const task::sptr& t) noexcept

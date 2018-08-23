@@ -28,16 +28,29 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        void handler(SoupServer *server,
-                     SoupWebsocketConnection *connection,
-                     const char *path,
-                     SoupClientContext *client) noexcept;
+        void handle_ws_outgoing_task(const task::sptr& t) noexcept;
+
+        void on_handler(SoupServer *server,
+                        SoupWebsocketConnection *connection,
+                        const char *path,
+                        SoupClientContext *client) noexcept;
+        void on_message(SoupWebsocketConnection *connection,
+                        SoupWebsocketDataType data_type,
+                        GBytes *data) noexcept;
+        void on_error(SoupWebsocketConnection *connection, GError *error) noexcept;
+        void on_closed(SoupWebsocketConnection *connection) noexcept;
 
         static void handler_routine(SoupServer *server,
                                     SoupWebsocketConnection *connection,
                                     const char *path,
                                     SoupClientContext *client,
                                     gpointer context) noexcept;
+        static void message_routine(SoupWebsocketConnection *connection,
+                                    SoupWebsocketDataType data_type,
+                                    GBytes *data,
+                                    gpointer context) noexcept;
+        static void error_routine(SoupWebsocketConnection *connection, GError *error, gpointer context) noexcept;
+        static void closed_routine(SoupWebsocketConnection *connection, gpointer context) noexcept;
 
     };
 

@@ -1,0 +1,14 @@
+namespace message.terminal;
+
+enum currency_t : int32 {
+    RAW = 0,
+    BTC = 1,
+    ETH = 2,
+    XMR = 3,
+}
+
+table create_invoice {
+    customer_uuid: [byte];
+    currency: currency_t;
+    amount: int64;
+}

@@ -11,7 +11,8 @@ CMakeCache.txt
 .DS_Store
 
 # auto generated code
-library-groot/src/main/groot_consts_gen.h
+*_gen.h
+*_generated.*
 
 # local files
 config/*

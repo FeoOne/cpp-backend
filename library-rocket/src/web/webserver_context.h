@@ -31,6 +31,7 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
+        const bool      _websocket_enabled;
 
     };
 

@@ -21,6 +21,8 @@
 #include "web/webserver_context.h"
 #include "web/task/http_request_task.h"
 #include "web/task/http_response_task.h"
+#include "web/task/ws_incoming_message_task.h"
+#include "web/task/ws_outgoing_message_task.h"
 #include "system/system_queue.h"
 #include "system/system_context.h"
 
@@ -76,6 +78,8 @@ namespace rocket {
         // web routes
         _router->register_route(http_request_task::key(), job_context::key());
         _router->register_route(http_response_task::key(), webserver_context::key());
+        _router->register_route(ws_incoming_message_task::key(), job_context::key());
+        _router->register_route(ws_outgoing_message_task::key(), webserver_context::key());
 
         // io routes
         _router->register_route(new_connection_task::key(), job_context::key());
