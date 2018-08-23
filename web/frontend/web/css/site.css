@@ -1,3 +1,14 @@
+.bpt-index-about {
+    padding-top: 50px;
+}
+
+.bpt-start-using {
+    max-width: 640px;
+    margin: 0 auto;
+    display: block;
+    align-items: center;
+}
+
 .page-content {
     padding: 20px;
 }

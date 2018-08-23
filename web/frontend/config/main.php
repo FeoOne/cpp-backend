@@ -14,6 +14,7 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
+            'class' => 'frontend\components\LanguageRequest',
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
@@ -38,6 +39,7 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
+            'class'=>'frontend\components\LanguageUrlManager',
             'baseUrl' => '/',
             'enablePrettyUrl' => true,
             'showScriptName' => false,

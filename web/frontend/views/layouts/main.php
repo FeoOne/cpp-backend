@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
@@ -27,7 +28,7 @@ AppAsset::register($this);
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title mdl-typography--text-uppercase"><a href="/" class="logo">BitPayment</a></span>
+            <span class="mdl-layout-title mdl-typography--text-uppercase"><a href="<?= Url::base() ?>" class="logo">BitPayment</a></span>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
