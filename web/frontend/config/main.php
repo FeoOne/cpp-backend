@@ -37,14 +37,26 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
+            'baseUrl' => '/',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'suffix' => '/',
             'rules' => [
-            ],
+                'widget/invoice/<amount:[0-9\.]+>' => 'widget/invoice',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                '/' => 'site/index',
+            ]
         ],
-        */
     ],
     'params' => $params,
+    'on beforeRequest' => function () {
+        $app = Yii::$app;
+        $pathInfo = $app->request->pathInfo;
+        if (!empty($pathInfo) && substr($pathInfo, -1) !== '/') {
+            $app->response->redirect('/' . rtrim($pathInfo) . '/', 301);
+            $app->end();
+        }
+    },
 ];

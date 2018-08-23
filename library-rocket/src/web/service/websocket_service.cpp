@@ -25,18 +25,24 @@ namespace rocket {
 
     void websocket_service::setup() noexcept
     {
-//        soup_server_add_websocket_handler(_server,
-//                                          "/websocket",
-//                                          nullptr,
-//                                          nullptr,
-//                                          &websocket_handle_service::_handler,
-//                                          this,
-//                                          nullptr);
+        auto server = get_context_delegate()->get_service<webserver_service>()->get_server();
+        if (server == nullptr) {
+            logcrit("Failed to start http service w/o server.");
+        }
+
+        soup_server_add_websocket_handler(server,
+                                          "/api/v1/terminal",
+                                          nullptr,
+                                          nullptr,
+                                          &websocket_service::handler_routine,
+                                          this,
+                                          nullptr);
     }
 
     void websocket_service::reset() noexcept
     {
-//        soup_server_remove_handler(_server, "/websocket");
+        soup_server_remove_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
+                                   "/api/v1/terminal");
     }
 
     void websocket_service::handler(SoupServer *server,

@@ -11,7 +11,7 @@ AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="mdl-js">
+<html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,14 +20,14 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body class="">
+<body>
 <?php $this->beginBody() ?>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title">BitPayments</span>
+            <span class="mdl-layout-title mdl-typography--text-uppercase"><a href="/" class="logo">BitPayment</a></span>
         </div>
         <!-- Tabs -->
         <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
@@ -37,6 +37,7 @@ AppAsset::register($this);
             <a href="#scroll-tab-4" class="mdl-layout__tab">Add Your Store</a>
         </div>
     </header>
+    <!--
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Menu</span>
         <nav class="mdl-navigation">
@@ -44,6 +45,7 @@ AppAsset::register($this);
             <a class="mdl-navigation__link" href="">Signup</a>
         </nav>
     </div>
+    -->
     <main class="mdl-layout__content">
         <?= Alert::widget() ?>
         <?= $content ?>
