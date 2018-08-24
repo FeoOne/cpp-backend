@@ -13,6 +13,7 @@
 #include <groot.h>
 
 #include "task/task.h"
+#include "protocol/protocol_machine.h"
 
 namespace rocket {
 
@@ -28,15 +29,28 @@ namespace rocket {
                 _data_type { data_type },
                 _data { data }
         {
-            _data = GR_GOBJECT_REF(_data);
+            _data = g_bytes_ref(_data);
         }
 
         virtual ~ws_incoming_message_task()
         {
-            GR_GOBJECT_UNREF(_data)
+            g_bytes_unref(_data);
         }
 
         SoupWebsocketConnection *get_connection() noexcept { return _connection; }
+        SoupWebsocketDataType get_data_type() const noexcept { return _data_type; }
+        const protocol_header *get_header() const noexcept {
+            return (_data_type == SOUP_WEBSOCKET_DATA_BINARY) ?
+                   reinterpret_cast<protocol_header *>(_data) :
+                   nullptr;
+        }
+        const char *get_data() const noexcept {
+            return (_data_type == SOUP_WEBSOCKET_DATA_BINARY) ?
+                   &(reinterpret_cast<char *>(_data)[sizeof(protocol_header)]) :
+                   reinterpret_cast<char *>(_data);
+        }
+
+        GBytes *get_bytes() noexcept { return _data; }
 
     private:
         SoupWebsocketConnection *       _connection;

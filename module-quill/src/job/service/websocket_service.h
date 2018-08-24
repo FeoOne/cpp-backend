@@ -25,8 +25,16 @@ namespace quill {
         void setup() noexcept final;
         void reset() noexcept final;
 
-
     private:
+        using message_processor =
+                std::function<rocket::ws_outgoing_message_task::sptr(const rocket::ws_incoming_message_task::sptr&)>;
+
+        std::unordered_map<u64, message_processor>      _processors;
+
+        void handle_ws_incoming_message_task(const rocket::task::sptr& t) noexcept;
+
+        rocket::ws_outgoing_message_task::sptr
+        process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept;
 
     };
 

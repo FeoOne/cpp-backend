@@ -12,3 +12,5 @@ table create_invoice {
     currency: currency_t;
     amount: int64;
 }
+
+root_type create_invoice;

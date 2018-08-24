@@ -6,6 +6,7 @@
  */
 
 #include "web/service/webserver_service.h"
+#include "web/task/ws_incoming_message_task.h"
 #include "web/task/ws_outgoing_message_task.h"
 
 #include "web/service/websocket_service.h"
@@ -17,6 +18,7 @@ namespace rocket {
                                          const work_context_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
+        RC_BIND_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
     }
 
     // virtual
@@ -52,7 +54,7 @@ namespace rocket {
                                    path.data());
     }
 
-    void websocket_service::handle_ws_outgoing_task(const task::sptr& t) noexcept
+    void websocket_service::handle_ws_outgoing_message_task(const task::sptr& t) noexcept
     {
         auto task = std::static_pointer_cast<ws_outgoing_message_task>(t);
     }
@@ -67,6 +69,8 @@ namespace rocket {
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
+        connection = GR_GOBJECT_REF(connection);
+
         g_signal_connect(connection, "message", G_CALLBACK(&websocket_service::message_routine), this);
         g_signal_connect(connection, "error", G_CALLBACK(&websocket_service::error_routine), this);
         g_signal_connect(connection, "closed", G_CALLBACK(&websocket_service::closed_routine), this);
@@ -76,7 +80,7 @@ namespace rocket {
                                        SoupWebsocketDataType data_type,
                                        GBytes *data) noexcept
     {
-        auto task = ws_outgoing_message_task::make_shared(connection, data_type, data);
+        auto task = ws_incoming_message_task::make_shared(connection, data_type, data);
         get_router()->enqueue(task);
     }
 
@@ -88,6 +92,7 @@ namespace rocket {
     void websocket_service::on_closed(SoupWebsocketConnection *connection) noexcept
     {
         g_signal_handlers_disconnect_by_data(connection, this);
+        GR_GOBJECT_UNREF(connection);
     }
 
     // static

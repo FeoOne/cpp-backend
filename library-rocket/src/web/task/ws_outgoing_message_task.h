@@ -19,13 +19,19 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(ws_outgoing_message_task)
         GR_DELETE_ALL_DEFAULT(ws_outgoing_message_task)
 
-        explicit ws_outgoing_message_task(SoupWebsocketConnection *connection) noexcept : _connection { connection } {}
+        explicit ws_outgoing_message_task(SoupWebsocketConnection *connection, GBytes *data, size_t size) noexcept :
+                _connection { connection },
+                _data { data },
+                _size { size }
+        {}
         virtual ~ws_outgoing_message_task() = default;
 
         SoupWebsocketConnection *get_connection() noexcept { return _connection; }
 
     private:
         SoupWebsocketConnection *       _connection;
+        GBytes *                        _data;
+        size_t                          _size;
 
     };
 

@@ -28,7 +28,7 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        void handle_ws_outgoing_task(const task::sptr& t) noexcept;
+        void handle_ws_outgoing_message_task(const task::sptr& t) noexcept;
 
         void on_handler(SoupServer *server,
                         SoupWebsocketConnection *connection,

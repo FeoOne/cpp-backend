@@ -45,6 +45,8 @@ namespace rocket {
 
         static constexpr size_t             CONNECTION_RESERVE_COUNT { 10000 };
 
+        static constexpr u32                PROTOCOL_MAGIC { 0xDEADBEAF };
+
     };
 
 }

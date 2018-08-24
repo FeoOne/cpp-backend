@@ -5,6 +5,11 @@
  * @brief
  */
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#include "message/create_invoice_generated.h"
+#pragma clang diagnostic pop
+
 #include "job/service/websocket_service.h"
 
 namespace quill {
@@ -12,12 +17,18 @@ namespace quill {
     websocket_service::websocket_service(const groot::config_setting::sptr& config,
                                          const rocket::task_router::sptr& router,
                                          const rocket::work_context_delegate *service_provider) noexcept :
-            crucial(config, router, service_provider)
+            crucial(config, router, service_provider),
+            _processors {}
     {
+        RC_BIND_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);
 
+        _processors.insert({
+            groot::quickhash64(message::terminal::create_invoice::GetFullyQualifiedName()),
+            std::bind(&websocket_service::process_create_invoice_message, this, std::placeholders::_1)
+        });
     }
 
-    virtual
+    // virtual
     websocket_service::~websocket_service()
     {
 
@@ -31,6 +42,32 @@ namespace quill {
     void websocket_service::reset() noexcept
     {
 
+    }
+
+    void websocket_service::handle_ws_incoming_message_task(const rocket::task::sptr& t) noexcept
+    {
+        auto task = std::static_pointer_cast<rocket::ws_incoming_message_task>(t);
+        if (task->get_data_type() == SOUP_WEBSOCKET_DATA_BINARY) {
+            if (task->get_header()->magic == rocket::consts::PROTOCOL_MAGIC) {
+                // @todo Version check
+                auto result = _processors[task->get_header()->opcode](task);
+                if (result) {
+                    get_router()->enqueue(result);
+                }
+            }
+        } else {
+            gsize sz;
+            gconstpointer ptr = g_bytes_get_data(task->get_bytes(), &sz);
+            lognotice("Text message from ws: %s", ptr);
+        }
+    }
+
+    rocket::ws_outgoing_message_task::sptr
+    websocket_service::process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept
+    {
+        auto msg = message::terminal::UnPackcreate_invoice(task->get_data());
+
+        //auto result = rocket::ws_outgoing_message_task::make_shared(task->get_connection(), )
     }
 
 }

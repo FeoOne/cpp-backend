@@ -17,7 +17,7 @@ namespace quill {
     {
         add_service(websocket_service::make_shared(get_config(), get_router(), this));
 
-        register_task_handler(rocket::http_request_task::key(), websocket_service::key());
+        register_task_handler(rocket::ws_incoming_message_task::key(), websocket_service::key());
     }
 
     // virtual
