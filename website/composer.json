@@ -18,7 +18,8 @@
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
-        "rafaelvaloto/yii2-material-design-lite": "1.0.2"
+        "rafaelvaloto/yii2-material-design-lite": "1.0.2",
+        "rmrevin/yii2-minify-view": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -18,7 +18,7 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\assetManagermodels\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -46,10 +46,36 @@ return [
             'enableStrictParsing' => false,
             'suffix' => '/',
             'rules' => [
-                'widget/invoice/<amount:[0-9\.]+>' => 'widget/invoice',
+                '/invoice' => 'payment/invoice',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
                 '/' => 'site/index',
             ]
+        ],
+        'assetManager' => [
+            'appendTimestamp' => YII_DEBUG,
+        ],
+        'view' => [
+            'class' => '\rmrevin\yii\minify\View',
+            'enableMinify' => !YII_DEBUG,
+            'concatCss' => true, // concatenate css
+            'minifyCss' => true, // minificate css
+            'concatJs' => true, // concatenate js
+            'minifyJs' => true, // minificate js
+            'minifyOutput' => true, // minificate result html page
+            'webPath' => '@web', // path alias to web base
+            'basePath' => '@webroot', // path alias to web base
+            'minifyPath' => '@webroot/min', // path alias to save minify result
+            'jsPosition' => [ \yii\web\View::POS_END ], // positions of js files to be minified
+            'forceCharset' => 'UTF-8', // charset forcibly assign, otherwise will use all of the files found charset
+            'expandImports' => true, // whether to change @import on content
+            'compressOptions' => ['extra' => true], // options for compress
+            'excludeFiles' => [
+                '[^.].min.js',
+                '[^.].min.css',
+            ],
+//            'excludeBundles' => [
+//                \app\helloworld\AssetBundle::class,
+//            ],
         ],
     ],
     'params' => $params,

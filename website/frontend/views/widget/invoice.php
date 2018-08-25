@@ -101,7 +101,7 @@ use yii\helpers\Url;
         const socket = new WebSocket('<?= Url::base('ws') ?>/api/v1/terminal');
         //const socket = new WebSocket('ws://127.0.0.1:8081/api/v1/terminal');
         socket.addEventListener('open', function (event) {
-            const amount = "0.002";
+            const amount = "<?= $amount ?>";
 
             let uuid = new Uint8Array(16);
             uuid.fill(0, 0, 16);

@@ -142,6 +142,10 @@ foreach my $message_name (keys %messages) {
         ++$index;
     }
 
+    ###########
+    # offsets #
+    ###########
+
     $offsets .= "\t\t";
     $offsets .= "static constexpr size_t FIELD_COUNT { " . $index . " };\n";
     $offsets .= "\t\t";
