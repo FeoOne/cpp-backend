@@ -101,7 +101,7 @@ foreach my $message_name (keys %messages) {
     $header .= "\t\t\t";
     $header .= "size_t offset = 0;\n";
     $header .= "\t\t\t";
-    $header .= "for (size_t i = 0; i < FIELD_COUNT; ++i) { _offsets[i] = offset; offset += 2 + static_cast<u16>(htons(*reinterpret_cast<const u16 *>(&_data[offset]))); }\n";
+    $header .= "for (size_t i = 0; i < FIELD_COUNT; ++i) { _offsets[i] = offset + 2; offset += 2 + static_cast<u16>(htons(*reinterpret_cast<const u16 *>(&_data[offset]))); }\n";
     $header .= "\t\t";
     $header .= "}\n";
     $header .= "\n";
