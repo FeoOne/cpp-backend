@@ -5,10 +5,7 @@
  * @brief
  */
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-conversion"
-#include "message/create_invoice_generated.h"
-#pragma clang diagnostic pop
+#include "message/message_terra_gen.h"
 
 #include "job/service/websocket_service.h"
 
@@ -23,7 +20,7 @@ namespace quill {
         RC_BIND_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);
 
         _processors.insert({
-            groot::quickhash64(message::terminal::create_invoice::GetFullyQualifiedName()),
+            OPCODE_MESSAGE_TERRA_CREATE_INVOICE,
             std::bind(&websocket_service::process_create_invoice_message, this, std::placeholders::_1)
         });
     }
@@ -31,7 +28,6 @@ namespace quill {
     // virtual
     websocket_service::~websocket_service()
     {
-
     }
 
     void websocket_service::setup() noexcept
@@ -48,9 +44,13 @@ namespace quill {
     {
         auto task = std::static_pointer_cast<rocket::ws_incoming_message_task>(t);
         if (task->get_data_type() == SOUP_WEBSOCKET_DATA_BINARY) {
-            if (task->get_header()->magic == rocket::consts::PROTOCOL_MAGIC) {
+            lognotice("magic: 0x%lX, opcode: %lu, length: %lu",
+                    task->get_header()->get_magic(),
+                    task->get_header()->get_opcode(),
+                    task->get_header()->get_length());
+            if (task->get_header()->get_magic() == rocket::consts::PROTOCOL_MAGIC) {
                 // @todo Version check
-                auto result = _processors[task->get_header()->opcode](task);
+                auto result = _processors[task->get_header()->get_opcode()](task);
                 if (result) {
                     get_router()->enqueue(result);
                 }
@@ -65,9 +65,12 @@ namespace quill {
     rocket::ws_outgoing_message_task::sptr
     websocket_service::process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept
     {
-        auto msg = message::terminal::UnPackcreate_invoice(task->get_data());
+        auto msg = message::terra::create_invoice::make_shared(task->get_binary());
+
+        lognotice("amount: %s, currency: %lu", msg->get_amount().data(), msg->get_currency());
 
         //auto result = rocket::ws_outgoing_message_task::make_shared(task->get_connection(), )
+        return nullptr;
     }
 
 }

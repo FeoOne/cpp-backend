@@ -32,9 +32,9 @@ namespace rocket {
 
     private:
         std::array<task_queue::sptr,
-                consts::TASK_TYPE_MAX_COUNT>              _queues;
+                consts::WORK_CONTEXT_TYPE_MAX_COUNT>    _queues;
         std::array<groot::crucial_key_type,
-                consts::WORK_CONTEXT_TYPE_MAX_COUNT>      _context_keys;
+                consts::TASK_TYPE_MAX_COUNT>            _context_keys;
 
     };
 

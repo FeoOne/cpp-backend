@@ -10,7 +10,6 @@ find_package(GLib REQUIRED)
 find_package(Soup REQUIRED)
 find_package(UV REQUIRED)
 find_package(PQ REQUIRED)
-find_package(FlatBuffers REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -27,21 +26,22 @@ target_include_directories(${PROJECT_NAME}
             ${groot_SOURCE_DIR}/src
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
+            ${UUID_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
             ${UV_INCLUDE_DIRS}
-            ${FLATBUFFERS_INCLUDE_DIR}
         )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
-            ${GIO_LIBRARY}
-            ${GLib_LIBRARY}
             ${GObject_LIBRARY}
+            ${UUID_LIBRARIES}
+            ${GLib_LIBRARY}
             ${Soup_LIBRARY}
             ${UV_LIBRARIES}
+            ${GIO_LIBRARY}
             groot
         )

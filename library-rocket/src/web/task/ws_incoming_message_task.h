@@ -39,15 +39,26 @@ namespace rocket {
 
         SoupWebsocketConnection *get_connection() noexcept { return _connection; }
         SoupWebsocketDataType get_data_type() const noexcept { return _data_type; }
-        const protocol_header *get_header() const noexcept {
-            return (_data_type == SOUP_WEBSOCKET_DATA_BINARY) ?
-                   reinterpret_cast<protocol_header *>(_data) :
-                   nullptr;
+
+        const char *get_text() const noexcept {
+            logassert(_data_type == SOUP_WEBSOCKET_DATA_TEXT);
+            gsize sz;
+            auto data = reinterpret_cast<const char *>(g_bytes_get_data(_data, &sz));
+            return data;
         }
-        const char *get_data() const noexcept {
-            return (_data_type == SOUP_WEBSOCKET_DATA_BINARY) ?
-                   &(reinterpret_cast<char *>(_data)[sizeof(protocol_header)]) :
-                   reinterpret_cast<char *>(_data);
+
+        const packet_header *get_header() const noexcept {
+            logassert(_data_type == SOUP_WEBSOCKET_DATA_BINARY);
+            gsize sz;
+            auto data = reinterpret_cast<const packet_header *>(g_bytes_get_data(_data, &sz));
+            return data;
+        }
+
+        const u8 *get_binary() const noexcept {
+            logassert(_data_type == SOUP_WEBSOCKET_DATA_BINARY);
+            gsize sz;
+            auto data = &(reinterpret_cast<const u8 *>(g_bytes_get_data(_data, &sz))[sizeof(packet_header)]);
+            return data;
         }
 
         GBytes *get_bytes() noexcept { return _data; }

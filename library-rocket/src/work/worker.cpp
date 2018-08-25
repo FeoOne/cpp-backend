@@ -37,7 +37,7 @@ namespace rocket {
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
         logassert(status == 0);
         status = pthread_attr_setscope(&attributes, PTHREAD_SCOPE_PROCESS); // make thread unbound
-        logcond(status == ENOTSUP, "Tune pthread scope not supported.");
+        //logcond(status == ENOTSUP, "Tune pthread scope not supported.");
         status = pthread_create(&_thread, &attributes, &worker::exec_routine, this);
         logassert(status == 0);
     }

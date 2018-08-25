@@ -15,5 +15,6 @@ setup_version()
 
 add_subdirectory(library-groot)
 add_subdirectory(library-rocket)
+add_subdirectory(library-mantis)
 add_subdirectory(module-quill)
 add_subdirectory(module-thanos)

@@ -28,7 +28,6 @@ target_include_directories(${PROJECT_NAME}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
-            ${FLATBUFFERS_INCLUDE_DIR}
         )
 
 target_link_libraries(${PROJECT_NAME}

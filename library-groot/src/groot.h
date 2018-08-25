@@ -35,6 +35,9 @@
 
 #include "time/time.h"
 
+#include "data/json.h"
+#include "data/uuid.h"
+
 #include "scalar/string.h"
 #include "scalar/numeric.h"
 

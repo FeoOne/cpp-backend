@@ -8,11 +8,11 @@
 #ifndef GROOT_JSON_H
 #define GROOT_JSON_H
 
-#include <nlohmann/json.hpp>
+//#include <nlohmann/json.hpp>
 
 namespace groot {
 
-    using json = nlohmann::json;
+    //using json = nlohmann::json;
 
 }
 

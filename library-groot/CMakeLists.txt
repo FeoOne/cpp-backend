@@ -11,6 +11,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h.in
 find_package(NlohmanJson REQUIRED)
 find_package(Config REQUIRED)
 find_package(GLib REQUIRED)
+find_package(UUID REQUIRED)
 find_package(UV REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
@@ -28,12 +29,14 @@ target_include_directories(${PROJECT_NAME}
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GLib_INCLUDE_DIRS}
+            #${UUID_INCLUDE_DIR}
             ${UV_INCLUDE_DIRS}
         )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
+            ${UUID_LIBRARIES}
             ${GLib_LIBRARY}
             ${UV_LIBRARIES}
         )

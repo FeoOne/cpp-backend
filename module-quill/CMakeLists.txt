@@ -20,24 +20,27 @@ setup_compile_options(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
+            ${mantis_SOURCE_DIR}/src
             ${rocket_SOURCE_DIR}/src
             ${groot_SOURCE_DIR}/src
             ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
+            ${UUID_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}
             ${GLib_INCLUDE_DIRS}
             ${GObject_INCLUDE_DIRS}
             ${Soup_INCLUDE_DIRS}
-            ${FLATBUFFERS_INCLUDE_DIR}
         )
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
             ${Config_LIBRARIES}
-            ${GIO_LIBRARY}
-            ${GLib_LIBRARY}
             ${GObject_LIBRARY}
+            ${UUID_LIBRARIES}
+            ${GLib_LIBRARY}
             ${Soup_LIBRARY}
+            ${GIO_LIBRARY}
             groot
             rocket
+            mantis
         )

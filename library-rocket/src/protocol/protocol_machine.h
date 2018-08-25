@@ -12,17 +12,30 @@
 
 namespace rocket {
 
-    struct protocol_header {
-        u32     magic;
-        u32     opcode;
-        u32     length;
-        u16     version;
-        u16     reserved;
+    struct packet_header {
+    private:
+        u32     _magic;
+        u32     _version;
+        u32     _length;
+        u16     _opcode;
+        u16     _crc16;
+
+    public:
+        u32 get_magic() const noexcept { return ntohl(_magic); }
+        u32 get_version() const noexcept { return ntohl(_version); }
+        u32 get_length() const noexcept { return ntohl(_length); }
+        u16 get_opcode() const noexcept { return ntohs(_opcode); }
+        u16 get_crc16() const noexcept { return ntohs(_crc16); }
+
+    };
+
+    struct message {
+
     };
 
     class protocol_machine {
     public:
-        protocol_machine();
+        protocol_machine() {  }
         ~protocol_machine();
 
     private:

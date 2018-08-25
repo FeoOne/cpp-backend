@@ -29,7 +29,7 @@ namespace quill {
         using message_processor =
                 std::function<rocket::ws_outgoing_message_task::sptr(const rocket::ws_incoming_message_task::sptr&)>;
 
-        std::unordered_map<u64, message_processor>      _processors;
+        std::unordered_map<u32, message_processor>      _processors;
 
         void handle_ws_incoming_message_task(const rocket::task::sptr& t) noexcept;
 
