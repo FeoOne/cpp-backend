@@ -21,9 +21,6 @@ class m180823_021225_l12n extends Migration
                 PRIMARY KEY (id)
             );');
 
-        $this->execute('INSERT INTO language(is_default, code, locale, name) VALUES (TRUE, \'en\', \'en-US\', \'English\');');
-        $this->execute('INSERT INTO language(is_default, code, locale, name) VALUES (FALSE, \'ru\', \'ru-RU\', \'Русский\');');
-
         $this->execute('CREATE TABLE content (
                 id serial,
                 language_id bigint NOT NULL,

@@ -5,8 +5,8 @@
  * @brief
  */
 
-#ifndef QUILL_CONSTANTS_H
-#define QUILL_CONSTANTS_H
+#ifndef QUILL_QUILL_CONSTS_H
+#define QUILL_QUILL_CONSTS_H
 
 #include <groot.h>
 
@@ -22,4 +22,4 @@ namespace quill {
 
 }
 
-#endif /* QUILL_CONSTANTS_H */
+#endif /* QUILL_QUILL_CONSTS_H */
