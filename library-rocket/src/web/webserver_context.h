@@ -10,12 +10,6 @@
 
 #include "work/work_context.h"
 
-#define RC_CONTEXT_CREATOR(context)                     \
-    [](const groot::config_setting::sptr& config,   \
-       const rocket::task_router::sptr& router) {       \
-        return context::make_unique(config, router);    \
-    }
-
 namespace rocket {
 
     class webserver_context : public groot::crucial<work_context, webserver_context> {
@@ -31,7 +25,7 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        const bool      _websocket_enabled;
+        const bool      _websocket_service_enabled;
 
     };
 

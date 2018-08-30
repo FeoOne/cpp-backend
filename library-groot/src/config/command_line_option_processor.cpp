@@ -96,7 +96,7 @@ namespace groot {
                     is_hidden);
     }
 
-    void command_line_option_processor::parse() noexcept
+    void command_line_option_processor::process() noexcept
     {
         GError *error { nullptr };
 

@@ -16,7 +16,7 @@ namespace rocket {
 
     tcp_service::tcp_service(const groot::config_setting::sptr& config,
                              const task_router::sptr& router,
-                             const work_context_delegate *service_provider) noexcept :
+                             const work_service_delegate *service_provider) noexcept :
             crucial(config, router, service_provider),
             _loop { nullptr }
     {
@@ -29,7 +29,7 @@ namespace rocket {
 
     void tcp_service::setup() noexcept
     {
-        _loop = get_context_delegate()->get_own_loop<io_loop>()->get_loop();
+        _loop = get_delegate()->get_own_loop<io_loop>()->get_loop();
     }
 
     void tcp_service::reset() noexcept

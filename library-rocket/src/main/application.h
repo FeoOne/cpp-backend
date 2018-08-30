@@ -10,7 +10,7 @@
 
 #include <groot.h>
 
-#include "main/engine_option_processor.h"
+#include "main/rocket_option_processor.h"
 #include "work/worker_pool.h"
 #include "task/task_router.h"
 
@@ -39,9 +39,9 @@ namespace rocket {
                          const std::string_view& description) noexcept;
 
     private:
-        engine_option_processor::uptr                                   _option_processor;
-        groot::config::uptr                                         _config;
-        worker_pool::uptr                                               _workers;
+        rocket_option_processor::uptr                                   _option_processor;
+        groot::config::uptr                                             _config;
+        worker_pool::uptr                                               _worker_pool;
         task_router::sptr                                               _router;
         std::unordered_map<work_context::key_type, task_queue::sptr>    _queues;
         std::unordered_map<std::string_view, context_creator>           _context_creators;

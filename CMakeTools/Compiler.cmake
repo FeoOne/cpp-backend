@@ -20,31 +20,31 @@ function(enable_cxx17 TARGET)
 endfunction(enable_cxx17)
 
 function(setup_compile_options TARGET)
-    target_compile_options(${TARGET} PRIVATE
-            -Wall
-            -Wextra
-            -Wno-padded
-            -Wno-return-type
-            -Wno-old-style-cast
-            -Wno-unused-parameter
-            -Wno-format-nonliteral
-            -Wno-zero-as-null-pointer-constant
-            )
-
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(${TARGET} PRIVATE
-            -Weverything
-            -Wno-c++98-compat
-            -Wno-weak-vtables
-            -Wno-documentation
-            -Wno-reserved-id-macro
-            -Wno-global-constructors
-            -Wno-exit-time-destructors
-            -Wno-c++98-compat-pedantic
-            -Wno-c++98-c++11-c++14-compat
-            -Wno-documentation-unknown-command
-            -Wno-c++98-c++11-c++14-compat-pedantic
-            -Wno-gnu-zero-variadic-macro-arguments
-            )
+                -Weverything
+                -Wno-c++98-compat
+                -Wno-weak-vtables
+                -Wno-documentation
+                -Wno-reserved-id-macro
+                -Wno-global-constructors
+                -Wno-exit-time-destructors
+                -Wno-c++98-compat-pedantic
+                -Wno-c++98-c++11-c++14-compat
+                -Wno-documentation-unknown-command
+                -Wno-c++98-c++11-c++14-compat-pedantic
+                -Wno-gnu-zero-variadic-macro-arguments
+                )
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        target_compile_options(${TARGET} PRIVATE
+                -Wall
+                -Wextra
+                -Wno-padded
+                -Wno-return-type
+                -Wno-old-style-cast
+                -Wno-unused-parameter
+                -Wno-format-nonliteral
+                -Wno-zero-as-null-pointer-constant
+                )
     endif()
 endfunction(setup_compile_options)

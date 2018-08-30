@@ -12,15 +12,15 @@
 
 namespace rocket {
 
-    class engine_option_processor : public groot::command_line_option_processor {
+    class rocket_option_processor : public groot::command_line_option_processor {
     public:
-        GR_DECLARE_SMARTPOINTERS(engine_option_processor)
-        GR_DELETE_ALL_DEFAULT(engine_option_processor)
+        GR_DECLARE_SMARTPOINTERS(rocket_option_processor)
+        GR_DELETE_ALL_DEFAULT(rocket_option_processor)
 
-        explicit engine_option_processor(int argc,
+        explicit rocket_option_processor(int argc,
                                          char **argv,
                                          const std::string_view& app_description) noexcept;
-        virtual ~engine_option_processor() = default;
+        virtual ~rocket_option_processor() = default;
 
         std::string_view config_path() const noexcept;
 

@@ -33,7 +33,7 @@ namespace groot {
 
         virtual ~command_line_option_processor();
 
-        void parse() noexcept;
+        void process() noexcept;
 
     protected:
         explicit command_line_option_processor(int argc,

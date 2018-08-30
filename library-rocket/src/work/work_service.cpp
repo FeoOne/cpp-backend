@@ -13,22 +13,22 @@ namespace rocket {
 
     work_service::work_service(const groot::config_setting::sptr& config,
                                const task_router::sptr& router,
-                               const work_context_delegate *service_provider) noexcept :
+                               const work_service_delegate *delegate) noexcept :
             _config { config },
             _router { router },
-            _context_delegate { service_provider }
+            _delegate { delegate }
     {
-        _task_handlers.fill(nullptr);
+        _handlers.fill(nullptr);
     }
 
     void work_service::handle_task(const task::sptr& task) noexcept
     {
-        _task_handlers[task->get_key()](task);
+        _handlers[task->get_key()](task);
     }
 
-    void work_service::add_task_handler(task::key_type task_key, task_handler&& handler) noexcept
+    void work_service::assign_task_handler(task::key_type task_key, handler&& handler) noexcept
     {
-        _task_handlers[task_key] = std::move(handler);
+        _handlers[task_key] = std::move(handler);
     }
 
 }

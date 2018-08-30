@@ -8,7 +8,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h
         )
 
-find_package(NlohmanJson REQUIRED)
 find_package(Config REQUIRED)
 find_package(GLib REQUIRED)
 find_package(UUID REQUIRED)
@@ -26,7 +25,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${GLib_INCLUDE_DIRS}
             #${UUID_INCLUDE_DIR}

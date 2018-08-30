@@ -13,7 +13,7 @@ namespace quill {
 
     websocket_service::websocket_service(const groot::config_setting::sptr& config,
                                          const rocket::task_router::sptr& router,
-                                         const rocket::work_context_delegate *service_provider) noexcept :
+                                         const rocket::work_service_delegate *service_provider) noexcept :
             crucial(config, router, service_provider),
             _processors {}
     {

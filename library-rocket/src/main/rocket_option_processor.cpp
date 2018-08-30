@@ -5,11 +5,11 @@
  * @brief
  */
 
-#include "main/engine_option_processor.h"
+#include "main/rocket_option_processor.h"
 
 namespace rocket {
 
-    engine_option_processor::engine_option_processor(int argc,
+    rocket_option_processor::rocket_option_processor(int argc,
                                                      char **argv,
                                                      const std::string_view& app_description) noexcept :
             command_line_option_processor(argc, argv, app_description),
@@ -28,11 +28,11 @@ namespace rocket {
     }
 
     // virtual
-//    engine_option_processor::~engine_option_processor()
+//    rocket_option_processor::rocket_option_processor()
 //    {
 //    }
 
-    std::string_view engine_option_processor::config_path() const noexcept
+    std::string_view rocket_option_processor::config_path() const noexcept
     {
         return (_config_path != nullptr) ? _config_path : "";
     }

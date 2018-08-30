@@ -13,6 +13,9 @@
 
 namespace rocket {
 
+    /**
+     *
+     */
     class worker_pool {
     public:
         GR_DECLARE_SMARTPOINTERS(worker_pool)
@@ -26,8 +29,8 @@ namespace rocket {
         void start() noexcept;
 
         template<typename Context>
-        worker::uptr& get_worker() noexcept {
-            return _workers[Context::key()][0];
+        std::vector<worker::uptr>& get_workers() noexcept {
+            return _workers[Context::key()];
         }
 
     private:

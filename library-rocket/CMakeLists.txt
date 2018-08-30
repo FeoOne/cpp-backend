@@ -4,7 +4,6 @@ message(STATUS "Configure ${PROJECT_NAME}...")
 
 project(${PROJECT_NAME} VERSION ${WORKSPACE_VERSION_FULL} LANGUAGES CXX)
 
-find_package(NlohmanJson REQUIRED)
 find_package(Config REQUIRED)
 find_package(GLib REQUIRED)
 find_package(Soup REQUIRED)
@@ -24,7 +23,6 @@ target_include_directories(${PROJECT_NAME}
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
             ${groot_SOURCE_DIR}/src
-            ${NlohmanJson_INCLUDE_DIR}
             ${Config_INCLUDE_DIR}
             ${UUID_INCLUDE_DIR}
             ${GIO_INCLUDE_DIRS}

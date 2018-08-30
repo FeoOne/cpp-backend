@@ -1,3 +1,7 @@
+/**
+ * @file work_context.h
+ * @author Aleksandr Feoktistov
+ */
 //
 // Created by Feo on 16/08/2018.
 //
@@ -9,17 +13,26 @@
 #include "task/task_handler.h"
 #include "work/work_loop.h"
 #include "work/work_service.h"
-#include "work/work_context_delegate.h"
+#include "work/work_service_delegate.h"
+
+#define RC_CONTEXT_CREATOR(context)                     \
+    [](const groot::config_setting::sptr& config,       \
+       const rocket::task_router::sptr& router) {       \
+        return context::make_unique(config, router);    \
+    }
 
 namespace rocket {
 
-    class work_context : public work_context_delegate, public task_handler {
+    /**
+     *
+     */
+    class work_context : public work_service_delegate, public task_handler {
     public:
         GR_DECLARE_SMARTPOINTERS(work_context)
         GR_DELETE_ALL_DEFAULT(work_context)
         GR_CRUCIAL_BASE_DEFINITION()
 
-        using work_context_delegate::get_service;
+        using work_service_delegate::get_service;
 
         explicit work_context(const groot::config_setting::sptr& config,
                               const task_router::sptr& router,
@@ -51,12 +64,12 @@ namespace rocket {
 
     private:
         groot::config_setting::sptr                         _config;
-        task_router::sptr                                       _router;
-        work_loop::sptr                                         _loop;
+        task_router::sptr                                   _router;
+        work_loop::sptr                                     _loop;
         std::array<work_service::sptr,
-                consts::WORK_SERVICE_TYPE_MAX_COUNT>      _services;
+                consts::WORK_SERVICE_TYPE_MAX_COUNT>        _services;
         std::array<task::key_type,
-                consts::TASK_TYPE_MAX_COUNT>              _handler_keys;
+                consts::TASK_TYPE_MAX_COUNT>                _handler_keys;
 
     };
 

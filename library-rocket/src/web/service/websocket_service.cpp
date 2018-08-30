@@ -15,7 +15,7 @@ namespace rocket {
 
     websocket_service::websocket_service(const groot::config_setting::sptr& config,
                                          const task_router::sptr& router,
-                                         const work_context_delegate *service_provider) noexcept :
+                                         const work_service_delegate *service_provider) noexcept :
             crucial(config, router, service_provider)
     {
         RC_BIND_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
@@ -28,7 +28,7 @@ namespace rocket {
 
     void websocket_service::setup() noexcept
     {
-        auto server = get_context_delegate()->get_service<webserver_service>()->get_server();
+        auto server = get_delegate()->get_service<webserver_service>()->get_server();
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
@@ -50,7 +50,7 @@ namespace rocket {
         auto websocket_config = (*get_config())[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET];
         auto path = (*websocket_config)[consts::CONFIG_KEY_PATH]->to_string_view();
 
-        soup_server_remove_handler(get_context_delegate()->get_service<webserver_service>()->get_server(),
+        soup_server_remove_handler(get_delegate()->get_service<webserver_service>()->get_server(),
                                    path.data());
     }
 

@@ -29,9 +29,9 @@
 namespace rocket {
 
     application::application(int argc, char **argv, const std::string_view& description) noexcept :
-            _option_processor { engine_option_processor::make_unique(argc, argv, description) },
+            _option_processor { rocket_option_processor::make_unique(argc, argv, description) },
             _config { groot::config::make_unique() },
-            _workers { worker_pool::make_unique() },
+            _worker_pool { worker_pool::make_unique() },
             _router { task_router::make_shared() },
             _queues {},
             _context_creators {}
@@ -52,15 +52,21 @@ namespace rocket {
 
     int application::start() noexcept
     {
-        _option_processor->parse();
+        _option_processor->process();
         _config->read(_option_processor->config_path());
 
         create_queues();
         create_routes();
         create_workers();
 
-        _workers->start();
-        _workers->get_worker<system_context>()->join();
+        _worker_pool->start();
+
+        /* There are no more work for main thread,
+         * so join system worker to keep process alive.
+         */
+        auto &system_workers = _worker_pool->get_workers<system_context>();
+        logassert(system_workers.size() == 1);
+        system_workers.front()->join();
 
         return EXIT_SUCCESS;
     }
@@ -96,7 +102,7 @@ namespace rocket {
             auto name { (*config)[consts::CONFIG_KEY_NAME]->to_string_view() };
             auto context { _context_creators.at(name)(config, _router) };
 
-            _workers->push(worker::make_unique(config, std::move(context)));
+            _worker_pool->push(worker::make_unique(config, std::move(context)));
         }
     }
 
