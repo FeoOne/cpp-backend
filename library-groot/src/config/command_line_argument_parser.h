@@ -26,17 +26,17 @@ namespace groot {
         FILENAME_ARRAY,
     };
 
-    class command_line_option_processor {
+    class command_line_argument_parser {
     public:
-        GR_DECLARE_SMARTPOINTERS(command_line_option_processor)
-        GR_DELETE_ALL_DEFAULT(command_line_option_processor)
+        GR_DECLARE_SMARTPOINTERS(command_line_argument_parser)
+        GR_DELETE_ALL_DEFAULT(command_line_argument_parser)
 
-        virtual ~command_line_option_processor();
+        virtual ~command_line_argument_parser();
 
-        void process() noexcept;
+        void parse() noexcept;
 
     protected:
-        explicit command_line_option_processor(int argc,
+        explicit command_line_argument_parser(int argc,
                                                char **argv,
                                                const std::string_view& app_description) noexcept;
 

@@ -13,12 +13,12 @@
 
 namespace rocket {
 
-    websocket_service::websocket_service(const groot::config_setting::sptr& config,
-                                         const task_router::sptr& router,
-                                         const work_service_delegate *service_provider) noexcept :
-            crucial(config, router, service_provider)
+    websocket_service::websocket_service(const groot::setting& config,
+                                         task_router *router,
+                                         const work_service_delegate *service_delegate) noexcept :
+            crucial(config, router, service_delegate)
     {
-        RC_BIND_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
+        RC_ASSIGN_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
     }
 
     // virtual
@@ -28,13 +28,13 @@ namespace rocket {
 
     void websocket_service::setup() noexcept
     {
-        auto server = get_delegate()->get_service<webserver_service>()->get_server();
+        auto server { delegate()->get_service<webserver_service>()->get_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
 
-        auto websocket_config = (*get_config())[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET];
-        auto path = (*websocket_config)[consts::CONFIG_KEY_PATH]->to_string_view(); // @todo Make array of pathes.
+        auto websocket_config { get_config()[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET] };
+        auto path { websocket_config[consts::CONFIG_KEY_PATH].to_string() }; // @todo Make array of pathes.
 
         soup_server_add_websocket_handler(server,
                                           path.data(),
@@ -47,10 +47,10 @@ namespace rocket {
 
     void websocket_service::reset() noexcept
     {
-        auto websocket_config = (*get_config())[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET];
-        auto path = (*websocket_config)[consts::CONFIG_KEY_PATH]->to_string_view();
+        auto websocket_config { get_config()[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET] };
+        auto path { websocket_config[consts::CONFIG_KEY_PATH].to_string() };
 
-        soup_server_remove_handler(get_delegate()->get_service<webserver_service>()->get_server(),
+        soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
                                    path.data());
     }
 
@@ -69,7 +69,7 @@ namespace rocket {
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
 
-        connection = GR_GOBJECT_REF(connection);
+        GR_GOBJECT_RETAIN(connection);
 
         g_signal_connect(connection, "message", G_CALLBACK(&websocket_service::message_routine), this);
         g_signal_connect(connection, "error", G_CALLBACK(&websocket_service::error_routine), this);
@@ -92,7 +92,7 @@ namespace rocket {
     void websocket_service::on_closed(SoupWebsocketConnection *connection) noexcept
     {
         g_signal_handlers_disconnect_by_data(connection, this);
-        GR_GOBJECT_UNREF(connection);
+        GR_GOBJECT_RELEASE(connection);
     }
 
     // static

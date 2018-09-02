@@ -5,21 +5,21 @@
  * @brief
  */
 
-#include "main/rocket_option_processor.h"
+#include "main/command_line_argument_parser.h"
 
 namespace rocket {
 
-    rocket_option_processor::rocket_option_processor(int argc,
-                                                     char **argv,
-                                                     const std::string_view& app_description) noexcept :
-            command_line_option_processor(argc, argv, app_description),
+    command_line_argument_parser::command_line_argument_parser(int argc,
+                                                               char **argv,
+                                                               const std::string_view& app_description) noexcept :
+            groot::command_line_argument_parser(argc, argv, app_description),
             _config_path { nullptr }
     {
         push_group("core", "Core options.", "Options related to core. This is detailed group description.");
 
         add_option(groot::command_line_option_type::STRING,
                    &_config_path,
-                   "config-path",
+                   "config",
                    'c',
                    "Path to config.",
                    "PATH",
@@ -32,7 +32,7 @@ namespace rocket {
 //    {
 //    }
 
-    std::string_view rocket_option_processor::config_path() const noexcept
+    std::string_view command_line_argument_parser::config_path() const noexcept
     {
         return (_config_path != nullptr) ? _config_path : "";
     }

@@ -9,7 +9,7 @@
 
 namespace strange {
 
-    job_context::job_context(const groot::config_setting::sptr& config,
+    job_context::job_context(const groot::setting& config,
                              const rocket::task_router::sptr& router) noexcept :
             rocket::job_context(config, router)
     {

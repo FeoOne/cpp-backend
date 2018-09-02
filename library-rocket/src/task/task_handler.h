@@ -18,7 +18,7 @@ namespace rocket {
 
         virtual ~task_handler() = default;
 
-        virtual void handle_task(const task::sptr& task) noexcept = 0;
+        virtual void handle_task(const task::sptr& task) const noexcept = 0;
 
     protected:
         task_handler() = default;

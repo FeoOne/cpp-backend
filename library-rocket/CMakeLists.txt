@@ -15,7 +15,7 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} src/work/work_context.cpp src/work/work_context.h)
 
 enable_cxx17(${PROJECT_NAME})
-setup_compile_options(${PROJECT_NAME})
+setup_compiler_flags(${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION})
 

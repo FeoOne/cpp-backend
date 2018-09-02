@@ -17,7 +17,7 @@ namespace strange {
         GR_DECLARE_SMARTPOINTERS(job_context)
         GR_DELETE_ALL_DEFAULT(job_context)
 
-        explicit job_context(const groot::config_setting::sptr& config,
+        explicit job_context(const groot::setting& config,
                              const rocket::task_router::sptr& router) noexcept;
         virtual ~job_context();
 

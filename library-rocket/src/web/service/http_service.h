@@ -19,9 +19,9 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(http_service)
         GR_DELETE_ALL_DEFAULT(http_service)
 
-        explicit http_service(const groot::config_setting::sptr& config,
-                              const task_router::sptr& router,
-                              const work_service_delegate *service_provider) noexcept;
+        explicit http_service(const groot::setting& config,
+                              task_router *router,
+                              const work_service_delegate *service_delegate) noexcept;
         virtual ~http_service();
 
         void setup() noexcept final;

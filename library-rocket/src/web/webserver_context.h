@@ -17,15 +17,10 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(webserver_context)
         GR_DELETE_ALL_DEFAULT(webserver_context)
 
-        explicit webserver_context(const groot::config_setting::sptr& config,
-                                   const task_router::sptr& router) noexcept;
-        virtual ~webserver_context();
-
-        void setup() noexcept final;
-        void reset() noexcept final;
+        explicit webserver_context(const groot::setting& config, task_router *router) noexcept;
+        virtual ~webserver_context() = default;
 
     private:
-        const bool      _websocket_service_enabled;
 
     };
 

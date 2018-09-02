@@ -18,23 +18,21 @@ namespace rocket {
         task_router();
         ~task_router() = default;
 
-        void add_queue(groot::crucial_key_type context_key, const task_queue::sptr& queue) noexcept;
-        task_queue::sptr get_queue(groot::crucial_key_type context_key) const noexcept;
+        void add_queue(groot::crucial_key_type context_key, task_queue::uptr&& queue) noexcept;
+        task_queue *get_queue(groot::crucial_key_type context_key) const noexcept;
 
-        template<typename Context>
-        task_queue::sptr get_queue() const noexcept {
-            return get_queue(Context::key());
+        template<typename T>
+        task_queue *get_queue() const noexcept {
+            return get_queue(T::key());
         }
 
-        void register_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept;
+        void assign_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept;
 
         void enqueue(const task::sptr& task) noexcept;
 
     private:
-        std::array<task_queue::sptr,
-                consts::WORK_CONTEXT_TYPE_MAX_COUNT>    _queues;
-        std::array<groot::crucial_key_type,
-                consts::TASK_TYPE_MAX_COUNT>            _context_keys;
+        std::array<task_queue::uptr, consts::WORK_CONTEXT_TYPE_MAX_KEY>     _queues;
+        std::array<groot::crucial_key_type, task::MAX_KEY>                  _context_keys;
 
     };
 

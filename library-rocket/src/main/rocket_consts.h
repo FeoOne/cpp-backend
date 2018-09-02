@@ -14,9 +14,9 @@ namespace rocket {
 
     class consts {
     public:
-        static constexpr size_t             TASK_TYPE_MAX_COUNT { 32 };
-        static constexpr size_t             WORK_CONTEXT_TYPE_MAX_COUNT { 8 };
-        static constexpr size_t             WORK_SERVICE_TYPE_MAX_COUNT { 16 };
+        static constexpr size_t             TASK_TYPE_MAX_KEY { 32 };
+        static constexpr size_t             WORK_CONTEXT_TYPE_MAX_KEY { 8 };
+        static constexpr size_t             WORK_SERVICE_TYPE_MAX_KEY { 16 };
 
         static constexpr std::string_view   WEBSERVER_HEADER { " bitpayments-httpd" };
         static constexpr size_t             WEBSERVER_DEFAULT_PORT { 8888 };

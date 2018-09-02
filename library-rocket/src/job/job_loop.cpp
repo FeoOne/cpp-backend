@@ -9,7 +9,7 @@
 
 namespace rocket {
 
-    job_loop::job_loop(const task_queue::sptr& queue, task_handler *handler) noexcept :
+    job_loop::job_loop(task_queue *queue, const task_handler *handler) noexcept :
             work_loop(queue, handler),
             _should_work { false }
     {

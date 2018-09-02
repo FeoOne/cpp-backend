@@ -17,12 +17,8 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(db_context)
         GR_DELETE_ALL_DEFAULT(db_context)
 
-        explicit db_context(const groot::config_setting::sptr& config,
-                            const task_router::sptr& router) noexcept;
-        virtual ~db_context();
-
-        void setup() noexcept final;
-        void reset() noexcept final;
+        explicit db_context(const groot::setting& config, task_router *router) noexcept;
+        virtual ~db_context() = default;
 
     };
 

@@ -16,50 +16,15 @@
 
 namespace rocket {
 
-    webserver_context::webserver_context(const groot::config_setting::sptr& config,
-                                         const task_router::sptr& router) noexcept :
-            crucial(config, router, webserver_loop::make_shared(router->get_queue<webserver_context>(), this)),
-            _websocket_enabled { (*config)[consts::CONFIG_KEY_WEBSERVER_WEBSOCKET] }
+    webserver_context::webserver_context(const groot::setting& config, task_router *router) noexcept :
+            crucial(config, router, webserver_loop::make_unique(router->get_queue<webserver_context>(), this))
     {
-        add_service(webserver_service::make_shared(get_config(), get_router(), this));
-        add_service(http_service::make_shared(get_config(), get_router(), this));
-        if (_websocket_enabled) {
-            lognotice("Websocket enabled.");
-            add_service(websocket_service::make_shared(get_config(), get_router(), this));
-        }
+        add_service(webserver_service::make_unique(get_config(), get_router(), this));
+        add_service(http_service::make_unique(get_config(), get_router(), this));
+        add_service(websocket_service::make_unique(get_config(), get_router(), this));
 
-        register_task_handler(http_response_task::key(), http_service::key());
-        register_task_handler(ws_outgoing_message_task::key(), websocket_service::key());
-    }
-
-    // virtual
-    webserver_context::~webserver_context()
-    {
-        if (_websocket_enabled) {
-            remove_service<websocket_service>();
-        }
-        remove_service<http_service>();
-        remove_service<webserver_service>();
-    }
-
-    // virtual
-    void webserver_context::setup() noexcept
-    {
-        get_service<webserver_service>()->setup();
-        get_service<http_service>()->setup();
-        if (_websocket_enabled) {
-            get_service<websocket_service>()->setup();
-        }
-    }
-
-    // virtual
-    void webserver_context::reset() noexcept
-    {
-        if (_websocket_enabled) {
-            get_service<websocket_service>()->reset();
-        }
-        get_service<http_service>()->reset();
-        get_service<webserver_service>()->reset();
+        RC_BIND_TASK_ROUTE(http_response_task, http_service);
+        RC_BIND_TASK_ROUTE(ws_outgoing_message_task, websocket_service);
     }
 
 }

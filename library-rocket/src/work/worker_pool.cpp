@@ -11,13 +11,14 @@
 
 namespace rocket {
 
-    worker_pool::worker_pool()
+    worker_pool::worker_pool() :
+            _workers {}
     {
     }
 
     void worker_pool::push(worker::uptr&& worker) noexcept
     {
-        _workers[worker->_context->get_key()].push_back(std::move(worker));
+        _workers[worker->get_context_key()].push_back(std::move(worker));
     }
 
     void worker_pool::start() noexcept

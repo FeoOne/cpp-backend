@@ -17,7 +17,7 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(system_loop)
         GR_DELETE_ALL_DEFAULT(system_loop)
 
-        explicit system_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
+        explicit system_loop(task_queue *queue, const task_handler *handler) noexcept;
         virtual ~system_loop();
 
         void start() noexcept final;

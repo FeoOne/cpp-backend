@@ -15,7 +15,7 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 enable_cxx17(${PROJECT_NAME})
-setup_compile_options(${PROJECT_NAME})
+setup_compiler_flags(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE

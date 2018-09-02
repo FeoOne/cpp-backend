@@ -4,7 +4,7 @@
 
 #include "logger/log_manager.h"
 
-#include "config/command_line_option_processor.h"
+#include "config/command_line_argument_parser.h"
 
 namespace groot {
 
@@ -48,7 +48,7 @@ namespace groot {
         entry->arg_data = ptr;
     }
 
-    command_line_option_processor::command_line_option_processor(int argc,
+    command_line_argument_parser::command_line_argument_parser(int argc,
                                                                  char **argv,
                                                                  const std::string_view& app_description) noexcept :
             _argc { argc },
@@ -59,12 +59,12 @@ namespace groot {
     {
     }
 
-    command_line_option_processor::~command_line_option_processor()
+    command_line_argument_parser::~command_line_argument_parser()
     {
         g_option_context_free(_context);
     }
 
-    void command_line_option_processor::push_group(const std::string_view& name,
+    void command_line_argument_parser::push_group(const std::string_view& name,
                                                    const std::string_view& description,
                                                    const std::string_view& detailed_description) noexcept
     {
@@ -76,7 +76,7 @@ namespace groot {
         _groups.push(group);
     }
 
-    void command_line_option_processor::add_option(command_line_option_type type,
+    void command_line_argument_parser::add_option(command_line_option_type type,
                                                    void *ptr,
                                                    const std::string_view& long_name,
                                                    char short_name,
@@ -96,7 +96,7 @@ namespace groot {
                     is_hidden);
     }
 
-    void command_line_option_processor::process() noexcept
+    void command_line_argument_parser::parse() noexcept
     {
         GError *error { nullptr };
 

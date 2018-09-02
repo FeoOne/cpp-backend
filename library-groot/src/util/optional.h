@@ -13,9 +13,11 @@
 namespace groot {
 
     template<typename T>
-    class optional {
+    class optional final {
     public:
         using value_type = T;
+        using pointer_type = T *;
+        using const_pointer_type = const T *;
 
         optional() : _value {}, _is_set { false } {}
         optional(const optional& other) noexcept : _value { other._value }, _is_set { other._is_set } {}
@@ -30,7 +32,7 @@ namespace groot {
         void value(const value_type& v) { _value = v; _is_set = true; }
         void value(value_type&& v) { _value = std::move(v); _is_set = true; }
 
-        value_type *pointer() noexcept {
+        pointer_type pointer() noexcept {
             value_type *result { nullptr };
             if (_is_set) {
                 result = &_value;
@@ -38,7 +40,7 @@ namespace groot {
             return result;
         }
 
-        const value_type *pointer() const noexcept {
+        const_pointer_type pointer() const noexcept {
             value_type *result { nullptr };
             if (_is_set) {
                 result = &_value;

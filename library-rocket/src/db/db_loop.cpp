@@ -9,7 +9,7 @@
 
 namespace rocket {
 
-    db_loop::db_loop(const task_queue::sptr& queue, task_handler *handler) noexcept :
+    db_loop::db_loop(task_queue *queue, const task_handler *handler) noexcept :
             work_loop(queue, handler)
     {
         uv_loop_init(&_loop);

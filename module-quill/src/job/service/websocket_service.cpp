@@ -11,13 +11,13 @@
 
 namespace quill {
 
-    websocket_service::websocket_service(const groot::config_setting::sptr& config,
-                                         const rocket::task_router::sptr& router,
-                                         const rocket::work_service_delegate *service_provider) noexcept :
-            crucial(config, router, service_provider),
+    websocket_service::websocket_service(const groot::setting& config,
+                                         rocket::task_router *router,
+                                         const rocket::work_service_delegate *service_delegate) noexcept :
+            crucial(config, router, service_delegate),
             _processors {}
     {
-        RC_BIND_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);
+        RC_ASSIGN_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);
 
         _processors.insert({
             OPCODE_MESSAGE_TERRA_CREATE_INVOICE,

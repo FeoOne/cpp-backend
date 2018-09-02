@@ -9,10 +9,10 @@
 
 namespace rocket {
 
-    webserver_service::webserver_service(const groot::config_setting::sptr& config,
-                                         const task_router::sptr& router,
-                                         const work_service_delegate *service_provider) noexcept :
-            crucial(config, router, service_provider),
+    webserver_service::webserver_service(const groot::setting& config,
+                                         task_router *router,
+                                         const work_service_delegate *service_delegate) noexcept :
+            crucial(config, router, service_delegate),
             _server { nullptr }
     {
     }
@@ -26,20 +26,20 @@ namespace rocket {
     {
         GError *error { nullptr };
 
-        const char *header = consts::WEBSERVER_HEADER.data();
-        if (!get_config()->lookup_string("header", &header)) {
+        auto header { consts::WEBSERVER_HEADER.data() };
+        if (!get_config().lookup_string("header", &header)) {
             logwarn("Used default web server header: '%s'.", header);
         }
 
-        s32 port = static_cast<s32>(consts::WEBSERVER_DEFAULT_PORT);
-        if (!get_config()->lookup_s32("port", &port)) {
+        auto port { static_cast<s32>(consts::WEBSERVER_DEFAULT_PORT) };
+        if (!get_config().lookup_s32("port", &port)) {
             logwarn("Used default web server port: '%d'.", port);
         }
 
         _server = soup_server_new(SOUP_SERVER_SERVER_HEADER, header, nullptr);
         if (_server != nullptr) {
             gboolean result { FALSE };
-            auto listen = (*get_config())[consts::CONFIG_KEY_LISTEN]->to_string_view();
+            auto listen { get_config()[consts::CONFIG_KEY_LISTEN].to_string() };
             if (listen == consts::CONFIG_WEBSERVER_LISTEN_ALL) {
                 result = soup_server_listen_all(_server,
                                                 static_cast<guint>(port),
@@ -74,7 +74,7 @@ namespace rocket {
     void webserver_service::reset() noexcept
     {
         soup_server_disconnect(_server);
-        GR_GOBJECT_UNREF(_server);
+        GR_GOBJECT_RELEASE(_server);
         _server = nullptr;
     }
 

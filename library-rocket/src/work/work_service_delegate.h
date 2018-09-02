@@ -17,26 +17,26 @@ namespace rocket {
 
     class work_service_delegate {
     public:
-        GR_DECLARE_SMARTPOINTERS(work_service_delegate)
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(work_service_delegate)
 
         virtual ~work_service_delegate() = default;
 
-        template<typename Loop>
-        typename Loop::sptr get_own_loop() const noexcept {
-            return std::static_pointer_cast<Loop>(get_loop());
+        template<typename T>
+        T *get_loop() const noexcept {
+            return static_cast<T *>(get_loop_impl());
         }
 
-        template<typename Service>
-        typename Service::sptr get_service() const noexcept {
-            return std::static_pointer_cast<Service>(get_service(Service::key()));
+        template<typename T>
+        T *get_service() const noexcept {
+            return static_cast<T *>(get_service_impl(T::key()));
         }
 
     protected:
         work_service_delegate() = default;
 
-        virtual std::shared_ptr<work_loop> get_loop() const noexcept = 0;
-        virtual std::shared_ptr<work_service> get_service(groot::crucial_key_type key) const noexcept = 0;
+    private:
+        virtual work_loop *get_loop_impl() const noexcept = 0;
+        virtual work_service *get_service_impl(groot::crucial_key_type key) const noexcept = 0;
 
     };
 

@@ -14,28 +14,10 @@
 
 namespace rocket {
 
-    db_context::db_context(const groot::config_setting::sptr& config,
-                           const task_router::sptr& router) noexcept :
-            crucial(config, router, db_loop::make_shared(router->get_queue<db_context>(), this))
+    db_context::db_context(const groot::setting& config, task_router *router) noexcept :
+            crucial(config, router, db_loop::make_unique(router->get_queue<db_context>(), this))
     {
-        add_service(request_service::make_shared(get_config(), get_router(), this));
-    }
-
-    // virtual
-    db_context::~db_context()
-    {
-    }
-
-    // virtual
-    void db_context::setup() noexcept
-    {
-
-    }
-
-    // virtual
-    void db_context::reset() noexcept
-    {
-
+        add_service(request_service::make_unique(get_config(), get_router(), this));
     }
 
 }

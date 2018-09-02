@@ -32,6 +32,7 @@
 #include "util/optional.h"
 
 #include "main/tools.h"
+#include "main/platform.h"
 
 #include "time/time.h"
 
@@ -46,7 +47,7 @@
 #include "memory/memory.h"
 
 #include "config/config.h"
-#include "config/command_line_option_processor.h"
+#include "config/command_line_argument_parser.h"
 
 #include "network/network.h"
 #include "network/endpoint.h"

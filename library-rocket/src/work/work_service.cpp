@@ -11,8 +11,8 @@ namespace rocket {
 
     GR_CRUCIAL_BASE_DECLARATION(work_service)
 
-    work_service::work_service(const groot::config_setting::sptr& config,
-                               const task_router::sptr& router,
+    work_service::work_service(const groot::setting& config,
+                               task_router *router,
                                const work_service_delegate *delegate) noexcept :
             _config { config },
             _router { router },
@@ -21,7 +21,7 @@ namespace rocket {
         _handlers.fill(nullptr);
     }
 
-    void work_service::handle_task(const task::sptr& task) noexcept
+    void work_service::handle_task(const task::sptr& task) const noexcept
     {
         _handlers[task->get_key()](task);
     }

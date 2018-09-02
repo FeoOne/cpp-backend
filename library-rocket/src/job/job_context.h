@@ -20,8 +20,7 @@ namespace rocket {
         virtual ~job_context() = default;
 
     protected:
-        explicit job_context(const groot::config_setting::sptr& config,
-                             const task_router::sptr& router) noexcept;
+        explicit job_context(const groot::setting& config, task_router *router) noexcept;
 
     };
 

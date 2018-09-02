@@ -8,7 +8,7 @@
 #ifndef ROCKET_EXECUTION_CONTEXT_H
 #define ROCKET_EXECUTION_CONTEXT_H
 
-#if __APPLE__
+#ifdef GR_PLATFORM_APPLE
 #include <pthread/pthread.h>
 #else
 #include <pthread.h>
@@ -33,8 +33,8 @@ namespace rocket {
             DETACHED,
         };
 
-        explicit worker(const groot::config_setting::sptr& config, work_context::uptr&& context) noexcept;
-        ~worker();
+        explicit worker(const groot::setting& config, work_context::uptr&& context) noexcept;
+        ~worker() = default;
 
         void start(detach_state state) noexcept;
         void stop() noexcept;
@@ -43,13 +43,13 @@ namespace rocket {
 
         void join() noexcept;
 
-    private:
-        friend class worker_pool;
+        work_context::key_type get_context_key() const noexcept { return _context->get_key(); }
 
-        pthread_t                           _thread;
-        groot::config_setting::sptr         _config;
-        work_context::uptr                  _context;
-        bool                                _should_restart;
+    private:
+        pthread_t                       _thread;
+        const groot::setting            _config;
+        work_context::uptr              _context;
+        bool                            _should_restart;
 
         void exec_routine() noexcept;
 

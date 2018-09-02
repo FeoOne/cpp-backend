@@ -13,10 +13,12 @@
 #include "main/tools.h"
 #include "memory/memory.h"
 #include "scalar/numeric.h"
+#include "logger/log_manager.h"
 
-#define GR_CRUCIAL_BASE_DEFINITION()                    \
+#define GR_CRUCIAL_BASE_DEFINITION(max)                 \
     public:                                             \
-        using key_type = groot::crucial_key_type;   \
+        using key_type = groot::crucial_key_type;       \
+        static constexpr size_t MAX_KEY { max };        \
     protected:                                          \
         static key_type _key_counter;                   \
     public:                                             \
@@ -24,6 +26,9 @@
 
 #define GR_CRUCIAL_BASE_DECLARATION(base)               \
     base::key_type base::_key_counter { 0 };
+
+#define GR_CRUCIAL_KEY_UNDEFINED                        \
+    std::numeric_limits<groot::crucial_key_type>::max()
 
 namespace groot {
 

@@ -8,15 +8,16 @@ namespace rocket {
 
     GR_CRUCIAL_BASE_DECLARATION(work_context)
 
-    work_context::work_context(const groot::config_setting::sptr& config,
-                               const task_router::sptr& router,
-                               const work_loop::sptr& loop) noexcept :
+    work_context::work_context(const groot::setting& config,
+                               task_router *router,
+                               work_loop::uptr&& loop) noexcept :
+            _loop { std::move(loop) },
             _config { config },
             _router { router },
-            _loop { loop }
+            _services {},
+            _handler_bindings {}
     {
-        _services.fill(nullptr);
-        _handler_keys.fill(std::numeric_limits<task::key_type>::max());
+        _handler_bindings.fill(GR_CRUCIAL_KEY_UNDEFINED);
     }
 
     void work_context::start() noexcept
@@ -29,25 +30,47 @@ namespace rocket {
         _loop->stop();
     }
 
-    void work_context::handle_task(const task::sptr& task) noexcept
+    void work_context::setup_services() noexcept
     {
-        _services[_handler_keys[task->get_key()]]->handle_task(task);
+        for (auto& service: _services) {
+            if (service) {
+                service->setup();
+            }
+        }
     }
 
-    work_service::sptr work_context::get_service(work_service::key_type key) const noexcept
+    void work_context::reset_services() noexcept
     {
-        return _services[key];
+        for (auto& service: _services) {
+            if (service) {
+                service->reset();
+            }
+        }
     }
 
-    void work_context::add_service(const work_service::sptr& service) noexcept
+    void work_context::handle_task(const task::sptr& task) const noexcept
     {
-        _services[service->get_key()] = service;
+        _services[_handler_bindings[task->get_key()]]->handle_task(task);
     }
 
-    void work_context::register_task_handler(task::key_type task_key,
-                                             work_service::key_type service_key) noexcept
+    void work_context::bind_task_route(task::key_type task_key, work_service::key_type service_key) noexcept
     {
-        _handler_keys[task_key] = service_key;
+        _handler_bindings[task_key] = service_key;
+    }
+
+    void work_context::add_service(work_service::uptr&& service) noexcept
+    {
+        _services[service->get_key()] = std::move(service);
+    }
+
+    work_loop *work_context::get_loop_impl() const noexcept
+    {
+        return _loop.get();
+    }
+
+    work_service *work_context::get_service_impl(work_service::key_type key) const noexcept
+    {
+        return _services[key].get();
     }
 
 }

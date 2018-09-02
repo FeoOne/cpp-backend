@@ -9,16 +9,11 @@
 
 namespace rocket {
 
-    worker::worker(const groot::config_setting::sptr& config, work_context::uptr&& context) noexcept :
+    worker::worker(const groot::setting& config, work_context::uptr&& context) noexcept :
             _thread {},
             _config { config },
             _context { std::move(context) },
             _should_restart { false }
-    {
-    }
-
-    // virtual
-    worker::~worker()
     {
     }
 
@@ -36,8 +31,6 @@ namespace rocket {
         logassert(status == 0);
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
         logassert(status == 0);
-        status = pthread_attr_setscope(&attributes, PTHREAD_SCOPE_PROCESS); // make thread unbound
-        //logcond(status == ENOTSUP, "Tune pthread scope not supported.");
         status = pthread_create(&_thread, &attributes, &worker::exec_routine, this);
         logassert(status == 0);
     }
@@ -63,9 +56,9 @@ namespace rocket {
     void worker::exec_routine() noexcept
     {
         do {
-            _context->setup();
+            _context->setup_services();
             _context->start();
-            _context->reset();
+            _context->reset_services();
         } while (_should_restart);
     }
 

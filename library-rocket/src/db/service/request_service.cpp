@@ -11,12 +11,12 @@
 
 namespace rocket {
 
-    request_service::request_service(const groot::config_setting::sptr& config,
-                                     const task_router::sptr& router,
-                                     const work_service_delegate *service_provider) noexcept:
-            crucial(config, router, service_provider)
+    request_service::request_service(const groot::setting& config,
+                                     task_router *router,
+                                     const work_service_delegate *service_delegate) noexcept:
+            crucial(config, router, service_delegate)
     {
-        RC_BIND_TASK_HANDLER(db_request_task, request_service, handle_db_request_task);
+        RC_ASSIGN_TASK_HANDLER(db_request_task, request_service, handle_db_request_task);
     }
 
     // virtual

@@ -8,8 +8,6 @@
 #ifndef GROOT_TOOLS_H
 #define GROOT_TOOLS_H
 
-#define GR_COUNTER          __COUNTER__
-
 #define GR_STR_IMPL(str)    #str
 #define GR_STR(str)         GR_STR_IMPL(str)
 
