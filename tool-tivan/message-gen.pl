@@ -40,6 +40,7 @@ chomp $content;
 my $json = JSON::from_json($content);
 
 my $namespace = $json->{'namespace'};
+my $opcode = $json->{'opcode'};
 my %messages = %{ $json->{'messages'} };
 
 #########
@@ -66,7 +67,6 @@ $header .= "namespace " . $namespace . " {\n\n";
 
 foreach my $message_name (keys %messages) {
     my %schema = %{ $messages{$message_name} };
-    my $opcode = $schema{'opcode'};
     my %fields = %{ $schema{'fields'} };
 
     ##########
@@ -74,6 +74,7 @@ foreach my $message_name (keys %messages) {
     ##########
 
     $opcodes .= "#define OPCODE_" . $unique_name . "_" . uc $message_name . " " . $opcode . "\n";
+    ++$opcode;
 
     ##########
     # struct #

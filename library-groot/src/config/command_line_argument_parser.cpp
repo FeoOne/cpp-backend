@@ -49,8 +49,8 @@ namespace groot {
     }
 
     command_line_argument_parser::command_line_argument_parser(int argc,
-                                                                 char **argv,
-                                                                 const std::string_view& app_description) noexcept :
+                                                               char **argv,
+                                                               const std::string_view& app_description) noexcept :
             _argc { argc },
             _argv { argv },
             _groups {},
@@ -65,8 +65,8 @@ namespace groot {
     }
 
     void command_line_argument_parser::push_group(const std::string_view& name,
-                                                   const std::string_view& description,
-                                                   const std::string_view& detailed_description) noexcept
+                                                  const std::string_view& description,
+                                                  const std::string_view& detailed_description) noexcept
     {
         auto group = g_option_group_new(name.data(),
                                         description.data(),
@@ -77,13 +77,13 @@ namespace groot {
     }
 
     void command_line_argument_parser::add_option(command_line_option_type type,
-                                                   void *ptr,
-                                                   const std::string_view& long_name,
-                                                   char short_name,
-                                                   const std::string_view& description,
-                                                   const std::string_view& arg_description,
-                                                   bool is_optional,
-                                                   bool is_hidden) noexcept
+                                                  void *ptr,
+                                                  const std::string_view& long_name,
+                                                  char short_name,
+                                                  const std::string_view& description,
+                                                  const std::string_view& arg_description,
+                                                  bool is_optional,
+                                                  bool is_hidden) noexcept
     {
         setup_entry(&_options[_groups.back()].emplace_back(),
                     type,

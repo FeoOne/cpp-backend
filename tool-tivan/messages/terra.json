@@ -1,9 +1,10 @@
 {
-  "namespace": "message::terra",
+  "category": "message",
+  "namespace": "terra",
+  "start_opcode": 1000,
   "messages": {
 
     "create_invoice": {
-      "opcode": 10000,
       "fields": {
         "customer_uuid": {
           "type": "uuid"
@@ -18,7 +19,6 @@
     },
 
     "invoice_created": {
-      "opcode": 10001,
       "fields": {
         "invoice_uuid": {
           "type": "uuid"
@@ -27,7 +27,6 @@
     },
 
     "invoice_not_created": {
-      "opcode": 10002,
       "fields": {
         "error": {
           "type": "u32"

@@ -52,11 +52,11 @@ namespace rocket {
                             kind_t kind) noexcept;
 
     private:
-        groot::network_handle                       _handle;
-        groot::network_protocol                     _proto;
-        groot::ip_version                           _version;
-        side_t                                          _side;
-        kind_t                                          _kind;
+        groot::network_handle       _handle;
+        groot::network_protocol     _proto;
+        groot::ip_version           _version;
+        side_t                      _side;
+        kind_t                      _kind;
 
     };
 

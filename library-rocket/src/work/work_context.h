@@ -16,13 +16,12 @@
 #include "work/work_service.h"
 #include "work/work_service_delegate.h"
 
-#define RC_CONTEXT_CREATOR(context)                     \
-    [](const groot::setting& config,                    \
-       rocket::task_router *router) {                   \
-        return context::make_unique(config, router);    \
+#define RC_CONTEXT_CREATOR(context)                                 \
+    [](const groot::setting& config, rocket::task_router *router) { \
+        return context::make_unique(config, router);                \
     }
 
-#define RC_BIND_TASK_ROUTE(task, service)               \
+#define RC_BIND_TASK_ROUTE(task, service)                           \
     bind_task_route(task::key(), service::key());
 
 namespace rocket {
@@ -58,8 +57,9 @@ namespace rocket {
          * Setup services before start.
          */
         void setup_services() noexcept;
+
         /**
-         * Reset services before start.
+         * Reset services after stop.
          */
         void reset_services() noexcept;
 

@@ -13,10 +13,8 @@
 
 #include "logger/logger.h"
 
-#define logassert(cond) \
-    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'."); abort(); } } while (false)
-#define logcond(cond, format, ...) \
-    do { if ((cond)) { logwarn("Check condition: '" GR_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
+#define logassert(cond, format, ...) \
+    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); } } while (false)
 
 #define logdebug(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::DEBUG,        \
                                                                               __FILE__,                             \
