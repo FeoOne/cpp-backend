@@ -5,8 +5,10 @@
 #ifndef GROOT_STATIC_MEMORY_POOL_H
 #define GROOT_STATIC_MEMORY_POOL_H
 
+#include <vector>
+
 #include "scalar/numeric.h"
-#include "memory/memory_pool.h"
+#include "memory/memory_pool_debug.h"
 
 namespace groot {
 
@@ -14,12 +16,16 @@ namespace groot {
      * Memory chunk data struct.
      */
     class fixed_memory_chunk final {
-    public:
+        friend class fixed_memory_page;
+
         GR_DELETE_ALL_DEFAULT(fixed_memory_chunk)
 
+        fixed_memory_chunk *    _next;
+        fixed_memory_chunk *    _prev;
+
         explicit fixed_memory_chunk(size_t size) noexcept :
-        _next { nullptr },
-        _prev { nullptr }
+                _next { nullptr },
+                _prev { nullptr }
         {}
 
         ~fixed_memory_chunk() = default;
@@ -30,33 +36,17 @@ namespace groot {
         inline fixed_memory_chunk *next() noexcept { return _next; }
         inline void next(fixed_memory_chunk *chunk) noexcept { _next = chunk; }
 
-    private:
-        fixed_memory_chunk *    _next;
-        fixed_memory_chunk *    _prev;
-
     };
 
     /**
-     * Static chunk size memory pool for same objects memory management.
-     *
-     * @brief Pool initializing lazily with first alloc call.
-     *  This is due to the fact that some of stl containers used
-     *  combined memory storage for both of contained object and
-     *  control block. So there is no honest way to calculate combined
-     *  memory storage before allocation.
+     * Memory page data struct.
      */
-    class fixed_memory_pool final : public memory_pool {
-    public:
-        GR_DECLARE_SMARTPOINTERS(fixed_memory_pool)
-        GR_DELETE_ALL_DEFAULT(fixed_memory_pool)
+    class fixed_memory_page final {
+        friend class fixed_memory_pool;
 
-        explicit fixed_memory_pool(size_t total_size) noexcept;
-        virtual ~fixed_memory_pool();
+        GR_DECLARE_SMARTPOINTERS(fixed_memory_page)
+        GR_DELETE_ALL_DEFAULT(fixed_memory_page)
 
-        void *alloc(size_t alloc_size) noexcept final;
-        void free(void *ptr) noexcept final;
-
-    private:
         static constexpr u32 CHUNK_HEAD_SIZE { sizeof(fixed_memory_chunk) };
 
         u8 *                    _memory;
@@ -64,15 +54,42 @@ namespace groot {
         fixed_memory_chunk *    _allocated_chunks;
         fixed_memory_chunk *    _free_chunks;
 
+        u32                     _data_size;
         u32                     _total_size;
         u32                     _chunk_size;
         u32                     _chunk_count;
 
-        /**
-         * Lazy initialization.
-         * @param alloc_size Chunk data size.
-         */
-        void initialize_if_needed(u32 alloc_size) noexcept;
+        explicit fixed_memory_page(u32 data_size, u32 total_size) noexcept;
+        virtual ~fixed_memory_page();
+
+        void *alloc() noexcept;
+        void free(void *ptr) noexcept;
+
+    };
+
+    /**
+     * Fixed size block memory pool.
+     */
+    class fixed_memory_pool final {
+    public:
+        GR_DECLARE_SMARTPOINTERS(fixed_memory_pool)
+        GR_DELETE_ALL_DEFAULT(fixed_memory_pool)
+
+        explicit fixed_memory_pool(size_t data_size, size_t total_size) noexcept;
+        ~fixed_memory_pool() = default;
+
+        void *alloc() noexcept;
+        void free(void *ptr) noexcept;
+
+    private:
+        using index_type = u16;
+
+        static constexpr u32 INDEX_SIZE { sizeof(index_type) };
+
+        std::vector<fixed_memory_page::uptr>    _pools;
+
+        u32                                     _block_size;
+        u32                                     _total_size;
 
     };
 

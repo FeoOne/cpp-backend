@@ -5,7 +5,7 @@
 #ifndef GROOT_MEMORY_POOL_MANAGER_H
 #define GROOT_MEMORY_POOL_MANAGER_H
 
-#include "memory/memory_pool.h"
+#include "memory/memory_pool_debug.h"
 
 namespace groot {
 

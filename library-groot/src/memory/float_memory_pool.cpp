@@ -16,29 +16,32 @@ namespace groot {
         std::memcpy(dst, this, sizeof(float_memory_chunk));
     }
 
-    float_memory_pool::float_memory_pool(size_t total_size) noexcept :
+    float_memory_page::float_memory_page(u32 total_size) noexcept :
             _memory { nullptr },
-            _total_size { 0 },
-            _free_size { 0 }
+            _total_size { total_size },
+            _free_size { total_size - CHUNK_HEAD_SIZE }
     {
-        _total_size = static_cast<u32>(total_size);
-        _free_size = _total_size - CHUNK_HEAD_SIZE;
-
         _memory = new (std::nothrow) u8[_total_size]; // @todo: aligned alloc
 
 #ifdef GR_TRASHING_MEMORY_POOL
-        std::memset(_memory, TRASH_ON_CREATE_SIGNATURE, _total_size);
+        std::memset(_memory,
+                memory_pool_debug::TRASH_ON_CREATE_SIGNATURE,
+                _total_size);
 #endif
 
         // allocate first free block
 #ifdef GR_BOUNDING_MEMORY_POOL
-        _free_size -= BOUNDS_CHECK_SIZE * 2;
+        _free_size -= memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 
-        float_memory_chunk chunk { _total_size - CHUNK_HEAD_SIZE - BOUNDS_CHECK_SIZE * 2 };
-        chunk.write(_memory + BOUNDS_CHECK_SIZE);
+        float_memory_chunk chunk { _total_size - CHUNK_HEAD_SIZE - memory_pool_debug::BOUNDS_CHECK_SIZE * 2 };
+        chunk.write(_memory + memory_pool_debug::BOUNDS_CHECK_SIZE);
 
-        std::memcpy(_memory, START_BOUND, BOUNDS_CHECK_SIZE);
-        std::memcpy(_memory + _total_size - BOUNDS_CHECK_SIZE, END_BOUND, BOUNDS_CHECK_SIZE);
+        std::memcpy(_memory,
+                memory_pool_debug::START_BOUND,
+                memory_pool_debug::BOUNDS_CHECK_SIZE);
+        std::memcpy(_memory + _total_size - memory_pool_debug::BOUNDS_CHECK_SIZE,
+                memory_pool_debug::END_BOUND,
+                memory_pool_debug::BOUNDS_CHECK_SIZE);
 #else
         float_memory_chunk chunk { _total_size - CHUNK_HEAD_SIZE };
         chunk.write(_memory);
@@ -46,19 +49,19 @@ namespace groot {
     }
 
     //virtual
-    float_memory_pool::~float_memory_pool()
+    float_memory_page::~float_memory_page()
     {
         delete[] _memory;
     }
 
-    void *float_memory_pool::alloc(size_t alloc_size) noexcept
+    void *float_memory_page::alloc(u32 alloc_size) noexcept
     {
-        auto required_size { static_cast<u32>(alloc_size + CHUNK_HEAD_SIZE) };
+        auto required_size { alloc_size + CHUNK_HEAD_SIZE };
         auto memory { _memory };
 
 #ifdef GR_BOUNDING_MEMORY_POOL
-        required_size += BOUNDS_CHECK_SIZE * 2;
-        memory = _memory + BOUNDS_CHECK_SIZE;
+        required_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
+        memory = _memory + memory_pool_debug::BOUNDS_CHECK_SIZE;
 #endif
 
         // search for a chunk big enough
@@ -86,11 +89,13 @@ namespace groot {
                 }
 
 #ifdef GR_BOUNDING_MEMORY_POOL
-                std::memcpy(memory + required_size - BOUNDS_CHECK_SIZE, START_BOUND, BOUNDS_CHECK_SIZE);
+                std::memcpy(memory + required_size - memory_pool_debug::BOUNDS_CHECK_SIZE,
+                            memory_pool_debug::START_BOUND,
+                            memory_pool_debug::BOUNDS_CHECK_SIZE);
 #endif
 
                 chunk->next(reinterpret_cast<float_memory_chunk *>(memory + required_size));
-                chunk->size(static_cast<u32>(alloc_size));
+                chunk->size(alloc_size);
             }
 
             // if chunk is found, update the pool size
@@ -99,12 +104,18 @@ namespace groot {
             chunk->set_free(false);
 
 #ifdef GR_BOUNDING_MEMORY_POOL
-            std::memcpy(memory - BOUNDS_CHECK_SIZE, START_BOUND, BOUNDS_CHECK_SIZE);
-            std::memcpy(memory + CHUNK_HEAD_SIZE + chunk->size(), END_BOUND, BOUNDS_CHECK_SIZE);
+            std::memcpy(memory - memory_pool_debug::BOUNDS_CHECK_SIZE,
+                        memory_pool_debug::START_BOUND,
+                        memory_pool_debug::BOUNDS_CHECK_SIZE);
+            std::memcpy(memory + CHUNK_HEAD_SIZE + chunk->size(),
+                        memory_pool_debug::END_BOUND,
+                        memory_pool_debug::BOUNDS_CHECK_SIZE);
 #endif
 
 #ifdef GR_TRASHING_MEMORY_POOL
-            std::memset(memory + CHUNK_HEAD_SIZE, TRASH_ON_ALLOCATE_SIGNATURE, chunk->size());
+            std::memset(memory + CHUNK_HEAD_SIZE,
+                        memory_pool_debug::TRASH_ON_ALLOCATE_SIGNATURE,
+                        chunk->size());
 #endif
 
             memory += CHUNK_HEAD_SIZE;
@@ -113,7 +124,7 @@ namespace groot {
         return memory;
     }
 
-    void float_memory_pool::free(void *ptr) noexcept
+    void float_memory_page::free(void *ptr) noexcept
     {
         logassert(ptr != nullptr, "Can't free nullptr.");
         if (ptr == nullptr) {
@@ -128,7 +139,7 @@ namespace groot {
 
         u32 full_size = chunk->size() + CHUNK_HEAD_SIZE;
 #ifdef GR_BOUNDING_MEMORY_POOL
-        full_size += BOUNDS_CHECK_SIZE * 2;
+        full_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 #endif
 
         _free_size += chunk->size();
@@ -146,7 +157,7 @@ namespace groot {
             // include previous node in the chunk size so trash it as well
             full_size += chunk->prev()->size() + CHUNK_HEAD_SIZE;
 #ifdef GR_BOUNDING_MEMORY_POOL
-            full_size += BOUNDS_CHECK_SIZE * 2;
+            full_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 #endif
 
             // if there is a next one, need to update its pointer
@@ -163,7 +174,7 @@ namespace groot {
 
                     full_size += chunk->next()->size() + CHUNK_HEAD_SIZE;
 #ifdef GR_BOUNDING_MEMORY_POOL
-                    full_size += BOUNDS_CHECK_SIZE * 2;
+                    full_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 #endif
                 }
             }
@@ -176,7 +187,7 @@ namespace groot {
             // include the next node in the block size so trash it as well
             full_size += chunk->next()->size();
 #ifdef GR_BOUNDING_MEMORY_POOL
-            full_size += BOUNDS_CHECK_SIZE * 2;
+            full_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 #endif
         }
 
@@ -185,14 +196,14 @@ namespace groot {
 #ifdef GR_TRASHING_MEMORY_POOL
         auto trash_memory { memory };
 #ifdef GR_BOUNDING_MEMORY_POOL
-        trash_memory -= BOUNDS_CHECK_SIZE;
+        trash_memory -= memory_pool_debug::BOUNDS_CHECK_SIZE;
 #endif
-        std::memset(trash_memory, TRASH_ON_FREE_SIGNATURE, full_size);
+        std::memset(trash_memory, memory_pool_debug::TRASH_ON_FREE_SIGNATURE, full_size);
 #endif
 
         auto free_size { full_size - CHUNK_HEAD_SIZE };
 #ifdef GR_BOUNDING_MEMORY_POOL
-        free_size -= BOUNDS_CHECK_SIZE * 2;
+        free_size -= memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 #endif
 
         float_memory_chunk free_chunk { free_size };
@@ -201,8 +212,12 @@ namespace groot {
         free_chunk.write(memory);
 
 #ifdef GR_BOUNDING_MEMORY_POOL
-        std::memcpy(memory - BOUNDS_CHECK_SIZE, START_BOUND, BOUNDS_CHECK_SIZE);
-        std::memcpy(memory + CHUNK_HEAD_SIZE + free_size, END_BOUND, BOUNDS_CHECK_SIZE);
+        std::memcpy(memory - memory_pool_debug::BOUNDS_CHECK_SIZE,
+                    memory_pool_debug::START_BOUND,
+                    memory_pool_debug::BOUNDS_CHECK_SIZE);
+        std::memcpy(memory + CHUNK_HEAD_SIZE + free_size,
+                    memory_pool_debug::END_BOUND,
+                    memory_pool_debug::BOUNDS_CHECK_SIZE);
 #endif
     }
 

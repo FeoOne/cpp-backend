@@ -16,17 +16,10 @@
 
 namespace groot {
 
-    class memory_pool {
+    class memory_pool_debug {
     public:
-        GR_DECLARE_SMARTPOINTERS(memory_pool)
-        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(memory_pool)
+        GR_DELETE_ALL_DEFAULT(memory_pool_debug)
 
-        virtual ~memory_pool() = default;
-
-        virtual void *alloc(size_t size) noexcept = 0;
-        virtual void free(void *ptr) noexcept = 0;
-
-    protected:
 #ifdef GR_TRASHING_MEMORY_POOL
         static constexpr u8 TRASH_ON_CREATE_SIGNATURE { 0xCE };
         static constexpr u8 TRASH_ON_ALLOCATE_SIGNATURE { 0xAE };
@@ -38,8 +31,6 @@ namespace groot {
         static const u8 START_BOUND[BOUNDS_CHECK_SIZE];
         static const u8 END_BOUND[BOUNDS_CHECK_SIZE];
 #endif
-
-        memory_pool() = default;
 
     };
 

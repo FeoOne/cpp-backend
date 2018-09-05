@@ -5,12 +5,12 @@
 #ifndef GROOT_DYNAMIC_MEMORY_POOL_H
 #define GROOT_DYNAMIC_MEMORY_POOL_H
 
-#include "memory/memory_pool.h"
+#include "memory/memory_pool_debug.h"
 
 namespace groot {
 
     /**
-     *
+     * Memory chunk data struct.
      */
     class float_memory_chunk final {
     public:
@@ -51,16 +51,16 @@ namespace groot {
     /**
      *
      */
-    class float_memory_pool final : public memory_pool {
+    class float_memory_page final {
     public:
-        GR_DECLARE_SMARTPOINTERS(float_memory_pool)
-        GR_DELETE_ALL_DEFAULT(float_memory_pool)
+        GR_DECLARE_SMARTPOINTERS(float_memory_page)
+        GR_DELETE_ALL_DEFAULT(float_memory_page)
 
-        explicit float_memory_pool(size_t total_size) noexcept;
-        virtual ~float_memory_pool();
+        explicit float_memory_page(u32 total_size) noexcept;
+        virtual ~float_memory_page();
 
-        void *alloc(size_t alloc_size) noexcept final;
-        void free(void *ptr) noexcept final;
+        void *alloc(u32 alloc_size) noexcept;
+        void free(void *ptr) noexcept;
 
     private:
         static constexpr u32 CHUNK_HEAD_SIZE { sizeof(float_memory_chunk) };

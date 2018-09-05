@@ -4,40 +4,80 @@
 
 #include "memory/fixed_memory_pool.h"
 
+#define GR_PAGE_RESERVE_COUNT   16 // @todo: move to config
+
 namespace groot {
 
-    fixed_memory_pool::fixed_memory_pool(size_t total_size) noexcept :
+    fixed_memory_page::fixed_memory_page(u32 data_size, u32 total_size) noexcept :
             _memory { nullptr },
             _allocated_chunks { nullptr },
             _free_chunks { nullptr },
-            _total_size { static_cast<u32>(total_size) },
+            _data_size { data_size },
+            _total_size { total_size },
             _chunk_size { 0 },
             _chunk_count { 0 }
     {
-        _memory = new (std::nothrow) u8[_total_size]; // todo: aligned alloc
+        _memory = new (std::nothrow) u8[_total_size]; // @todo: aligned alloc
 
 #ifdef GR_TRASHING_MEMORY_POOL
-        std::memset(_memory, TRASH_ON_CREATE_SIGNATURE, _total_size);
+        std::memset(_memory,
+                memory_pool_debug::TRASH_ON_CREATE_SIGNATURE,
+                _total_size);
 #endif
+
+        _chunk_size = _data_size + CHUNK_HEAD_SIZE;
+
+        auto block_size { _chunk_size };
+#ifdef GR_BOUNDING_MEMORY_POOL
+        block_size += memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
+#endif
+        _chunk_count = _total_size / block_size;
+
+        for (u32 i = 0; i < _chunk_count; ++i) {
+            auto memory { _memory + i * block_size };
+
+#ifdef GR_BOUNDING_MEMORY_POOL
+            memory += memory_pool_debug::BOUNDS_CHECK_SIZE;
+#endif
+
+            auto chunk { reinterpret_cast<fixed_memory_chunk *>(_memory) };
+            chunk->prev(nullptr);
+            chunk->next(_free_chunks);
+
+            if (_free_chunks != nullptr) {
+                _free_chunks->prev(chunk);
+            }
+
+            _free_chunks = chunk;
+
+#ifdef GR_BOUNDING_MEMORY_POOL
+            std::memcpy(memory - memory_pool_debug::BOUNDS_CHECK_SIZE,
+                    memory_pool_debug::START_BOUND,
+                    memory_pool_debug::BOUNDS_CHECK_SIZE);
+            std::memcpy(memory + _chunk_size,
+                    memory_pool_debug::END_BOUND,
+                    memory_pool_debug::BOUNDS_CHECK_SIZE);
+#endif
+
+#ifdef GR_TRASHING_MEMORY_POOL
+            std::memset(memory + CHUNK_HEAD_SIZE,
+                    memory_pool_debug::TRASH_ON_ALLOCATE_SIGNATURE,
+                    _data_size);
+#endif
+        }
     }
 
     // virtual
-    fixed_memory_pool::~fixed_memory_pool()
+    fixed_memory_page::~fixed_memory_page()
     {
         delete[] _memory;
     }
 
-    void *fixed_memory_pool::alloc(size_t alloc_size) noexcept
+    void *fixed_memory_page::alloc() noexcept
     {
-        initialize_if_needed(static_cast<u32>(alloc_size));
-        logassert(alloc_size + CHUNK_HEAD_SIZE == _chunk_size,
-                "Can't alloc chunk which size is differs (initialized chunk size: %u, requested alloc size: %lu).",
-                  _chunk_size - CHUNK_HEAD_SIZE,
-                  alloc_size);
-
         u8 *memory { nullptr };
 
-        if (alloc_size + CHUNK_HEAD_SIZE == _chunk_size) {
+        if (_data_size + CHUNK_HEAD_SIZE == _chunk_size) {
             auto chunk { _free_chunks };
 
             _free_chunks = chunk->next();
@@ -54,14 +94,16 @@ namespace groot {
             memory = reinterpret_cast<u8 *>(chunk) + CHUNK_HEAD_SIZE;
 
 #ifdef GR_TRASHING_MEMORY_POOL
-            std::memset(_memory, TRASH_ON_CREATE_SIGNATURE, alloc_size);
+            std::memset(_memory,
+                    memory_pool_debug::TRASH_ON_CREATE_SIGNATURE,
+                    _data_size);
 #endif
         }
 
         return memory;
     }
 
-    void fixed_memory_pool::free(void *ptr) noexcept
+    void fixed_memory_page::free(void *ptr) noexcept
     {
         logassert(ptr != nullptr, "Can't free nullptr.");
         logassert(_memory < ptr && ptr < _memory + _total_size, "Pointer didn't belong to pool.");
@@ -83,47 +125,58 @@ namespace groot {
         _free_chunks = chunk;
 
 #ifdef GR_TRASHING_MEMORY_POOL
-        std::memset(ptr, TRASH_ON_FREE_SIGNATURE, _chunk_size - CHUNK_HEAD_SIZE);
+        std::memset(ptr,
+                memory_pool_debug::TRASH_ON_FREE_SIGNATURE,
+                _chunk_size - CHUNK_HEAD_SIZE);
 #endif
     }
 
-    void fixed_memory_pool::initialize_if_needed(u32 alloc_size) noexcept
+    fixed_memory_pool::fixed_memory_pool(size_t data_size, size_t total_size) noexcept :
+            _pools {},
+            _block_size { static_cast<u32>(data_size) + INDEX_SIZE },
+            _total_size { static_cast<u32>(total_size) }
     {
-        if (_chunk_size == 0) {
-            _chunk_size = static_cast<u32>(alloc_size + CHUNK_HEAD_SIZE);
+        _pools.reserve(GR_PAGE_RESERVE_COUNT);
+    }
 
-            auto block_size { _chunk_size };
-#ifdef GR_BOUNDING_MEMORY_POOL
-            block_size += BOUNDS_CHECK_SIZE * 2;
-#endif
-            _chunk_count = _total_size / block_size;
+    void *fixed_memory_pool::alloc() noexcept
+    {
+        index_type index { 0 };
+        u8 *result { nullptr };
 
-            for (u32 i = 0; i < _chunk_count; ++i) {
-                auto memory { _memory + i * block_size };
-
-#ifdef GR_BOUNDING_MEMORY_POOL
-                memory += BOUNDS_CHECK_SIZE;
-#endif
-
-                auto chunk { reinterpret_cast<fixed_memory_chunk *>(_memory) };
-                chunk->prev(nullptr);
-                chunk->next(_free_chunks);
-
-                if (_free_chunks != nullptr) {
-                    _free_chunks->prev(chunk);
-                }
-
-                _free_chunks = chunk;
-
-#ifdef GR_BOUNDING_MEMORY_POOL
-                std::memcpy(memory - BOUNDS_CHECK_SIZE, START_BOUND, BOUNDS_CHECK_SIZE);
-                std::memcpy(memory + _chunk_size, END_BOUND, BOUNDS_CHECK_SIZE);
-#endif
-
-#ifdef GR_TRASHING_MEMORY_POOL
-                std::memset(memory + CHUNK_HEAD_SIZE, TRASH_ON_ALLOCATE_SIGNATURE, alloc_size);
-#endif
+        // Try to find free space in already created pools
+        for (size_t i = 0; i < _pools.size(); ++i) {
+            result = static_cast<u8 *>(_pools[i]->alloc());
+            if (result != nullptr) {
+                index = static_cast<index_type>(i);
+                break;
             }
+        }
+
+        // If there is no free space, create new pool
+        if (result == nullptr) {
+            auto pool { _pools.emplace_back(_block_size, _total_size).get() };
+            result = static_cast<u8 *>(pool->alloc());
+            index = static_cast<index_type>(_pools.size() - 1);
+
+            lognotice("Created memory page with index %su.", index);
+        }
+
+        // Write pool's index to the chunk
+        std::memcpy(result, &index, INDEX_SIZE);
+
+        return result + INDEX_SIZE;
+    }
+
+    void fixed_memory_pool::free(void *ptr) noexcept
+    {
+        auto memory { static_cast<u8 *>(ptr) - INDEX_SIZE };
+        auto index { *reinterpret_cast<index_type *>(memory) };
+
+        logassert(0 <= index && index < _pools.size(), "Can't free chunk with %su pool's index.", index);
+
+        if (index < _pools.size()) {
+            _pools[index]->free(memory);
         }
     }
 
