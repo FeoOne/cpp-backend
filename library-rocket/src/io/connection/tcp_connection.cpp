@@ -19,28 +19,28 @@ namespace rocket {
     void tcp_connection::init(uv_loop_t *loop, void *data) noexcept
     {
         int status = uv_tcp_init(loop, &get_handle()->tcp);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
         get_handle()->handle.data = data;
     }
 
     bool tcp_connection::bind(groot::socket_address *addr) noexcept
     {
         int status = uv_tcp_bind(&get_handle()->tcp, &addr->sa, 0);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
         return (status == 0);
     }
 
     bool tcp_connection::listen(u16 backlog, uv_connection_cb cb) noexcept
     {
         int status = uv_listen(&get_handle()->stream, backlog, cb);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
         return (status == 0);
     }
 
     bool tcp_connection::accept(const connection::sptr& connection) noexcept
     {
        int status = uv_accept(&get_handle()->stream, &connection->get_handle()->stream);
-       logassert(status == 0);
+       logassert(status == 0, "Invalid status.");
         return (status == 0);
     }
 
@@ -70,19 +70,19 @@ namespace rocket {
     void tcp_connection::set_nodelay(bool enable) noexcept
     {
         int status = uv_tcp_nodelay(&get_handle()->tcp, enable ? 1 : 0);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
     }
 
     void tcp_connection::set_nonblock(bool enable) noexcept
     {
         int status = uv_stream_set_blocking(&get_handle()->stream, enable ? 0 : 1);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
     }
 
     void tcp_connection::set_keepalive(bool enable, u32 delay) noexcept
     {
         int status = uv_tcp_keepalive(&get_handle()->tcp, enable ? 1 : 0, delay);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status.");
     }
 
 }

@@ -67,7 +67,7 @@ namespace rocket {
          * so join to system worker to keep process alive.
          */
         auto &system_workers = _pool->get_workers<system_context>();
-        logassert(system_workers.size() == 1);
+        logassert(system_workers.size() == 1, "System worker count can't be other than 1.");
         system_workers.front()->join();
 
         return EXIT_SUCCESS;

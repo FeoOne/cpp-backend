@@ -25,7 +25,7 @@ namespace rocket {
     void db_loop::start() noexcept
     {
         int status = uv_async_init(&_loop, &_async_handle, &db_loop::async_routine);
-        logassert(status == 0);
+        logassert(status == 0, "Invalid status");
         _async_handle.data = this;
 
         status = uv_run(&_loop, UV_RUN_DEFAULT);
@@ -49,8 +49,8 @@ namespace rocket {
     // static
     void db_loop::async_routine(uv_async_t *handle) noexcept
     {
-        logassert(handle != nullptr);
-        logassert(handle->data != nullptr);
+        logassert(handle != nullptr, "Invalid handle.");
+        logassert(handle->data != nullptr, "Invalid data.");
         static_cast<db_loop *>(handle->data)->on_async();
     }
 

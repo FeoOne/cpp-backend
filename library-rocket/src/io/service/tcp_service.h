@@ -9,6 +9,7 @@
 #define ROCKET_TCP_SERVICE_H
 
 #include "work/work_service.h"
+#include "io/connection/tcp_connection.h"
 #include "io/connection/connection_manager.h"
 
 namespace rocket {
@@ -27,9 +28,10 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        uv_loop_t *                 _loop;
+        uv_loop_t *                                                 _loop;
 
-        connection_manager::uptr    _connections;
+        connection_manager::uptr                                    _connections;
+        groot::memory_pool_manager<groot::fixed_memory_pool>::uptr  _connection_allocator;
 
         void listen(const groot::endpoint::sptr& endpoint,
                     u16 backlog,

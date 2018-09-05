@@ -28,11 +28,11 @@ namespace rocket {
         pthread_attr_t attributes;
 
         status = pthread_attr_init(&attributes);
-        logassert(status == 0);
+        logassert(status == 0, "Can't init pthread.");
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
-        logassert(status == 0);
+        logassert(status == 0, "Can't set detach state.");
         status = pthread_create(&_thread, &attributes, &worker::exec_routine, this);
-        logassert(status == 0);
+        logassert(status == 0, "Can't create pthread.");
     }
 
     void worker::stop() noexcept
@@ -50,7 +50,7 @@ namespace rocket {
     void worker::join() noexcept
     {
         int status = pthread_join(_thread, nullptr);
-        logassert(status == 0);
+        logassert(status == 0, "Can't join pthread.");
     }
 
     void worker::exec_routine() noexcept

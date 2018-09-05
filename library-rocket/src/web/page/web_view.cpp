@@ -56,7 +56,8 @@ namespace rocket {
                 pos = _content.find(close_brace, pos);
                 if (pos != std::string::npos) {
                     end_pos = pos;
-                    logassert(end_pos - start_pos <= RC_SAFE_ARG_LENGTH);
+                    logassert(end_pos - start_pos <= RC_SAFE_ARG_LENGTH,
+                            "To long template key. Looks like there is no trailing braces.");
 
                     auto key {
                         _content.substr(start_pos + open_brace.length(), end_pos - start_pos - open_brace.length())

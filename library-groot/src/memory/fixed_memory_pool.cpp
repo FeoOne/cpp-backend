@@ -11,7 +11,8 @@ namespace groot {
             _allocated_chunks { nullptr },
             _free_chunks { nullptr },
             _total_size { static_cast<u32>(total_size) },
-            _chunk_size { 0 }
+            _chunk_size { 0 },
+            _chunk_count { 0 }
     {
         _memory = new (std::nothrow) u8[_total_size]; // todo: aligned alloc
 

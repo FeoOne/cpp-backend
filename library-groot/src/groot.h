@@ -45,6 +45,9 @@
 #include "logger/log_manager.h"
 
 #include "memory/memory.h"
+#include "memory/fixed_memory_pool.h"
+#include "memory/float_memory_pool.h"
+#include "memory/memory_pool_manager.h"
 
 #include "config/config.h"
 #include "config/command_line_argument_parser.h"

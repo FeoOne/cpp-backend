@@ -12,13 +12,16 @@
 
 #include "io/service/tcp_service.h"
 
+#define RC_CONNECTION_POOL_SIZE 1048576
+
 namespace rocket {
 
     tcp_service::tcp_service(const groot::setting& config,
                              task_router *router,
                              const work_service_delegate *service_delegate) noexcept :
             crucial(config, router, service_delegate),
-            _loop { nullptr }
+            _loop { nullptr },
+            _connections {}
     {
     }
 
@@ -41,7 +44,8 @@ namespace rocket {
                              u16 backlog,
                              u32 keepalive) noexcept
     {
-        auto connection = tcp_connection::make_shared(endpoint->get_version(),
+        auto connection = new (_connection_allocator.alloc()) tcp_connection(_connection_allocator,
+                endpoint->get_version(),
                 connection::side_t::LOCAL,
                 connection::kind_t::SERVER);
         connection->init(_loop, this);
@@ -62,7 +66,8 @@ namespace rocket {
 
     void tcp_service::connect(const groot::endpoint::sptr& endpoint) noexcept
     {
-        auto connection = tcp_connection::make_shared(endpoint->get_version(),
+        auto connection = tcp_connection::allocate_shared(_connection_allocator,
+                endpoint->get_version(),
                 connection::side_t::LOCAL,
                 connection::kind_t::CLIENT);
         connection->init(_loop, this);
@@ -101,7 +106,8 @@ namespace rocket {
         }
 
         auto server_connection = _connections->get(handle);
-        auto client_connection = tcp_connection::make_shared(server_connection->get_version(),
+        auto client_connection = tcp_connection::allocate_shared(_connection_allocator,
+                server_connection->get_version(),
                 connection::side_t::REMOTE,
                 connection::kind_t::CLIENT);
         client_connection->init(_loop, this);
