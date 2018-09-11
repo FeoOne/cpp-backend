@@ -37,7 +37,7 @@ namespace rocket {
         return (status == 0);
     }
 
-    bool tcp_connection::accept(const connection::sptr& connection) noexcept
+    bool tcp_connection::accept(connection *connection) noexcept
     {
        int status = uv_accept(&get_handle()->stream, &connection->get_handle()->stream);
        logassert(status == 0, "Invalid status.");

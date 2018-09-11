@@ -4,16 +4,14 @@
 
 #include "memory/float_memory_pool.h"
 
+#define GR_PAGE_RESERVE_COUNT   16 // @todo: move to config
+
 namespace groot {
 
-    void float_memory_chunk::read(void *src) noexcept
+    // static
+    void float_memory_chunk::write(float_memory_chunk *chunk, void *dst) noexcept
     {
-        std::memcpy(this, src, sizeof(float_memory_chunk));
-    }
-
-    void float_memory_chunk::write(void *dst) noexcept
-    {
-        std::memcpy(dst, this, sizeof(float_memory_chunk));
+        std::memcpy(dst, chunk, sizeof(float_memory_chunk));
     }
 
     float_memory_page::float_memory_page(u32 total_size) noexcept :
@@ -34,7 +32,8 @@ namespace groot {
         _free_size -= memory_pool_debug::BOUNDS_CHECK_SIZE * 2;
 
         float_memory_chunk chunk { _total_size - CHUNK_HEAD_SIZE - memory_pool_debug::BOUNDS_CHECK_SIZE * 2 };
-        chunk.write(_memory + memory_pool_debug::BOUNDS_CHECK_SIZE);
+
+        float_memory_chunk::write(&chunk, _memory + memory_pool_debug::BOUNDS_CHECK_SIZE);
 
         std::memcpy(_memory,
                 memory_pool_debug::START_BOUND,
@@ -82,7 +81,8 @@ namespace groot {
                 float_memory_chunk free_chunk { free_size };
                 free_chunk.next(chunk->next());
                 free_chunk.prev(chunk);
-                free_chunk.write(memory + required_size);
+
+                float_memory_chunk::write(&free_chunk, memory + required_size);
 
                 if (free_chunk.next() != nullptr) {
                     free_chunk.next()->prev(reinterpret_cast<float_memory_chunk *>(memory + required_size));
@@ -209,7 +209,8 @@ namespace groot {
         float_memory_chunk free_chunk { free_size };
         free_chunk.prev(prev_chunk);
         free_chunk.next(next_chunk);
-        free_chunk.write(memory);
+
+        float_memory_chunk::write(&free_chunk, memory);
 
 #ifdef GR_BOUNDING_MEMORY_POOL
         std::memcpy(memory - memory_pool_debug::BOUNDS_CHECK_SIZE,
@@ -219,6 +220,63 @@ namespace groot {
                     memory_pool_debug::END_BOUND,
                     memory_pool_debug::BOUNDS_CHECK_SIZE);
 #endif
+    }
+
+    float_memory_pool::float_memory_pool(size_t total_size) noexcept :
+            _pages {},
+            _total_size { static_cast<u32>(total_size) }
+    {
+        _pages.reserve(GR_PAGE_RESERVE_COUNT);
+    }
+
+    float_memory_pool::~float_memory_pool()
+    {
+        for (auto page: _pages) {
+            delete page;
+        }
+    }
+
+    void *float_memory_pool::alloc(size_t size) noexcept
+    {
+        logassert(0 < size && size < (_total_size / 2), "Invalid alloc size.");
+
+        index_type index { 0 };
+        u8 *result { nullptr };
+        auto required_size {static_cast<u32>(size + INDEX_SIZE) };
+
+        // Try to find free space in already created pools
+        for (size_t i = 0; i < _pages.size(); ++i) {
+            result = static_cast<u8 *>(_pages[i]->alloc(required_size));
+            if (result != nullptr) {
+                index = static_cast<index_type>(i);
+                break;
+            }
+        }
+
+        // If there is no free space, create new pool
+        if (result == nullptr) {
+            auto page { _pages.emplace_back(new float_memory_page(_total_size)) };
+
+            result = static_cast<u8 *>(page->alloc(required_size));
+            index = static_cast<index_type>(_pages.size() - 1);
+        }
+
+        // Write pool's index to the chunk
+        std::memcpy(result, &index, INDEX_SIZE);
+
+        return result + INDEX_SIZE;
+    }
+
+    void float_memory_pool::free(void *ptr) noexcept
+    {
+        auto memory { static_cast<u8 *>(ptr) - INDEX_SIZE };
+        auto index { *reinterpret_cast<index_type *>(memory) };
+
+        logassert(0 <= index && index < _pages.size(), "Can't free chunk with %su pool's index.", index);
+
+        if (index < _pages.size()) {
+            _pages[index]->free(memory);
+        }
     }
 
 }

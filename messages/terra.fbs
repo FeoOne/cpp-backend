@@ -1,0 +1,28 @@
+namespace hlproto.terra;
+
+union message {
+    create_invoice,
+    invoice_created,
+    invoice_not_created
+}
+
+table create_invoice {
+    customer_uuid: string;
+    currency_type: int;
+    amount: string;
+    email: string;
+}
+
+table invoice_created {
+    invoice_uuid: string;
+}
+
+table invoice_not_created {
+    error: int;
+}
+
+table header {
+    msg: message;
+}
+
+root_type header;

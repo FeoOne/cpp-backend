@@ -16,7 +16,7 @@ namespace rocket {
         _connections.reserve(consts::CONNECTION_RESERVE_COUNT);
     }
 
-    void connection_manager::add(const connection::sptr &connection) noexcept
+    void connection_manager::add(connection *connection) noexcept
     {
         auto it = _connections.find(connection->get_handle());
         if (it == _connections.end()) {
@@ -25,7 +25,7 @@ namespace rocket {
         // @todo Log error.
     }
 
-    void connection_manager::remove(const connection::sptr &connection) noexcept
+    void connection_manager::remove(connection *connection) noexcept
     {
         auto it = _connections.find(connection->get_handle());
         if (it != _connections.end()) {
@@ -34,16 +34,16 @@ namespace rocket {
         // @todo Log error.
     }
 
-    connection::sptr connection_manager::get(groot::network_handle *handle) noexcept
+    connection *connection_manager::get(groot::network_handle *handle) noexcept
     {
-        connection::sptr connection { nullptr };
+        connection *c { nullptr };
 
-        auto it = _connections.find(connection->get_handle());
+        auto it = _connections.find(c->get_handle());
         if (it != _connections.end()) {
-            connection = it->second;
+            c = it->second;
         }
 
-        return connection;
+        return c;
     }
 
 }

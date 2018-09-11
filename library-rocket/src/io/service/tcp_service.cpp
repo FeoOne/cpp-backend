@@ -21,7 +21,8 @@ namespace rocket {
                              const work_service_delegate *service_delegate) noexcept :
             crucial(config, router, service_delegate),
             _loop { nullptr },
-            _connections {}
+            _connections {},
+            _connection_pool { groot::fixed_memory_pool::make_unique(sizeof(tcp_connection), RC_CONNECTION_POOL_SIZE) }
     {
     }
 
@@ -44,10 +45,9 @@ namespace rocket {
                              u16 backlog,
                              u32 keepalive) noexcept
     {
-        auto connection = new (_connection_allocator.alloc()) tcp_connection(_connection_allocator,
-                endpoint->get_version(),
-                connection::side_t::LOCAL,
-                connection::kind_t::SERVER);
+        auto connection = new (_connection_pool->alloc()) tcp_connection(endpoint->get_version(),
+                                                                         connection::side_t::LOCAL,
+                                                                         connection::kind_t::SERVER);
         connection->init(_loop, this);
         connection->set_nodelay(true);
         connection->set_nonblock(true);
@@ -66,10 +66,9 @@ namespace rocket {
 
     void tcp_service::connect(const groot::endpoint::sptr& endpoint) noexcept
     {
-        auto connection = tcp_connection::allocate_shared(_connection_allocator,
-                endpoint->get_version(),
-                connection::side_t::LOCAL,
-                connection::kind_t::CLIENT);
+        auto connection { new (_connection_pool->alloc()) tcp_connection(endpoint->get_version(),
+                                                                         connection::side_t::LOCAL,
+                                                                         connection::kind_t::CLIENT) };
         connection->init(_loop, this);
         connection->set_nodelay(true);
         connection->set_nonblock(true);
@@ -105,11 +104,10 @@ namespace rocket {
             return;
         }
 
-        auto server_connection = _connections->get(handle);
-        auto client_connection = tcp_connection::allocate_shared(_connection_allocator,
-                server_connection->get_version(),
-                connection::side_t::REMOTE,
-                connection::kind_t::CLIENT);
+        auto server_connection { _connections->get(handle) };
+        auto client_connection { new (_connection_pool->alloc()) tcp_connection(server_connection->get_version(),
+                                                                                connection::side_t::REMOTE,
+                                                                                connection::kind_t::CLIENT) };
         client_connection->init(_loop, this);
         client_connection->set_nodelay(true);
         client_connection->set_nonblock(true);
@@ -124,13 +122,15 @@ namespace rocket {
 
     void tcp_service::on_connect(uv_connect_t *request, int status) noexcept
     {
-        auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
+        auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
         auto connection = _connections->get(handle);
-        if (status == 0 && connection) {
+        if (status == 0 && connection != nullptr) {
             // @todo Start read.
         } else {
             logerror("Failed to connect. Shutting down connection.");
-            connection->shutdown(&tcp_service::shutdown_routine);
+            if (connection != nullptr) {
+                connection->shutdown(&tcp_service::shutdown_routine);
+            }
         }
     }
 
@@ -140,6 +140,7 @@ namespace rocket {
         auto connection = _connections->get(handle);
         if (status == 0 && connection) {
             _connections->remove(connection);
+            _connection_pool->free(connection);
         } else {
             logerror("Failed to shutdown connection.");
         }

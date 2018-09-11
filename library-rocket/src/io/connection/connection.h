@@ -31,7 +31,7 @@ namespace rocket {
         virtual void init(uv_loop_t *loop, void *data) noexcept = 0;
         virtual bool bind(groot::socket_address *addr) noexcept = 0;
         virtual bool listen(u16 backlog, uv_connection_cb cb) noexcept = 0;
-        virtual bool accept(const connection::sptr& connection) noexcept = 0;
+        virtual bool accept(connection *connection) noexcept = 0;
         virtual uv_connect_t *connect(groot::socket_address *addr, uv_connect_cb cb) noexcept = 0;
         virtual uv_shutdown_t *shutdown(uv_shutdown_cb cb) noexcept = 0;
 

@@ -11,16 +11,20 @@
 
 namespace rocket {
 
-    class db_connection {
+    class db_connection final {
     public:
         GR_DECLARE_SMARTPOINTERS(db_connection)
-        GR_DELETE_ALL_DEFAULT(db_connection)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_connection)
 
-        explicit db_connection(nullptr_t) noexcept;
-        ~db_connection() = default;
+        db_connection();
+        ~db_connection();
+
+        void connect(const char *conninfo) noexcept;
+        void disconnect() noexcept;
+        
 
     private:
-        PGconn *        _connection;
+        PGconn *            _connection;
 
     };
 

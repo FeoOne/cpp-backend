@@ -132,11 +132,18 @@ namespace groot {
     }
 
     fixed_memory_pool::fixed_memory_pool(size_t data_size, size_t total_size) noexcept :
-            _pools {},
+            _pages {},
             _block_size { static_cast<u32>(data_size) + INDEX_SIZE },
             _total_size { static_cast<u32>(total_size) }
     {
-        _pools.reserve(GR_PAGE_RESERVE_COUNT);
+        _pages.reserve(GR_PAGE_RESERVE_COUNT);
+    }
+
+    fixed_memory_pool::~fixed_memory_pool()
+    {
+        for (auto page: _pages) {
+            delete page;
+        }
     }
 
     void *fixed_memory_pool::alloc() noexcept
@@ -145,8 +152,8 @@ namespace groot {
         u8 *result { nullptr };
 
         // Try to find free space in already created pools
-        for (size_t i = 0; i < _pools.size(); ++i) {
-            result = static_cast<u8 *>(_pools[i]->alloc());
+        for (size_t i = 0; i < _pages.size(); ++i) {
+            result = static_cast<u8 *>(_pages[i]->alloc());
             if (result != nullptr) {
                 index = static_cast<index_type>(i);
                 break;
@@ -155,9 +162,9 @@ namespace groot {
 
         // If there is no free space, create new pool
         if (result == nullptr) {
-            auto pool { _pools.emplace_back(_block_size, _total_size).get() };
-            result = static_cast<u8 *>(pool->alloc());
-            index = static_cast<index_type>(_pools.size() - 1);
+            auto page { _pages.emplace_back(new (std::nothrow) fixed_memory_page(_block_size, _total_size)) };
+            result = static_cast<u8 *>(page->alloc());
+            index = static_cast<index_type>(_pages.size() - 1);
 
             lognotice("Created memory page with index %su.", index);
         }
@@ -173,10 +180,10 @@ namespace groot {
         auto memory { static_cast<u8 *>(ptr) - INDEX_SIZE };
         auto index { *reinterpret_cast<index_type *>(memory) };
 
-        logassert(0 <= index && index < _pools.size(), "Can't free chunk with %su pool's index.", index);
+        logassert(0 <= index && index < _pages.size(), "Can't free chunk with %su pool's index.", index);
 
-        if (index < _pools.size()) {
-            _pools[index]->free(memory);
+        if (index < _pages.size()) {
+            _pages[index]->free(memory);
         }
     }
 

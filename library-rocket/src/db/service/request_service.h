@@ -18,8 +18,8 @@ namespace rocket {
         GR_DELETE_ALL_DEFAULT(request_service)
 
         explicit request_service(const groot::setting& config,
-                              task_router *router,
-                              const work_service_delegate *service_delegate) noexcept;
+                                 task_router *router,
+                                 const work_service_delegate *service_delegate) noexcept;
         virtual ~request_service();
 
         void setup() noexcept final;

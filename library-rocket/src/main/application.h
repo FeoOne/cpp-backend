@@ -44,14 +44,22 @@ namespace rocket {
         worker_pool::uptr                                               _pool;
         task_router::uptr                                               _router;
 
+        bool                                                            _need_io_worker;
+        bool                                                            _need_db_worker;
+        bool                                                            _need_web_worker;
+
+        void process_config() noexcept;
+
         int start() noexcept;
 
         void create_queues() noexcept;
         void create_routes() noexcept;
         void create_workers() noexcept;
 
-        void assign_context_creator(const std::string_view& name, context_creator&& creator) noexcept;
-
+        void create_single_instance_worker(const std::string_view& name,
+                                           const groot::setting& worker_config) noexcept;
+        void create_multiple_instance_worker(const std::string_view& name,
+                                             const groot::setting& worker_config) noexcept;
     };
 
 }

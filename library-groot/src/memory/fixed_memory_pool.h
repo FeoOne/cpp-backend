@@ -76,7 +76,7 @@ namespace groot {
         GR_DELETE_ALL_DEFAULT(fixed_memory_pool)
 
         explicit fixed_memory_pool(size_t data_size, size_t total_size) noexcept;
-        ~fixed_memory_pool() = default;
+        ~fixed_memory_pool();
 
         void *alloc() noexcept;
         void free(void *ptr) noexcept;
@@ -86,10 +86,10 @@ namespace groot {
 
         static constexpr u32 INDEX_SIZE { sizeof(index_type) };
 
-        std::vector<fixed_memory_page::uptr>    _pools;
+        std::vector<fixed_memory_page *>    _pages;
 
-        u32                                     _block_size;
-        u32                                     _total_size;
+        u32                                 _block_size;
+        u32                                 _total_size;
 
     };
 

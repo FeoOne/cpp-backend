@@ -15,6 +15,10 @@
 #include "io/task/close_connection_task.h"
 #include "io/task/incoming_message_task.h"
 #include "io/task/outgoing_message_task.h"
+#include "db/db_queue.h"
+#include "db/db_context.h"
+#include "db/task/db_request_task.h"
+#include "db/task/db_response_task.h"
 #include "job/job_queue.h"
 #include "job/job_context.h"
 #include "web/webserver_queue.h"
@@ -26,7 +30,13 @@
 #include "system/system_queue.h"
 #include "system/system_context.h"
 
-using namespace std::chrono_literals;
+#define RC_ADD_QUEUE(context, queue)    _router->add_queue(context::key(), queue::make_unique())
+#define RC_ASSIGN_ROUTE(task, context)  _router->assign_route(task::key(), context::key())
+#define RC_ASSIGN_CONTEXT_CREATOR(name, context)                                        \
+    _context_creators.insert({ name,                                                    \
+                             [](const groot::setting& config, task_router *router) {    \
+                                 return context::make_unique(config, router);           \
+                             } })
 
 namespace rocket {
 
@@ -35,27 +45,22 @@ namespace rocket {
             _context_creators {},
             _config {},
             _pool { worker_pool::make_unique() },
-            _router { task_router::make_unique() }
+            _router { task_router::make_unique() },
+            _need_io_worker { false },
+            _need_db_worker { false },
+            _need_web_worker { false }
     {
-        assign_context_creator(consts::WORKER_NAME_IO,
-                               [](const groot::setting& config, task_router *router) {
-                                   return io_context::make_unique(config, router);
-                               });
-        assign_context_creator(consts::WORKER_NAME_SYSTEM,
-                               [](const groot::setting& config, task_router *router) {
-                                   return system_context::make_unique(config, router);
-                               });
-        assign_context_creator(consts::WORKER_NAME_WEBSERVER,
-                               [](const groot::setting& config, task_router *router) {
-                                   return webserver_context::make_unique(config, router);
-                               });
+        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_IO, io_context);
+        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_DB, db_context);
+        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_WEB, webserver_context);
+        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_SYSTEM, system_context);
     }
 
     int application::start() noexcept
     {
         _argument_parser->parse();
 
-        _config.load(_argument_parser->config_path());
+        process_config();
 
         create_queues();
         create_routes();
@@ -63,10 +68,9 @@ namespace rocket {
 
         _pool->start();
 
-        /* There are no more work for main thread,
-         * so join to system worker to keep process alive.
-         */
-        auto &system_workers = _pool->get_workers<system_context>();
+        // There are no more work for main thread,
+        // so join to system worker to keep process alive.
+        auto& system_workers = _pool->get_workers<system_context>();
         logassert(system_workers.size() == 1, "System worker count can't be other than 1.");
         system_workers.front()->join();
 
@@ -75,44 +79,101 @@ namespace rocket {
 
     void application::create_queues() noexcept
     {
-        _router->add_queue(io_context::key(), io_queue::make_unique());
-        _router->add_queue(job_context::key(), job_queue::make_unique());
-        _router->add_queue(system_context::key(), system_queue::make_unique());
-        _router->add_queue(webserver_context::key(), webserver_queue::make_unique());
+        // required
+        RC_ADD_QUEUE(job_context, job_queue);
+        RC_ADD_QUEUE(system_context, system_queue);
+
+        // optional
+        if (_need_io_worker) {
+            RC_ADD_QUEUE(io_context, io_queue);
+        }
+        if (_need_db_worker) {
+            RC_ADD_QUEUE(db_context, db_queue);
+        }
+        if (_need_web_worker) {
+            RC_ADD_QUEUE(webserver_context, webserver_queue);
+        }
     }
 
     void application::create_routes() noexcept
     {
-        // web routes
-        _router->assign_route(http_request_task::key(), job_context::key());
-        _router->assign_route(http_response_task::key(), webserver_context::key());
-        _router->assign_route(ws_incoming_message_task::key(), job_context::key());
-        _router->assign_route(ws_outgoing_message_task::key(), webserver_context::key());
-
         // io routes
-        _router->assign_route(new_connection_task::key(), job_context::key());
-        _router->assign_route(close_connection_task::key(), job_context::key());
-        _router->assign_route(incoming_message_task::key(), job_context::key());
-        _router->assign_route(outgoing_message_task::key(), io_context::key());
+        if (_need_io_worker) {
+            RC_ASSIGN_ROUTE(new_connection_task, job_context);
+            RC_ASSIGN_ROUTE(close_connection_task, job_context);
+            RC_ASSIGN_ROUTE(incoming_message_task, job_context);
+            RC_ASSIGN_ROUTE(outgoing_message_task, io_context);
+        }
+
+        // db routes
+        if (_need_db_worker) {
+            RC_ASSIGN_ROUTE(db_request_task, db_context);
+            RC_ASSIGN_ROUTE(db_response_task, job_context);
+        }
+
+        // web routes
+        if (_need_web_worker) {
+            RC_ASSIGN_ROUTE(http_request_task, job_context);
+            RC_ASSIGN_ROUTE(http_response_task, webserver_context);
+            RC_ASSIGN_ROUTE(ws_incoming_message_task, job_context);
+            RC_ASSIGN_ROUTE(ws_outgoing_message_task, webserver_context);
+        }
     }
 
     void application::create_workers() noexcept
     {
-        auto workers_config = _config[consts::CONFIG_KEY_WORKERS];
+        auto workers_config { _config[consts::CONFIG_KEY_WORKERS] };
         for (size_t i = 0; i < workers_config.size(); ++i) {
-            auto config { workers_config[i] };
-            auto name { config[consts::CONFIG_KEY_NAME].to_string() };
-            auto context { _context_creators[name](config, _router.get()) };
+            auto worker_config { workers_config[i] };
+            auto name { worker_config[consts::CONFIG_KEY_NAME].to_string() };
 
-            _pool->push(worker::make_unique(config, std::move(context)));
+            if (name == consts::WORKER_NAME_JOB) {
+                create_multiple_instance_worker(name, worker_config);
+            } else {
+                create_single_instance_worker(name, worker_config);
+            }
         }
 
         _context_creators.clear();
     }
 
-    void application::assign_context_creator(const std::string_view& name, context_creator&& creator) noexcept
+    void application::create_single_instance_worker(const std::string_view& name,
+                                                    const groot::setting& worker_config) noexcept
     {
-        _context_creators.insert({ name, std::move(creator) });
+        auto context { _context_creators[name](worker_config, _router.get()) };
+
+        _pool->push(worker::make_unique(worker_config, std::move(context)));
+    }
+
+    void application::create_multiple_instance_worker(const std::string_view& name,
+                                                      const groot::setting& worker_config) noexcept
+    {
+        auto count { static_cast<size_t>(worker_config[consts::CONFIG_KEY_COUNT].to_s32()) };
+        for (size_t i = 0; i < count; ++i) {
+            auto context { _context_creators[name](worker_config, _router.get()) };
+
+            _pool->push(worker::make_unique(worker_config, std::move(context)));
+        }
+    }
+
+    void application::process_config() noexcept
+    {
+        _config.load(_argument_parser->config_path());
+
+        // Determine which optional workers must be initialized
+        auto workers_config { _config[consts::CONFIG_KEY_WORKERS] };
+        for (size_t i = 0; i < workers_config.size(); ++i) {
+            auto config { workers_config[i] };
+            auto name { config[consts::CONFIG_KEY_NAME].to_string() };
+
+            if (name == consts::WORKER_NAME_IO) {
+                _need_io_worker = true;
+            } else if (name == consts::WORKER_NAME_DB) {
+                _need_db_worker = true;
+            } else if (name == consts::WORKER_NAME_WEB) {
+                _need_web_worker = true;
+            }
+        }
     }
 
     // static
@@ -121,10 +182,18 @@ namespace rocket {
                            context_creator&& job_context_creator,
                            const std::string_view& description) noexcept
     {
+        // Pre-initialize systems
         groot::log_manager::setup();
+
+        // Create and start application
         auto app = application::make_unique(argc, argv, description);
-        app->assign_context_creator(consts::WORKER_NAME_JOB, std::move(job_context_creator));
+        // Add user-defined job context creator
+        app->_context_creators.insert({ consts::WORKER_NAME_JOB, std::move(job_context_creator) });
         return app->start();
     }
 
 }
+
+#undef RC_ASSIGN_CONTEXT_CREATOR
+#undef RC_ASSIGN_ROUTE
+#undef RC_ADD_QUEUE

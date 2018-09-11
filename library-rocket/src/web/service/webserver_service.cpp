@@ -40,12 +40,12 @@ namespace rocket {
         if (_server != nullptr) {
             gboolean result { FALSE };
             auto listen { get_config()[consts::CONFIG_KEY_LISTEN].to_string() };
-            if (listen == consts::CONFIG_WEBSERVER_LISTEN_ALL) {
+            if (listen == consts::CONFIG_WEB_LISTEN_ALL) {
                 result = soup_server_listen_all(_server,
                                                 static_cast<guint>(port),
                                                 static_cast<SoupServerListenOptions>(0),
                                                 &error);
-            } else if (listen == consts::CONFIG_WEBSERVER_LISTEN_LOCAL) {
+            } else if (listen == consts::CONFIG_WEB_LISTEN_LOCAL) {
                 result = soup_server_listen_local(_server,
                                                   static_cast<guint>(port),
                                                   static_cast<SoupServerListenOptions>(0),

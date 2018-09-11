@@ -28,10 +28,10 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        uv_loop_t *                                                 _loop;
+        uv_loop_t *                         _loop;
 
-        connection_manager::uptr                                    _connections;
-        groot::memory_pool_manager<groot::fixed_memory_pool>::uptr  _connection_allocator;
+        connection_manager::uptr            _connections;
+        groot::fixed_memory_pool::uptr      _connection_pool;
 
         void listen(const groot::endpoint::sptr& endpoint,
                     u16 backlog,

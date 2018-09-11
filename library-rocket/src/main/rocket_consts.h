@@ -23,18 +23,19 @@ namespace rocket {
         static constexpr std::string_view   WEBSERVER_DEFAULT_HTTP_ROUTE { "/" };
 
         static constexpr std::string_view   WORKER_NAME_IO { "io" };
+        static constexpr std::string_view   WORKER_NAME_DB { "db" };
         static constexpr std::string_view   WORKER_NAME_JOB { "job" };
+        static constexpr std::string_view   WORKER_NAME_WEB { "web" };
         static constexpr std::string_view   WORKER_NAME_SYSTEM { "system" };
-        static constexpr std::string_view   WORKER_NAME_WEBSERVER { "webserver" };
 
         static constexpr std::string_view   CONFIG_KEY_NAME { "name" };
         static constexpr std::string_view   CONFIG_KEY_PATH { "path" };
+        static constexpr std::string_view   CONFIG_KEY_COUNT { "count" };
         static constexpr std::string_view   CONFIG_KEY_WORKERS { "workers" };
-        static constexpr std::string_view   CONFIG_KEY_WEBSERVER_VIEW_ROOT { "view_root" };
-        static constexpr std::string_view   CONFIG_KEY_WEBSERVER_WEBSOCKET { "websocket" };
+        static constexpr std::string_view   CONFIG_KEY_WEBSOCKET { "websocket" };
         static constexpr std::string_view   CONFIG_KEY_LISTEN { "listen" };
-        static constexpr std::string_view   CONFIG_WEBSERVER_LISTEN_ALL { "all" };
-        static constexpr std::string_view   CONFIG_WEBSERVER_LISTEN_LOCAL { "local" };
+        static constexpr std::string_view   CONFIG_WEB_LISTEN_ALL { "all" };
+        static constexpr std::string_view   CONFIG_WEB_LISTEN_LOCAL { "local" };
 
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_JOB { "com.queue.job" };
         static constexpr std::string_view   DOMAIN_TASK_QUEUE_SYSTEM { "com.queue.system" };

@@ -20,12 +20,20 @@ namespace rocket {
         connection_manager();
         ~connection_manager() = default;
 
-        void add(const connection::sptr& connection) noexcept;
-        void remove(const connection::sptr& connection) noexcept;
-        connection::sptr get(groot::network_handle *handle) noexcept;
+        void add(connection *connection) noexcept;
+        void remove(connection *connection) noexcept;
+
+        /**
+         * @todo: is it method really necessary?
+         *  Is connection manager really necessary?
+         *  First of all - libuv associate and controlling handles.
+         *  Next - hi level data structs, like class which represent
+         *  logical entity can associate connection too.
+         */
+        connection *get(groot::network_handle *handle) noexcept;
 
     private:
-        std::unordered_map<groot::network_handle *, connection::sptr>       _connections;
+        std::unordered_map<groot::network_handle *, connection *>   _connections;
 
     };
 
