@@ -39,7 +39,19 @@
 
 namespace groot {
 
+    class memory final {
+    public:
+        static size_t page_size() noexcept;
 
+        template<typename T>
+        static T *aligned_alloc(size_t size) noexcept {
+            return static_cast<T *>(_aligned_alloc(size));
+        }
+
+    private:
+        static void *_aligned_alloc(size_t size) noexcept;
+
+    };
 
 }
 

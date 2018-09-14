@@ -13,7 +13,7 @@ namespace rocket {
     connection_manager::connection_manager() :
             _connections {}
     {
-        _connections.reserve(consts::CONNECTION_RESERVE_COUNT);
+        _connections.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
     }
 
     void connection_manager::add(connection *connection) noexcept

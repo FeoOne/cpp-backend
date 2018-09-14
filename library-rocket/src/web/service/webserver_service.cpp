@@ -26,12 +26,12 @@ namespace rocket {
     {
         GError *error { nullptr };
 
-        auto header { consts::WEBSERVER_HEADER.data() };
+        auto header { consts::WEB_WEBSERVER_HEADER.data() };
         if (!get_config().lookup_string("header", &header)) {
             logwarn("Used default web server header: '%s'.", header);
         }
 
-        auto port { static_cast<s32>(consts::WEBSERVER_DEFAULT_PORT) };
+        auto port { static_cast<s32>(consts::WEB_DEFAULT_HTTP_PORT) };
         if (!get_config().lookup_s32("port", &port)) {
             logwarn("Used default web server port: '%d'.", port);
         }

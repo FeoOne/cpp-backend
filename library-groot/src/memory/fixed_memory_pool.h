@@ -2,8 +2,8 @@
 // Created by Feo on 04/09/2018.
 //
 
-#ifndef GROOT_STATIC_MEMORY_POOL_H
-#define GROOT_STATIC_MEMORY_POOL_H
+#ifndef GROOT_FIXED_MEMORY_POOL_H
+#define GROOT_FIXED_MEMORY_POOL_H
 
 #include <vector>
 
@@ -68,14 +68,14 @@ namespace groot {
     };
 
     /**
-     * Fixed size block memory pool.
+     * Single threaded fixed size block memory pool.
      */
     class fixed_memory_pool final {
     public:
         GR_DECLARE_SMARTPOINTERS(fixed_memory_pool)
         GR_DELETE_ALL_DEFAULT(fixed_memory_pool)
 
-        explicit fixed_memory_pool(size_t data_size, size_t total_size) noexcept;
+        explicit fixed_memory_pool(size_t data_size, size_t page_size) noexcept;
         ~fixed_memory_pool();
 
         void *alloc() noexcept;
@@ -89,10 +89,10 @@ namespace groot {
         std::vector<fixed_memory_page *>    _pages;
 
         u32                                 _block_size;
-        u32                                 _total_size;
+        u32                                 _page_size;
 
     };
 
 }
 
-#endif /* GROOT_STATIC_MEMORY_POOL_H */
+#endif /* GROOT_FIXED_MEMORY_POOL_H */

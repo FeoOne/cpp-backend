@@ -39,16 +39,72 @@ namespace groot {
         setting operator[](const std::string_view& key) const noexcept;
 
         bool to_bool() const noexcept;
-        s32 to_s32() const noexcept;
-        s64 to_s64() const noexcept;
         double to_double() const noexcept;
         const std::string_view to_string() const noexcept;
 
+        template<typename T>
+        T to_int32() const noexcept {
+            assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
+            return static_cast<T>(config_setting_get_int(_setting));
+        }
+
+        template<typename T>
+        T to_int64() const noexcept {
+            assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
+            return static_cast<T>(config_setting_get_int64(_setting));
+        }
+
         bool lookup_bool(const std::string_view& key, bool *value) const noexcept;
-        bool lookup_s32(const std::string_view& key, s32 *value) const noexcept;
-        bool lookup_s64(const std::string_view& key, s64 *value) const noexcept;
         bool lookup_double(const std::string_view& key, double *value) const noexcept;
         bool lookup_string(const std::string_view& key, const char **value) const noexcept;
+
+        template<typename T>
+        bool lookup_int32(const std::string_view& key, T *value) const noexcept {
+            int i;
+            bool result { false };
+            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int32(const std::string_view& key, T *value, T default_value) const noexcept {
+            int i;
+            bool result { false };
+            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            } else {
+                *value = default_value;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int64(const std::string_view& key, T *value) const noexcept {
+            long long i;
+            bool result { false };
+            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int64(const std::string_view& key, T *value, T default_value) const noexcept {
+            long long i;
+            bool result { false };
+            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            } else {
+                *value = default_value;
+            }
+            return result;
+        }
 
         setting root() const noexcept;
 

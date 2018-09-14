@@ -13,39 +13,60 @@
 
 #include "logger/logger.h"
 
-#define logassert(cond, format, ...) \
-    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); } } while (false)
+#ifdef NDEBUG
+#define logassert(cond, format, ...)                                                            \
+    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); \
+    } } while (false)
+#else
+#define logassert(cond, format, ...)                                                            \
+    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); \
+    abort(); } } while (false)
+#endif
 
-#define logdebug(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::DEBUG,        \
-                                                                              __FILE__,                             \
-                                                                              __LINE__,                             \
-                                                                              __FUNCTION__,                         \
-                                                                              format,                               \
-                                                                              ##__VA_ARGS__)
-#define loginfo(format, ...)            groot::log_manager::get_logger()->log(groot::logger::level_t::INFO,         \
-                                                                              __FILE__,                             \
-                                                                              __LINE__,                             \
-                                                                              __FUNCTION__,                         \
-                                                                              format,                               \
-                                                                              ##__VA_ARGS__)
-#define lognotice(format, ...)          groot::log_manager::get_logger()->log(groot::logger::level_t::NOTICE,       \
-                                                                              __FILE__,                             \
-                                                                              __LINE__,                             \
-                                                                              __FUNCTION__,                         \
-                                                                              format,                               \
-                                                                              ##__VA_ARGS__)
-#define logwarn(format, ...)            groot::log_manager::get_logger()->log(groot::logger::level_t::WARN,         \
-                                                                              __FILE__,                             \
-                                                                              __LINE__,                             \
-                                                                              __FUNCTION__,                         \
-                                                                              format,                               \
-                                                                              ##__VA_ARGS__)
-#define logerror(format, ...)           groot::log_manager::get_logger()->log(groot::logger::level_t::ERROR,        \
-                                                                              __FILE__,                             \
-                                                                              __LINE__,                             \
-                                                                              __FUNCTION__,                         \
-                                                                              format,                               \
-                                                                              ##__VA_ARGS__)
+#ifdef NDEBUG
+#define logdebug(format, ...)
+#else
+#define logdebug(format, ...)                                                       \
+    groot::log_manager::get_logger()->log(groot::logger::level_t::DEBUG,            \
+                                          __FILE__,                                 \
+                                          __LINE__,                                 \
+                                          __FUNCTION__,                             \
+                                          format,                                   \
+                                          ##__VA_ARGS__)
+#endif
+
+#define loginfo(format, ...)                                                        \
+    groot::log_manager::get_logger()->log(groot::logger::level_t::INFO,             \
+                                          __FILE__,                                 \
+                                          __LINE__,                                 \
+                                          __FUNCTION__,                             \
+                                          format,                                   \
+                                          ##__VA_ARGS__)
+
+#define lognotice(format, ...)                                                      \
+    groot::log_manager::get_logger()->log(groot::logger::level_t::NOTICE,           \
+                                          __FILE__,                                 \
+                                          __LINE__,                                 \
+                                          __FUNCTION__,                             \
+                                          format,                                   \
+                                          ##__VA_ARGS__)
+
+#define logwarn(format, ...)                                                        \
+    groot::log_manager::get_logger()->log(groot::logger::level_t::WARN,             \
+                                          __FILE__,                                 \
+                                          __LINE__,                                 \
+                                          __FUNCTION__,                             \
+                                          format,                                   \
+                                          ##__VA_ARGS__)
+
+#define logerror(format, ...)                                                       \
+    groot::log_manager::get_logger()->log(groot::logger::level_t::ERROR,            \
+                                          __FILE__,                                 \
+                                          __LINE__,                                 \
+                                          __FUNCTION__,                             \
+                                          format,                                   \
+                                          ##__VA_ARGS__)
+
 #define logcrit(format, ...)            \
     do { groot::log_manager::get_logger()->log(groot::logger::level_t::CRIT,        \
                                                __FILE__,                            \
@@ -54,6 +75,7 @@
                                                format,                              \
                                                ##__VA_ARGS__);                      \
         abort(); } while (false)
+
 #define logalert(format, ...)                                                       \
     do { groot::log_manager::get_logger()->log(groot::logger::level_t::ALERT,       \
                                                __FILE__,                            \
@@ -62,6 +84,7 @@
                                                format,                              \
                                                ##__VA_ARGS__);                      \
         abort(); } while (false)
+
 #define logemerg(format, ...)                                                       \
     do { groot::log_manager::get_logger()->log(groot::logger::level_t::EMERG,       \
                                                __FILE__,                            \

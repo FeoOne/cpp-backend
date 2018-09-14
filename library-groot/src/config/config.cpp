@@ -31,18 +31,6 @@ namespace groot {
         return config_setting_get_bool(_setting) != 0;
     }
 
-    s32 setting::to_s32() const noexcept
-    {
-        assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
-        return config_setting_get_int(_setting);
-    }
-
-    s64 setting::to_s64() const noexcept
-    {
-        assert(config_setting_type(_setting) == CONFIG_TYPE_INT64);
-        return config_setting_get_int64(_setting);
-    }
-
     double setting::to_double() const noexcept
     {
         assert(config_setting_type(_setting) == CONFIG_TYPE_FLOAT);
@@ -61,22 +49,6 @@ namespace groot {
         bool result { false };
         if (config_setting_lookup_bool(_setting, key.data(), &i) == CONFIG_TRUE) {
             *value = (i != CONFIG_FALSE);
-            result = true;
-        }
-        return result;
-    }
-
-    bool setting::lookup_s32(const std::string_view& key, s32 *value) const noexcept
-    {
-        return (config_setting_lookup_int(_setting, key.data(), value) == CONFIG_TRUE);
-    }
-
-    bool setting::lookup_s64(const std::string_view& key, s64 *value) const noexcept
-    {
-        long long i;
-        bool result { false };
-        if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
-            *value = i;
             result = true;
         }
         return result;

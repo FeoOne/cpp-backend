@@ -75,7 +75,7 @@ namespace groot {
     };
 
     /**
-     * Float size block memory pool.
+     * Single threaded float size block memory pool.
      */
     class float_memory_pool final {
     public:

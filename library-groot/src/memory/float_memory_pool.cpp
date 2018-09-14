@@ -19,7 +19,7 @@ namespace groot {
             _total_size { total_size },
             _free_size { total_size - CHUNK_HEAD_SIZE }
     {
-        _memory = new (std::nothrow) u8[_total_size]; // @todo: aligned alloc
+        _memory = memory::aligned_alloc<u8>(_total_size);
 
 #ifdef GR_TRASHING_MEMORY_POOL
         std::memset(_memory,

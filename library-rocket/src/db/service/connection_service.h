@@ -6,7 +6,7 @@
 #define ROCKET_CONNECTION_SERVICE_H
 
 #include "work/work_service.h"
-#include "db/connection/db_connection.h"
+#include "db/core/db_connection.h"
 
 namespace rocket {
 
@@ -23,8 +23,16 @@ namespace rocket {
         void setup() noexcept final;
         void reset() noexcept final;
 
+        db_connection *acquire_connection() noexcept;
+        void release_connection(db_connection *connection) noexcept;
+
     private:
-        groot::fixed_memory_pool::uptr      _connection_pool;
+        std::vector<db_connection::uptr>    _connections;
+        std::queue<db_connection *>         _available_connections;
+        const char *                        _conninfo;
+        size_t                              _max_connection_count;
+
+        void read_config() noexcept;
 
     };
 

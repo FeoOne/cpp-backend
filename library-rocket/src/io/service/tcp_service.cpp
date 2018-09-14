@@ -12,8 +12,6 @@
 
 #include "io/service/tcp_service.h"
 
-#define RC_CONNECTION_POOL_SIZE 1048576
-
 namespace rocket {
 
     tcp_service::tcp_service(const groot::setting& config,
@@ -22,7 +20,9 @@ namespace rocket {
             crucial(config, router, service_delegate),
             _loop { nullptr },
             _connections {},
-            _connection_pool { groot::fixed_memory_pool::make_unique(sizeof(tcp_connection), RC_CONNECTION_POOL_SIZE) }
+            _connection_pool {
+                groot::fixed_memory_pool::make_unique(sizeof(tcp_connection), groot::memory::page_size())
+            }
     {
     }
 

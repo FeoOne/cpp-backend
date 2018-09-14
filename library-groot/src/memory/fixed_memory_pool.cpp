@@ -2,6 +2,8 @@
 // Created by Feo on 04/09/2018.
 //
 
+#include <inttypes.h>
+
 #include "memory/fixed_memory_pool.h"
 
 #define GR_PAGE_RESERVE_COUNT   16 // @todo: move to config
@@ -17,7 +19,7 @@ namespace groot {
             _chunk_size { 0 },
             _chunk_count { 0 }
     {
-        _memory = new (std::nothrow) u8[_total_size]; // @todo: aligned alloc
+        _memory = memory::aligned_alloc<u8>(_total_size);
 
 #ifdef GR_TRASHING_MEMORY_POOL
         std::memset(_memory,
@@ -105,9 +107,16 @@ namespace groot {
 
     void fixed_memory_page::free(void *ptr) noexcept
     {
-        logassert(ptr != nullptr, "Can't free nullptr.");
-        logassert(_memory < ptr && ptr < _memory + _total_size, "Pointer didn't belong to pool.");
-        if (ptr == nullptr || ptr <= _memory || ptr >= _memory + _total_size) {
+        if (ptr == nullptr) {
+            logwarn("Can't free nullptr.");
+            return;
+        }
+
+        if (ptr <= _memory || ptr >= _memory + _total_size) {
+            logwarn("Pointer 0x%" PRIXPTR " didn't bound to pool memory space (0x% " PRIXPTR " - 0x%" PRIXPTR ").",
+                    ptr,
+                    _memory,
+                    _memory + _total_size);
             return;
         }
 
@@ -131,10 +140,10 @@ namespace groot {
 #endif
     }
 
-    fixed_memory_pool::fixed_memory_pool(size_t data_size, size_t total_size) noexcept :
+    fixed_memory_pool::fixed_memory_pool(size_t data_size, size_t page_size) noexcept :
             _pages {},
             _block_size { static_cast<u32>(data_size) + INDEX_SIZE },
-            _total_size { static_cast<u32>(total_size) }
+            _page_size { static_cast<u32>(page_size) }
     {
         _pages.reserve(GR_PAGE_RESERVE_COUNT);
     }
@@ -162,7 +171,7 @@ namespace groot {
 
         // If there is no free space, create new pool
         if (result == nullptr) {
-            auto page { _pages.emplace_back(new (std::nothrow) fixed_memory_page(_block_size, _total_size)) };
+            auto page { _pages.emplace_back(new (std::nothrow) fixed_memory_page(_block_size, _page_size)) };
             result = static_cast<u8 *>(page->alloc());
             index = static_cast<index_type>(_pages.size() - 1);
 
@@ -180,11 +189,12 @@ namespace groot {
         auto memory { static_cast<u8 *>(ptr) - INDEX_SIZE };
         auto index { *reinterpret_cast<index_type *>(memory) };
 
-        logassert(0 <= index && index < _pages.size(), "Can't free chunk with %su pool's index.", index);
-
-        if (index < _pages.size()) {
-            _pages[index]->free(memory);
+        if (index >= _pages.size()) {
+            logwarn("Can't free chunk with %su page's index. Total page count: %lu.", index, _pages.size());
+            return;
         }
+
+        _pages[index]->free(memory);
     }
 
 }

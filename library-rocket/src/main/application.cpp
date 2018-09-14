@@ -148,7 +148,7 @@ namespace rocket {
     void application::create_multiple_instance_worker(const std::string_view& name,
                                                       const groot::setting& worker_config) noexcept
     {
-        auto count { static_cast<size_t>(worker_config[consts::CONFIG_KEY_COUNT].to_s32()) };
+        auto count { worker_config[consts::CONFIG_KEY_COUNT].to_int32<size_t>() };
         for (size_t i = 0; i < count; ++i) {
             auto context { _context_creators[name](worker_config, _router.get()) };
 

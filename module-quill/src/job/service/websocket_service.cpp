@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "message/message_terra_gen.h"
+//#include "message/message_terra_gen.h"
 
 #include "job/service/websocket_service.h"
 
@@ -19,10 +19,10 @@ namespace quill {
     {
         RC_ASSIGN_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);
 
-        _processors.insert({
-            OPCODE_MESSAGE_TERRA_CREATE_INVOICE,
-            std::bind(&websocket_service::process_create_invoice_message, this, std::placeholders::_1)
-        });
+//        _processors.insert({
+//            OPCODE_MESSAGE_TERRA_CREATE_INVOICE,
+//            std::bind(&websocket_service::process_create_invoice_message, this, std::placeholders::_1)
+//        });
     }
 
     // virtual
@@ -65,9 +65,9 @@ namespace quill {
     rocket::ws_outgoing_message_task::sptr
     websocket_service::process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept
     {
-        auto msg = message::terra::create_invoice::make_shared(task->get_binary());
-
-        lognotice("amount: %s, currency: %lu", msg->get_amount().data(), msg->get_currency());
+//        auto msg = message::terra::create_invoice::make_shared(task->get_binary());
+//
+//        lognotice("amount: %s, currency: %lu", msg->get_amount().data(), msg->get_currency());
 
         //auto result = rocket::ws_outgoing_message_task::make_shared(task->get_connection(), )
         return nullptr;

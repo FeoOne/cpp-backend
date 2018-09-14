@@ -29,13 +29,13 @@ namespace rocket {
     // virtual
     void http_service::setup() noexcept
     {
-        auto server = delegate()->get_service<webserver_service>()->get_server();
+        auto server { delegate()->get_service<webserver_service>()->get_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
 
         soup_server_add_handler(server,
-                                consts::WEBSERVER_DEFAULT_HTTP_ROUTE.data(),
+                                consts::WEB_DEFAULT_HTTP_ROUTE.data(),
                                 &http_service::handler_routine,
                                 this,
                                 nullptr);
@@ -45,7 +45,7 @@ namespace rocket {
     void http_service::reset() noexcept
     {
         soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
-                                   consts::WEBSERVER_DEFAULT_HTTP_ROUTE.data());
+                                   consts::WEB_DEFAULT_HTTP_ROUTE.data());
     }
 
     void http_service::handle_http_response_task(const task::sptr& t) noexcept
@@ -67,6 +67,8 @@ namespace rocket {
         logdebug("HTTP handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
+        logassert(delegate()->get_service<webserver_service>()->get_server() == server,
+                  "Can't process http request from different server.");
 
         std::string_view p { path };
         auto request { http_request::make_shared(message, p, query, client) };
@@ -83,7 +85,12 @@ namespace rocket {
                                        SoupClientContext *client,
                                        gpointer context) noexcept
     {
-        static_cast<http_service *>(context)->handler(server, message, path, query, client);
+        auto self { static_cast<http_service *>(context) };
+        if (self != nullptr) {
+            self->handler(server, message, path, query, client);
+        } else {
+            logwarn("Can't process empty context for path '%s'.", path);
+        }
     }
 
 }
