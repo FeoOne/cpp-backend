@@ -11,11 +11,12 @@
 #include <string>
 #include <string_view>
 
+#include "scalar/numeric.h"
+
 namespace groot {
 
-
+    u64 quickhash64(const char *str, u64 mix = 0);
 
 }
-
 
 #endif /* GROOT_STRING_H */

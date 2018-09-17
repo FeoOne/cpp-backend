@@ -14,8 +14,8 @@ namespace rocket {
 
     class web_page {
     public:
-        FW_DECLARE_SMARTPOINTERS(web_page)
-        FW_DELETE_ALL_DEFAULT(web_page)
+        GR_DECLARE_SMARTPOINTERS(web_page)
+        GR_DELETE_ALL_DEFAULT(web_page)
 
         explicit web_page(const web_view::sptr& layout) noexcept;
         virtual ~web_page() = default;

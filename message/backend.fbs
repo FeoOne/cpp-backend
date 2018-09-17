@@ -1,5 +1,0 @@
-namespace message;
-
-table create_wallet {
-    user_id:int;
-}

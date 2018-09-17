@@ -16,19 +16,19 @@ namespace rocket {
 
     class http_service final : public groot::crucial<work_service, http_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_service)
-        FW_DELETE_ALL_DEFAULT(http_service)
+        GR_DECLARE_SMARTPOINTERS(http_service)
+        GR_DELETE_ALL_DEFAULT(http_service)
 
-        explicit http_service(const groot::config_setting::sptr& config,
-                              const task_router::sptr& router,
-                              const work_context_delegate *service_provider) noexcept;
+        explicit http_service(const groot::setting& config,
+                              task_router *router,
+                              const work_service_delegate *service_delegate) noexcept;
         virtual ~http_service();
 
         void setup() noexcept final;
         void reset() noexcept final;
 
     private:
-        void handle_http_response_task(const rocket::task::sptr& t) noexcept;
+        void handle_http_response_task(const task::sptr& t) noexcept;
 
         void handler(SoupServer *server,
                      SoupMessage *message,

@@ -14,8 +14,8 @@ namespace rocket {
 
     class view_template {
     public:
-        FW_DECLARE_SMARTPOINTERS(view_template)
-        FW_DELETE_ALL_DEFAULT(view_template)
+        GR_DECLARE_SMARTPOINTERS(view_template)
+        GR_DELETE_ALL_DEFAULT(view_template)
 
         explicit view_template(std::string key, size_t start_pos, size_t end_pos) noexcept :
                 _key { key },
@@ -39,8 +39,8 @@ namespace rocket {
 
     class web_view {
     public:
-        FW_DECLARE_SMARTPOINTERS(web_view)
-        FW_DELETE_ALL_DEFAULT(web_view)
+        GR_DECLARE_SMARTPOINTERS(web_view)
+        GR_DELETE_ALL_DEFAULT(web_view)
 
         explicit web_view(std::string&& content) noexcept;
         ~web_view();
@@ -53,8 +53,8 @@ namespace rocket {
     private:
         class argument {
         public:
-            FW_DECLARE_SMARTPOINTERS(argument)
-            FW_DELETE_ALL_DEFAULT(argument)
+            GR_DECLARE_SMARTPOINTERS(argument)
+            GR_DELETE_ALL_DEFAULT(argument)
 
             enum class type_t {
                 STRING,

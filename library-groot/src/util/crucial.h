@@ -13,17 +13,22 @@
 #include "main/tools.h"
 #include "memory/memory.h"
 #include "scalar/numeric.h"
+#include "logger/log_manager.h"
 
-#define FW_CRUCIAL_BASE_DEFINITION()                    \
+#define GR_CRUCIAL_BASE_DEFINITION(max)                 \
     public:                                             \
-        using key_type = groot::crucial_key_type;   \
+        using key_type = groot::crucial_key_type;       \
+        static constexpr size_t MAX_KEY { max };        \
     protected:                                          \
         static key_type _key_counter;                   \
     public:                                             \
         virtual key_type get_key() const noexcept = 0;
 
-#define FW_CRUCIAL_BASE_DECLARATION(base)               \
+#define GR_CRUCIAL_BASE_DECLARATION(base)               \
     base::key_type base::_key_counter { 0 };
+
+#define GR_CRUCIAL_KEY_UNDEFINED                        \
+    std::numeric_limits<groot::crucial_key_type>::max()
 
 namespace groot {
 
@@ -32,7 +37,7 @@ namespace groot {
     template<typename Base, typename Derived>
     class crucial : public Base {
     public:
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(crucial)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(crucial)
 
         using key_type = typename Base::key_type;
         using base_type = Base;

@@ -14,16 +14,13 @@ namespace quill {
 
     class job_context : public rocket::job_context {
     public:
-        FW_DECLARE_SMARTPOINTERS(job_context)
-        FW_DELETE_ALL_DEFAULT(job_context)
+        GR_DECLARE_SMARTPOINTERS(job_context)
+        GR_DELETE_ALL_DEFAULT(job_context)
 
-        explicit job_context(const groot::config_setting::sptr& config,
-                                     const rocket::task_router::sptr& router) noexcept;
-        virtual ~job_context();
+        explicit job_context(const groot::setting& config, rocket::task_router *router) noexcept;
+        virtual ~job_context() = default;
 
     private:
-        void setup() noexcept final;
-        void reset() noexcept final;
 
     };
 

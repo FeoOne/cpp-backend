@@ -20,7 +20,7 @@ namespace rocket {
     void system_queue::enqueue(const task::sptr& task) noexcept
     {
         {
-            FW_ULOCK(lock, _mutex);
+            GR_ULOCK(lock, _mutex);
             push(task);
         }
         _cv.notify_one();
@@ -29,7 +29,7 @@ namespace rocket {
     // virtual
     task::sptr system_queue::dequeue() noexcept
     {
-        FW_ULOCK(lock, _mutex);
+        GR_ULOCK(lock, _mutex);
 
         _cv.wait(lock, [this]() {
             return !is_empty();
@@ -41,7 +41,7 @@ namespace rocket {
     // virtual
     bool system_queue::empty() const noexcept
     {
-        FW_ULOCK(lock, _mutex);
+        GR_ULOCK(lock, _mutex);
         return is_empty();
     }
 

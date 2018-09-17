@@ -16,8 +16,8 @@ namespace rocket {
 
     class http_request {
     public:
-        FW_DECLARE_SMARTPOINTERS(http_request)
-        FW_DELETE_ALL_DEFAULT(http_request)
+        GR_DECLARE_SMARTPOINTERS(http_request)
+        GR_DELETE_ALL_DEFAULT(http_request)
 
         explicit http_request(SoupMessage *message,
                               const std::string_view& path,

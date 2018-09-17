@@ -19,13 +19,13 @@ namespace groot {
     public:
         static constexpr size_t             LOGGER_MAX_MESSAGE_LENGTH { 4096 };
 
-        static constexpr std::string_view   SOURCE_DIR  { FW_SOURCE_DIR };
+        static constexpr std::string_view   SOURCE_DIR  { GR_SOURCE_DIR };
 
-        static constexpr size_t             VERSION_MAJOR { FW_VERSION_MAJOR };
-        static constexpr size_t             VERSION_MINOR { FW_VERSION_MINOR };
-        static constexpr size_t             VERSION_MAINTENANCE { FW_VERSION_MAINTENANCE };
-        static constexpr size_t             VERSION_BUILD { FW_VERSION_BUILD };
-        static constexpr std::string_view   VERSION_FULL { FW_VERSION_FULL };
+        static constexpr size_t             VERSION_MAJOR { GR_VERSION_MAJOR };
+        static constexpr size_t             VERSION_MINOR { GR_VERSION_MINOR };
+        static constexpr size_t             VERSION_MAINTENANCE { GR_VERSION_MAINTENANCE };
+        static constexpr size_t             VERSION_BUILD { GR_VERSION_BUILD };
+        static constexpr std::string_view   VERSION_FULL { GR_VERSION_FULL };
 
     };
 

@@ -10,21 +10,20 @@ namespace rocket {
             _queues {},
             _context_keys {}
     {
-        _queues.fill(nullptr);
-        _context_keys.fill(std::numeric_limits<groot::crucial_key_type>::max());
+        _context_keys.fill(GR_CRUCIAL_KEY_UNDEFINED);
     }
 
-    void task_router::add_queue(groot::crucial_key_type context_key, const task_queue::sptr& queue) noexcept
+    void task_router::add_queue(groot::crucial_key_type context_key, task_queue::uptr&& queue) noexcept
     {
-        _queues[context_key] = queue;
+        _queues[context_key] = std::move(queue);
     }
 
-    task_queue::sptr task_router::get_queue(groot::crucial_key_type context_key) const noexcept
+    task_queue *task_router::get_queue(groot::crucial_key_type context_key) const noexcept
     {
-        return _queues[context_key];
+        return _queues[context_key].get();
     }
 
-    void task_router::register_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept
+    void task_router::assign_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept
     {
         _context_keys[task_key] = context_key;
     }

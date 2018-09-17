@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include <cstdarg>
+
 #include <time.h>
 
 #include "main/groot_consts.h"

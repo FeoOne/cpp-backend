@@ -7,15 +7,15 @@
 
 #include "web/page/web_view.h"
 
-#define EG_SAFE_ARG_LENGTH      16
-#define EG_APPROX_TPL_COUNT     16
+#define RC_SAFE_ARG_LENGTH      16
+#define RC_APPROX_TPL_COUNT     16
 
 namespace rocket {
 
     web_view::web_view(std::string&& content) noexcept :
             _content { std::move(content) }
     {
-        _templates.reserve(EG_APPROX_TPL_COUNT);
+        _templates.reserve(RC_APPROX_TPL_COUNT);
         process();
     }
 
@@ -56,7 +56,8 @@ namespace rocket {
                 pos = _content.find(close_brace, pos);
                 if (pos != std::string::npos) {
                     end_pos = pos;
-                    logassert(end_pos - start_pos <= EG_SAFE_ARG_LENGTH);
+                    logassert(end_pos - start_pos <= RC_SAFE_ARG_LENGTH,
+                            "To long template key. Looks like there is no trailing braces.");
 
                     auto key {
                         _content.substr(start_pos + open_brace.length(), end_pos - start_pos - open_brace.length())
@@ -92,12 +93,12 @@ namespace rocket {
                     offset += arg->get_value().length() - tpl->get_count();
                 }
             } else {
-                logerror("Failed to find argument '%s'.", tpl->get_key().c_str());
+                logerror("Failed to find value for argument '%s'.", tpl->get_key().c_str());
             }
         }
     }
 
 }
 
-#undef EG_SAFE_ARG_LENGTH
-#undef EG_APPROX_TPL_COUNT
+#undef RC_SAFE_ARG_LENGTH
+#undef RC_APPROX_TPL_COUNT

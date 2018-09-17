@@ -14,8 +14,8 @@ namespace rocket {
 
     class tcp_connection final : public connection {
     public:
-        FW_DECLARE_SMARTPOINTERS(tcp_connection)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
+        GR_DECLARE_SMARTPOINTERS(tcp_connection)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
 
         explicit tcp_connection(groot::ip_version version,
                                 side_t side,
@@ -26,7 +26,7 @@ namespace rocket {
         void init(uv_loop_t *loop, void *data) noexcept final;
         bool bind(groot::socket_address *addr) noexcept final;
         bool listen(u16 backlog, uv_connection_cb cb) noexcept final;
-        bool accept(const connection::sptr& connection) noexcept;
+        bool accept(connection *connection) noexcept;
         uv_connect_t *connect(groot::socket_address *addr, uv_connect_cb cb) noexcept final;
         uv_shutdown_t *shutdown(uv_shutdown_cb cb) noexcept final;
 

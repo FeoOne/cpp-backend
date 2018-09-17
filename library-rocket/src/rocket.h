@@ -26,7 +26,11 @@
 #include "web/service/websocket_service.h"
 #include "web/task/http_request_task.h"
 #include "web/task/http_response_task.h"
+#include "web/task/ws_incoming_message_task.h"
+#include "web/task/ws_outgoing_message_task.h"
 #include "web/page/web_view_loader.h"
 #include "web/page/web_view_manager.h"
+
+#include "protocol/protocol_machine.h"
 
 #endif /* ROCKET_ROCKET_H */

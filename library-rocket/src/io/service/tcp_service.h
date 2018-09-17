@@ -9,27 +9,29 @@
 #define ROCKET_TCP_SERVICE_H
 
 #include "work/work_service.h"
+#include "io/connection/tcp_connection.h"
 #include "io/connection/connection_manager.h"
 
 namespace rocket {
 
     class tcp_service final : public groot::crucial<work_service, tcp_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(tcp_service)
-        FW_DELETE_ALL_DEFAULT(tcp_service)
+        GR_DECLARE_SMARTPOINTERS(tcp_service)
+        GR_DELETE_ALL_DEFAULT(tcp_service)
 
-        explicit tcp_service(const groot::config_setting::sptr& config,
-                             const task_router::sptr& router,
-                             const work_context_delegate *service_provider) noexcept;
+        explicit tcp_service(const groot::setting& config,
+                             task_router *router,
+                             const work_service_delegate *service_delegate) noexcept;
         virtual ~tcp_service();
 
         void setup() noexcept final;
         void reset() noexcept final;
 
     private:
-        uv_loop_t *                 _loop;
+        uv_loop_t *                         _loop;
 
-        connection_manager::uptr    _connections;
+        connection_manager::uptr            _connections;
+        groot::fixed_memory_pool::uptr      _connection_pool;
 
         void listen(const groot::endpoint::sptr& endpoint,
                     u16 backlog,

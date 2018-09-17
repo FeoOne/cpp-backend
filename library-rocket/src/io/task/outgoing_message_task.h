@@ -15,8 +15,8 @@ namespace rocket {
 
     class outgoing_message_task : public groot::crucial<task, outgoing_message_task> {
     public:
-        FW_DECLARE_SMARTPOINTERS(outgoing_message_task)
-        FW_DELETE_ALL_DEFAULT(outgoing_message_task)
+        GR_DECLARE_SMARTPOINTERS(outgoing_message_task)
+        GR_DELETE_ALL_DEFAULT(outgoing_message_task)
 
         explicit outgoing_message_task(const connection::sptr& connection) noexcept : _connection { connection } {}
         virtual ~outgoing_message_task() = default;

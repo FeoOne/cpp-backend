@@ -11,12 +11,12 @@
 
 namespace rocket {
 
-    message_filter_service::message_filter_service(const groot::config_setting::sptr& config,
-                                                   const task_router::sptr& router,
-                                                   const work_context_delegate *service_provider) noexcept :
-            crucial(config, router, service_provider)
+    message_filter_service::message_filter_service(const groot::setting& config,
+                                                   task_router *router,
+                                                   const work_service_delegate *service_delegate) noexcept :
+            crucial(config, router, service_delegate)
     {
-        EG_BIND_TASK_HANDLER(outgoing_message_task, message_filter_service, handle_outgoing_packet_task);
+        RC_ASSIGN_TASK_HANDLER(outgoing_message_task, message_filter_service, handle_outgoing_packet_task);
     }
 
     // virtual

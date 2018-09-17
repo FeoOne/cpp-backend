@@ -8,17 +8,15 @@
 #ifndef GROOT_TOOLS_H
 #define GROOT_TOOLS_H
 
-#define FW_COUNTER          __COUNTER__
+#define GR_STR_IMPL(str)    #str
+#define GR_STR(str)         GR_STR_IMPL(str)
 
-#define FW_STR_IMPL(str)    #str
-#define FW_STR(str)         FW_STR_IMPL(str)
+#define GR_COMMA()          ,
 
-#define FW_COMMA()          ,
+#define GR_FORMAT_BOOL(b)   (b ? "true" : "false")
 
-#define FW_FORMAT_BOOL(b)   (b ? "true" : "false")
+#define GR_ULOCK(n, m)      std::unique_lock<decltype(m)> n(m)
 
-#define FW_ULOCK(n, m)      std::unique_lock<decltype(m)> n(m)
-
-#define FW_UNUSED           [[maybe_unused]]
+#define GR_UNUSED           [[maybe_unused]]
 
 #endif /* GROOT_TOOLS_H */

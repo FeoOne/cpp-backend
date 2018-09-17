@@ -16,18 +16,20 @@ namespace rocket {
 
     class db_loop : public work_loop {
     public:
-        FW_DECLARE_SMARTPOINTERS(db_loop)
-        FW_DELETE_ALL_DEFAULT(db_loop)
+        GR_DECLARE_SMARTPOINTERS(db_loop)
+        GR_DELETE_ALL_DEFAULT(db_loop)
 
-        explicit db_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
+        explicit db_loop(task_queue *queue, const task_handler *handler) noexcept;
         virtual ~db_loop();
 
         void start() noexcept final;
         void stop() noexcept final;
 
+        uv_loop_t *get_loop() noexcept { return &_loop; }
+
     private:
-        uv_loop_t       _loop;
-        uv_async_t      _async_handle;
+        uv_loop_t           _loop;
+        uv_async_t          _async_handle;
 
         void on_async() noexcept;
 

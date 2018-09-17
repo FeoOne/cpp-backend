@@ -14,8 +14,8 @@ namespace rocket {
 
     class db_queue final : public task_queue {
     public:
-        FW_DECLARE_SMARTPOINTERS(db_queue)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_queue)
+        GR_DECLARE_SMARTPOINTERS(db_queue)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_queue)
 
         db_queue();
         virtual ~db_queue() = default;

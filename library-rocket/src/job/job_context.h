@@ -14,14 +14,13 @@ namespace rocket {
 
     class job_context : public groot::crucial<work_context, job_context> {
     public:
-        FW_DECLARE_SMARTPOINTERS(job_context)
-        FW_DELETE_ALL_DEFAULT(job_context)
+        GR_DECLARE_SMARTPOINTERS(job_context)
+        GR_DELETE_ALL_DEFAULT(job_context)
 
         virtual ~job_context() = default;
 
     protected:
-        explicit job_context(const groot::config_setting::sptr& config,
-                             const task_router::sptr& router) noexcept;
+        explicit job_context(const groot::setting& config, task_router *router) noexcept;
 
     };
 

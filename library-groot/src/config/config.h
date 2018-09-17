@@ -23,37 +23,95 @@ namespace groot {
     /**
      *
      */
-    class config_setting {
+    class setting {
     public:
-        FW_DECLARE_SMARTPOINTERS(config_setting)
-        FW_DELETE_ALL_DEFAULT(config_setting)
+        GR_DELETE_DEFAULT_CTOR(setting)
+        GR_DELETE_DEFAULT_MOVE_CTOR(setting)
+        GR_DELETE_DEFAULT_MOVE_ASSIGN(setting)
 
-        explicit config_setting(config_setting_t *setting) noexcept : _setting { setting } {}
-        virtual ~config_setting() = default;
+        setting(const setting& other) noexcept : _setting { other._setting } {}
+        setting& operator=(const setting& other) { _setting = other._setting; return *this; }
 
-        config_setting::sptr operator[](size_t index) const noexcept;
-        config_setting::sptr operator[](const char *key) const noexcept;
-        config_setting::sptr operator[](const std::string_view& key) const noexcept;
+        explicit setting(config_setting_t *other) noexcept : _setting { other } {}
+        virtual ~setting() = default;
+
+        setting operator[](size_t index) const noexcept;
+        setting operator[](const std::string_view& key) const noexcept;
 
         bool to_bool() const noexcept;
-        s32 to_s32() const noexcept;
-        s64 to_s64() const noexcept;
         double to_double() const noexcept;
-        const char *to_string() const noexcept;
-        std::string_view to_string_view() const noexcept;
+        const std::string_view to_string() const noexcept;
 
-        bool lookup_bool(const char *key, bool *value) const noexcept;
-        bool lookup_s32(const char *key, s32 *value) const noexcept;
-        bool lookup_s64(const char *key, s64 *value) const noexcept;
-        bool lookup_double(const char *key, double *value) const noexcept;
-        bool lookup_string(const char *key, const char **value) const noexcept;
+        template<typename T>
+        T to_int32() const noexcept {
+            assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
+            return static_cast<T>(config_setting_get_int(_setting));
+        }
 
-        config_setting::sptr root() const noexcept;
+        template<typename T>
+        T to_int64() const noexcept {
+            assert(config_setting_type(_setting) == CONFIG_TYPE_INT);
+            return static_cast<T>(config_setting_get_int64(_setting));
+        }
+
+        bool lookup_bool(const std::string_view& key, bool *value) const noexcept;
+        bool lookup_double(const std::string_view& key, double *value) const noexcept;
+        bool lookup_string(const std::string_view& key, const char **value) const noexcept;
+
+        template<typename T>
+        bool lookup_int32(const std::string_view& key, T *value) const noexcept {
+            int i;
+            bool result { false };
+            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int32(const std::string_view& key, T *value, T default_value) const noexcept {
+            int i;
+            bool result { false };
+            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            } else {
+                *value = default_value;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int64(const std::string_view& key, T *value) const noexcept {
+            long long i;
+            bool result { false };
+            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            }
+            return result;
+        }
+
+        template<typename T>
+        bool lookup_int64(const std::string_view& key, T *value, T default_value) const noexcept {
+            long long i;
+            bool result { false };
+            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+                *value = static_cast<T>(i);
+                result = true;
+            } else {
+                *value = default_value;
+            }
+            return result;
+        }
+
+        setting root() const noexcept;
 
         size_t size() const noexcept;
 
     protected:
-        void setting(config_setting_t *setting) noexcept { _setting = setting; }
+        void assign_setting(config_setting_t *other) noexcept { _setting = other; }
 
     private:
         config_setting_t *      _setting;
@@ -63,19 +121,17 @@ namespace groot {
     /**
      *
      */
-    class config : public config_setting {
+    class config : public setting {
     public:
-        FW_DECLARE_SMARTPOINTERS(config)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(config)
 
         config();
         virtual ~config();
 
-        void read(const std::string_view& filename) noexcept;
+        void load(const std::string_view &filename) noexcept;
 
     private:
-        optional<config_t>          _config;
-
-        void destroy() noexcept;
+        std::unique_ptr<config_t>       _config;
 
     };
 

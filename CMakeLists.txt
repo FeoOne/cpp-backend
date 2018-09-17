@@ -13,7 +13,20 @@ include(${CMAKE_SOURCE_DIR}/CMakeTools/Version.cmake)
 
 setup_version()
 
+# framework
 add_subdirectory(library-groot)
+
+# engine
 add_subdirectory(library-rocket)
+
+# shared constants
+add_subdirectory(library-mantis)
+
+# db operator
+add_subdirectory(module-strange)
+
+# web backend
 add_subdirectory(module-quill)
+
+# bitcoin blockchain
 add_subdirectory(module-thanos)

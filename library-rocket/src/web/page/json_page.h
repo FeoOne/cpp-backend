@@ -14,8 +14,8 @@ namespace rocket {
 
     class json_page final : public web_page {
     public:
-        FW_DECLARE_SMARTPOINTERS(json_page)
-        FW_DELETE_ALL_DEFAULT(json_page)
+        GR_DECLARE_SMARTPOINTERS(json_page)
+        GR_DELETE_ALL_DEFAULT(json_page)
 
         explicit json_page(const web_view::sptr& layout) noexcept;
         virtual ~json_page() = default;

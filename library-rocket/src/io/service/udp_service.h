@@ -14,12 +14,12 @@ namespace rocket {
 
     class udp_service final : public groot::crucial<work_service, udp_service> {
     public:
-        FW_DECLARE_SMARTPOINTERS(udp_service)
-        FW_DELETE_ALL_DEFAULT(udp_service)
+        GR_DECLARE_SMARTPOINTERS(udp_service)
+        GR_DELETE_ALL_DEFAULT(udp_service)
 
-        explicit udp_service(const groot::config_setting::sptr& config,
-                             const task_router::sptr& router,
-                             const work_context_delegate *service_provider) noexcept;
+        explicit udp_service(const groot::setting& config,
+                             task_router *router,
+                             const work_service_delegate *service_delegate) noexcept;
         virtual ~udp_service();
 
         void setup() noexcept final;

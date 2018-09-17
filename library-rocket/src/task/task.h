@@ -7,13 +7,15 @@
 
 #include <groot.h>
 
+#include "main/rocket_consts.h"
+
 namespace rocket {
 
     class task {
     public:
-        FW_DECLARE_SMARTPOINTERS(task)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task)
-        FW_CRUCIAL_BASE_DEFINITION()
+        GR_DECLARE_SMARTPOINTERS(task)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task)
+        GR_CRUCIAL_BASE_DEFINITION(RC_TASK_TYPE_MAX_KEY_COUNT)
 
         virtual ~task() = default;
 

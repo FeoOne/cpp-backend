@@ -13,10 +13,13 @@
 
 namespace rocket {
 
-    class worker_pool {
+    /**
+     * This class is a container which store workers and provide access.
+     */
+    class worker_pool final {
     public:
-        FW_DECLARE_SMARTPOINTERS(worker_pool)
-        FW_DELETE_ALL_DEFAULT_EXCEPT_CTOR(worker_pool)
+        GR_DECLARE_SMARTPOINTERS(worker_pool)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(worker_pool)
 
         worker_pool();
         ~worker_pool() = default;
@@ -26,12 +29,17 @@ namespace rocket {
         void start() noexcept;
 
         template<typename Context>
-        worker::uptr& get_worker() noexcept {
-            return _workers[Context::key()][0];
+        const worker::uptr& get_worker() noexcept {
+            return _workers[Context::key()][0].get();
+        }
+
+        template<typename Context>
+        std::vector<worker::uptr>& get_workers() noexcept {
+            return _workers[Context::key()];
         }
 
     private:
-        std::array<std::vector<worker::uptr>, consts::WORK_CONTEXT_TYPE_MAX_COUNT>    _workers;
+        std::array<std::vector<worker::uptr>, RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>   _workers;
 
     };
 

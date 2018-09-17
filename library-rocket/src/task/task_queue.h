@@ -12,8 +12,8 @@ namespace rocket {
 
     class task_queue {
     public:
-        FW_DECLARE_SMARTPOINTERS(task_queue)
-        FW_DELETE_ALL_DEFAULT(task_queue)
+        GR_DECLARE_SMARTPOINTERS(task_queue)
+        GR_DELETE_ALL_DEFAULT(task_queue)
 
         virtual ~task_queue() = default;
 

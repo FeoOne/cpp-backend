@@ -14,7 +14,7 @@ namespace rocket {
 
     class web_view_manager {
     public:
-        FW_DECLARE_SMARTPOINTERS(web_view_manager)
+        GR_DECLARE_SMARTPOINTERS(web_view_manager)
 
         web_view_manager();
         ~web_view_manager();

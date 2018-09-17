@@ -8,7 +8,13 @@
 #ifndef GROOT_JSON_H
 #define GROOT_JSON_H
 
-#include <nlohmann/json.hpp>
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wswitch-enum"
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
+
+#include "data/nlohmann-json.h"
+
+#pragma clang diagnostic pop
 
 namespace groot {
 

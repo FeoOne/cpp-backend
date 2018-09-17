@@ -17,8 +17,8 @@ namespace groot {
 
     class endpoint final {
     public:
-        FW_DECLARE_SMARTPOINTERS(endpoint)
-        FW_DELETE_ALL_DEFAULT(endpoint)
+        GR_DECLARE_SMARTPOINTERS(endpoint)
+        GR_DELETE_ALL_DEFAULT(endpoint)
 
         explicit endpoint(ip_version version, const std::string_view& host, u16 port) noexcept :
                 _version { version },

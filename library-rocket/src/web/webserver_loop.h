@@ -13,10 +13,10 @@ namespace rocket {
 
     class webserver_loop : public work_loop {
     public:
-        FW_DECLARE_SMARTPOINTERS(webserver_loop)
-        FW_DELETE_ALL_DEFAULT(webserver_loop)
+        GR_DECLARE_SMARTPOINTERS(webserver_loop)
+        GR_DELETE_ALL_DEFAULT(webserver_loop)
 
-        explicit webserver_loop(const task_queue::sptr& queue, task_handler *handler) noexcept;
+        explicit webserver_loop(task_queue *queue, const task_handler *handler) noexcept;
         virtual ~webserver_loop();
 
         void start() noexcept final;

@@ -11,9 +11,8 @@
 
 namespace rocket {
 
-    job_context::job_context(const groot::config_setting::sptr& config,
-                             const task_router::sptr& router) noexcept :
-            crucial(config, router, job_loop::make_shared(router->get_queue<job_context>(), this))
+    job_context::job_context(const groot::setting& config, rocket::task_router *router) noexcept :
+            crucial(config, router, job_loop::make_unique(router->get_queue<job_context>(), this))
     {
     }
 

@@ -14,6 +14,6 @@ int main(int argc, char **argv)
 {
     return rocket::application::start(argc,
                                       argv,
-                                      EG_CONTEXT_CREATOR(quill::job_context),
+                                      RC_CONTEXT_CREATOR(quill::job_context),
                                       quill::consts::APP_DESCRIPTION);
 }
