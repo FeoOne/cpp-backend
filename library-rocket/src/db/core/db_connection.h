@@ -18,13 +18,13 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(db_connection)
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_connection)
 
-        enum class status {
+        enum class state {
             invalid,
-            disconnecting,
-            validating,
             connecting,
+            resetting,
+            bad_connect,
+            bad_reset,
             available,
-            busy,
         };
 
         db_connection();
@@ -33,11 +33,13 @@ namespace rocket {
         bool start(db_loop *loop, const char *conninfo) noexcept;
         void finish() noexcept;
 
-        status get_status() const noexcept { return _status; }
+        void poll() noexcept;
+
+        state get_state() const noexcept { return _state; }
 
     private:
-        status                  _status;
-        groot::network_handle   _handle;
+        state                   _state;
+        uv_poll_t               _handle;
         PGconn *                _connection;
 
     };

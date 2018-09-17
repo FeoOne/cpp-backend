@@ -28,8 +28,8 @@ namespace rocket {
         uv_loop_t *get_loop() noexcept { return &_loop; }
 
     private:
-        uv_loop_t       _loop;
-        uv_async_t      _async_handle;
+        uv_loop_t           _loop;
+        uv_async_t          _async_handle;
 
         void on_async() noexcept;
 

@@ -24,7 +24,7 @@ namespace rocket {
     public:
         GR_DECLARE_SMARTPOINTERS(work_service)
         GR_DELETE_ALL_DEFAULT(work_service)
-        GR_CRUCIAL_BASE_DEFINITION(consts::WORK_SERVICE_TYPE_MAX_KEY)
+        GR_CRUCIAL_BASE_DEFINITION(RC_WORK_SERVICE_TYPE_MAX_KEY)
 
         virtual ~work_service() = default;
 

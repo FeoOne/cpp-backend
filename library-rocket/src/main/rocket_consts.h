@@ -10,14 +10,14 @@
 
 #include <groot.h>
 
+#define RC_TASK_TYPE_MAX_KEY_COUNT              32
+#define RC_WORK_SERVICE_TYPE_MAX_KEY            16
+#define RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT      8
+
 namespace rocket {
 
     class consts {
     public:
-        static constexpr size_t             TASK_TYPE_MAX_KEY { 32 };
-        static constexpr size_t             WORK_CONTEXT_TYPE_MAX_KEY { 8 };
-        static constexpr size_t             WORK_SERVICE_TYPE_MAX_KEY { 16 };
-
         static constexpr std::string_view   WORKER_NAME_IO { "io" };
         static constexpr std::string_view   WORKER_NAME_DB { "db" };
         static constexpr std::string_view   WORKER_NAME_JOB { "job" };
@@ -30,8 +30,6 @@ namespace rocket {
 
         static constexpr size_t             IO_CONNECTION_RESERVE_COUNT { 10000 };
 
-        static constexpr size_t             DB_DEFAULT_MAX_CONNECTION_COUNT { 4 };
-
         static constexpr std::string_view   CONFIG_KEY_NAME { "name" };
         static constexpr std::string_view   CONFIG_KEY_PATH { "path" };
         static constexpr std::string_view   CONFIG_KEY_COUNT { "count" };
@@ -40,6 +38,7 @@ namespace rocket {
         static constexpr std::string_view   CONFIG_KEY_LISTEN { "listen" };
         static constexpr std::string_view   CONFIG_KEY_CONNINFO { "conninfo" };
         static constexpr std::string_view   CONFIG_KEY_MAX_CONNECTION_COUNT { "max_connection_count" };
+        static constexpr std::string_view   CONFIG_KEY_CONNECT_INTERVAL { "connect_interval" };
 
         static constexpr std::string_view   CONFIG_WEB_LISTEN_ALL { "all" };
         static constexpr std::string_view   CONFIG_WEB_LISTEN_LOCAL { "local" };

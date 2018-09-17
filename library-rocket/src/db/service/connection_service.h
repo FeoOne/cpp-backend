@@ -31,8 +31,20 @@ namespace rocket {
         std::queue<db_connection *>         _available_connections;
         const char *                        _conninfo;
         size_t                              _max_connection_count;
+        u64                                 _connect_interval;
+        uv_timer_t                          _connect_timer;
 
         void read_config() noexcept;
+
+        void setup_connections() noexcept;
+        void reset_connections() noexcept;
+
+        void setup_connect_timer() noexcept;
+        void reset_connect_timer() noexcept;
+
+        void on_connect_timer() noexcept;
+
+        static void connect_timer_routine(uv_timer_t *timer) noexcept;
 
     };
 

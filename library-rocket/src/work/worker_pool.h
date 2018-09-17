@@ -39,7 +39,7 @@ namespace rocket {
         }
 
     private:
-        std::array<std::vector<worker::uptr>, consts::WORK_CONTEXT_TYPE_MAX_KEY>    _workers;
+        std::array<std::vector<worker::uptr>, RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>   _workers;
 
     };
 

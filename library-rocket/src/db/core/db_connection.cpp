@@ -7,7 +7,7 @@
 namespace rocket {
 
     db_connection::db_connection() :
-            _status { status::invalid },
+            _state { state::invalid },
             _handle {},
             _connection { nullptr }
     {
@@ -31,21 +31,24 @@ namespace rocket {
                 break;
             }
 
-            int status = uv_tcp_init(loop->get_loop(), &_handle.tcp);
-            if (status != 0) {
-                logerror("Failed to create network handle (%s).", uv_err_name(status));
+            int fd = PQsocket(_connection);
+            fd = fcntl(fd, F_DUPFD_CLOEXEC, 0);
+            if (fd < 0) {
+                logerror("Failed to dup fd (%s).", strerror(errno));
                 break;
             }
 
-            status = uv_tcp_open(&_handle.tcp, PQsocket(_connection));
+            int status = uv_poll_init(loop->get_loop(), &_handle, fd);
             if (status != 0) {
-                logerror("Failed to setup tcp socket (%s).", uv_err_name(status));
+                logerror("Failed to poll fd (%s).", uv_err_name(status));
                 break;
             }
 
-            _handle.handle.data = this;
+            _handle.data = this;
 
-            _status = status::connecting;
+            _state = state::connecting;
+
+            poll();
 
             return true;
         }
@@ -61,6 +64,70 @@ namespace rocket {
             PQfinish(_connection);
             _connection = nullptr;
         }
+    }
+
+    void db_connection::poll() noexcept
+    {
+        int status { 0 };
+        int events { 0 };
+
+        switch (_state) {
+            case state::connecting: {
+                status = PQconnectPoll(_connection);
+                break;
+            }
+            case state::resetting: {
+                status = PQresetPoll(_connection);
+                break;
+            }
+            default: {
+                logwarn("Unexpected state %d.", static_cast<int>(_state));
+                return;
+            }
+        }
+
+        switch (status) {
+            case PGRES_POLLING_READING: {
+                events = UV_READABLE;
+                // todo: cb
+                break;
+            }
+            case PGRES_POLLING_WRITING: {
+                events = UV_WRITABLE;
+                // todo: cb
+                break;
+            }
+            case PGRES_POLLING_OK: {
+                _state = state::available;
+                events = UV_READABLE | UV_WRITABLE;
+                // todo: cb
+                break;
+            }
+            case PGRES_POLLING_FAILED: {
+                switch (_state) {
+                    case state::connecting: {
+                        _state = state::bad_connect;
+                        break;
+                    }
+                    case state::resetting: {
+                        _state = state::bad_reset;
+                        break;
+                    }
+                    default: {
+                        logwarn("Unexpected state %d.", static_cast<int>(_state));
+                        return;
+                    }
+                }
+                // todo: reconnect timer
+                return;
+            }
+            default: {
+                logwarn("Unexpected poll status %d.", status);
+                return;
+            }
+        }
+
+        status = uv_poll_start(&_handle, events, );
     }
 
 }

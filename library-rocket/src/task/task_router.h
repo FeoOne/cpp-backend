@@ -31,7 +31,7 @@ namespace rocket {
         void enqueue(const task::sptr& task) noexcept;
 
     private:
-        std::array<task_queue::uptr, consts::WORK_CONTEXT_TYPE_MAX_KEY>     _queues;
+        std::array<task_queue::uptr, RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>    _queues;
         std::array<groot::crucial_key_type, task::MAX_KEY>                  _context_keys;
 
     };

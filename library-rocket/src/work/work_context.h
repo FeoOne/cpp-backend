@@ -33,7 +33,7 @@ namespace rocket {
     public:
         GR_DECLARE_SMARTPOINTERS(work_context)
         GR_DELETE_ALL_DEFAULT(work_context)
-        GR_CRUCIAL_BASE_DEFINITION(consts::WORK_CONTEXT_TYPE_MAX_KEY)
+        GR_CRUCIAL_BASE_DEFINITION(RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT)
 
         virtual ~work_context() = default;
 
