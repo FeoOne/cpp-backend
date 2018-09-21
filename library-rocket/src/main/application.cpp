@@ -122,10 +122,10 @@ namespace rocket {
 
     void application::create_workers() noexcept
     {
-        auto workers_config { _config[consts::CONFIG_KEY_WORKERS] };
+        auto workers_config { _config[consts::config::key::WORKERS] };
         for (size_t i = 0; i < workers_config.size(); ++i) {
             auto worker_config { workers_config[i] };
-            auto name { worker_config[consts::CONFIG_KEY_NAME].to_string() };
+            auto name { worker_config[consts::config::key::NAME].to_string() };
 
             if (name == consts::WORKER_NAME_JOB) {
                 create_multiple_instance_worker(name, worker_config);
@@ -148,7 +148,7 @@ namespace rocket {
     void application::create_multiple_instance_worker(const std::string_view& name,
                                                       const groot::setting& worker_config) noexcept
     {
-        auto count { worker_config[consts::CONFIG_KEY_COUNT].to_int32<size_t>() };
+        auto count { worker_config[consts::config::key::COUNT].to_int32<size_t>() };
         for (size_t i = 0; i < count; ++i) {
             auto context { _context_creators[name](worker_config, _router.get()) };
 
@@ -161,10 +161,10 @@ namespace rocket {
         _config.load(_argument_parser->config_path());
 
         // Determine which optional workers must be initialized
-        auto workers_config { _config[consts::CONFIG_KEY_WORKERS] };
+        auto workers_config { _config[consts::config::key::WORKERS] };
         for (size_t i = 0; i < workers_config.size(); ++i) {
             auto config { workers_config[i] };
-            auto name { config[consts::CONFIG_KEY_NAME].to_string() };
+            auto name { config[consts::config::key::NAME].to_string() };
 
             if (name == consts::WORKER_NAME_IO) {
                 _need_io_worker = true;

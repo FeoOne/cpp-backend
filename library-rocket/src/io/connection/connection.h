@@ -16,12 +16,12 @@ namespace rocket {
     public:
         GR_DECLARE_SMARTPOINTERS(connection)
 
-        enum class side_t {
+        enum class side {
             LOCAL,
             REMOTE,
         };
 
-        enum class kind_t {
+        enum class kind {
             CLIENT,
             SERVER,
         };
@@ -42,21 +42,21 @@ namespace rocket {
         groot::network_handle *get_handle() noexcept { return &_handle; }
         groot::network_protocol get_protocol() const noexcept { return _proto; }
         groot::ip_version get_version() const noexcept { return _version; }
-        side_t get_side() const noexcept { return _side; }
-        kind_t get_kind() const noexcept { return _kind; }
+        side get_side() const noexcept { return _side; }
+        kind get_kind() const noexcept { return _kind; }
 
     protected:
         explicit connection(groot::network_protocol proto,
                             groot::ip_version version,
-                            side_t side,
-                            kind_t kind) noexcept;
+                            side side,
+                            kind kind) noexcept;
 
     private:
         groot::network_handle       _handle;
         groot::network_protocol     _proto;
         groot::ip_version           _version;
-        side_t                      _side;
-        kind_t                      _kind;
+        side                      _side;
+        kind                      _kind;
 
     };
 

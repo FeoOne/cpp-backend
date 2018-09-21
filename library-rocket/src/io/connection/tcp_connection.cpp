@@ -10,8 +10,8 @@
 namespace rocket {
 
     tcp_connection::tcp_connection(groot::ip_version version,
-                                   side_t side,
-                                   kind_t kind) noexcept :
+                                   side side,
+                                   kind kind) noexcept :
             connection(groot::network_protocol::TCP, version, side, kind)
     {
     }
@@ -34,13 +34,14 @@ namespace rocket {
     {
         int status = uv_listen(&get_handle()->stream, backlog, cb);
         logassert(status == 0, "Invalid status.");
+
         return (status == 0);
     }
 
-    bool tcp_connection::accept(connection *connection) noexcept
+    bool tcp_connection::accept(connection *client_connection) noexcept
     {
-       int status = uv_accept(&get_handle()->stream, &connection->get_handle()->stream);
-       logassert(status == 0, "Invalid status.");
+       int status = uv_accept(&get_handle()->stream, &client_connection->get_handle()->stream);
+       logassert(status == 0, "Invalid status: %s (%s).", uv_strerror(status), uv_err_name(status));
         return (status == 0);
     }
 
@@ -76,7 +77,7 @@ namespace rocket {
     void tcp_connection::set_nonblock(bool enable) noexcept
     {
         int status = uv_stream_set_blocking(&get_handle()->stream, enable ? 0 : 1);
-        logassert(status == 0, "Invalid status.");
+        logassert(status == 0, "Invalid status (%s).", uv_strerror(status));
     }
 
     void tcp_connection::set_keepalive(bool enable, u32 delay) noexcept

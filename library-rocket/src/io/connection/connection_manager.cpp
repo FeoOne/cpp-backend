@@ -38,7 +38,7 @@ namespace rocket {
     {
         connection *c { nullptr };
 
-        auto it = _connections.find(c->get_handle());
+        auto it = _connections.find(handle);
         if (it != _connections.end()) {
             c = it->second;
         }

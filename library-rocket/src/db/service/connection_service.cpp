@@ -57,17 +57,17 @@ namespace rocket {
     void connection_service::read_config() noexcept
     {
         // conninfo
-        if (!get_config().lookup_string(consts::CONFIG_KEY_CONNINFO, &_conninfo)) {
-            logemerg("Can't setup db connection service: no '%s' presented.", consts::CONFIG_KEY_CONNINFO.data());
+        if (!get_config().lookup_string(consts::config::key::CONNINFO, &_conninfo)) {
+            logemerg("Can't setup db connection service: no '%s' presented.", consts::config::key::CONNINFO.data());
         }
 
         // max connection count
-        get_config().lookup_int32<size_t>(consts::CONFIG_KEY_MAX_CONNECTION_COUNT,
+        get_config().lookup_int32<size_t>(consts::config::key::MAX_CONNECTION_COUNT,
                                           &_max_connection_count,
                                           RC_DEFAULT_MAX_CONNECTION_COUNT);
 
         // connect interval
-        get_config().lookup_int64<u64>(consts::CONFIG_KEY_CONNECT_INTERVAL,
+        get_config().lookup_int64<u64>(consts::config::key::CONNECT_INTERVAL,
                                        &_connect_interval,
                                        RC_DEFAULT_CONNECT_INTERVAL);
     }
@@ -77,7 +77,7 @@ namespace rocket {
         for (size_t i = 0; i < _max_connection_count; ++i) {
             auto connection { db_connection::make_unique() };
             connection->start(delegate()->get_loop<db_loop>(), _conninfo);
-            _connections.push_back(connection);
+            //_connections.push_back(connection);
         }
     }
 

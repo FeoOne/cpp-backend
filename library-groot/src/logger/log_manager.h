@@ -13,15 +13,8 @@
 
 #include "logger/logger.h"
 
-#ifdef NDEBUG
-#define logassert(cond, format, ...)                                                            \
-    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); \
-    } } while (false)
-#else
-#define logassert(cond, format, ...)                                                            \
-    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'." format, ##__VA_ARGS__); \
-    abort(); } } while (false)
-#endif
+#define logassert(cond, format, ...)                                                                \
+    do { if (!(cond)) { logdebug("Assertion failed '" GR_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
 
 #ifdef NDEBUG
 #define logdebug(format, ...)

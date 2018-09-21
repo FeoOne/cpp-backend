@@ -40,6 +40,9 @@ namespace rocket {
 
         void setup_sockaddr(const groot::endpoint::sptr& endpoint, groot::socket_address *addr) noexcept;
 
+        void setup_servers() noexcept;
+        void setup_clients() noexcept;
+
         void on_connection(groot::network_handle *handle, int status) noexcept;
         void on_connect(uv_connect_t *request, int status) noexcept;
         void on_shutdown(uv_shutdown_t *request, int status) noexcept;

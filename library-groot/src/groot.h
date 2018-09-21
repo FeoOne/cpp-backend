@@ -28,6 +28,8 @@
 #include <type_traits>
 #include <condition_variable>
 
+#include <inttypes.h>
+
 #include "util/crucial.h"
 #include "util/optional.h"
 

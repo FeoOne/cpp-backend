@@ -18,8 +18,8 @@ namespace rocket {
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
 
         explicit tcp_connection(groot::ip_version version,
-                                side_t side,
-                                kind_t kind) noexcept;
+                                side side,
+                                kind kind) noexcept;
 
         virtual ~tcp_connection() = default;
 

@@ -28,6 +28,9 @@ namespace groot {
         sockaddr_in6    sin6;
     };
 
+    const char *network_protocol_to_str(network_protocol proto) noexcept;
+    const char *ip_version_to_str(ip_version ipv) noexcept;
+
 }
 
 #endif /* GROOT_NETWORK_H */

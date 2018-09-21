@@ -127,7 +127,7 @@ namespace rocket {
             }
         }
 
-        status = uv_poll_start(&_handle, events, );
+        //status = uv_poll_start(&_handle, events, );
     }
 
 }

@@ -27,7 +27,7 @@ namespace rocket {
          * @todo: is it method really necessary?
          *  Is connection manager really necessary?
          *  First of all - libuv associate and controlling handles.
-         *  Next - hi level data structs, like class which represent
+         *  Next - high level data structs, like class which represent
          *  logical entity can associate connection too.
          */
         connection *get(groot::network_handle *handle) noexcept;

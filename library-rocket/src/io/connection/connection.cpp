@@ -11,8 +11,8 @@ namespace rocket {
 
     connection::connection(groot::network_protocol proto,
                            groot::ip_version version,
-                           side_t side,
-                           kind_t kind) noexcept :
+                           side side,
+                           kind kind) noexcept :
             _handle {},
             _proto { proto },
             _version { version },

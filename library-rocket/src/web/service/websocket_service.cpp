@@ -33,8 +33,8 @@ namespace rocket {
             logcrit("Failed to start http service w/o server.");
         }
 
-        auto websocket_config { get_config()[consts::CONFIG_KEY_WEBSOCKET] };
-        auto path { websocket_config[consts::CONFIG_KEY_PATH].to_string() }; // @todo Make array of pathes.
+        auto websocket_config { get_config()[consts::config::key::WEBSOCKET] };
+        auto path { websocket_config[consts::config::key::PATH].to_string() }; // @todo Make array of pathes.
 
         soup_server_add_websocket_handler(server,
                                           path.data(),
@@ -47,8 +47,8 @@ namespace rocket {
 
     void websocket_service::reset() noexcept
     {
-        auto websocket_config { get_config()[consts::CONFIG_KEY_WEBSOCKET] };
-        auto path { websocket_config[consts::CONFIG_KEY_PATH].to_string() };
+        auto websocket_config { get_config()[consts::config::key::WEBSOCKET] };
+        auto path { websocket_config[consts::config::key::PATH].to_string() };
 
         soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
                                    path.data());

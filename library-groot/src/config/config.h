@@ -29,8 +29,8 @@ namespace groot {
         GR_DELETE_DEFAULT_MOVE_CTOR(setting)
         GR_DELETE_DEFAULT_MOVE_ASSIGN(setting)
 
-        setting(const setting& other) noexcept : _setting { other._setting } {}
-        setting& operator=(const setting& other) { _setting = other._setting; return *this; }
+        setting(const setting& other) = default;
+        setting& operator=(const setting& other) = default;
 
         explicit setting(config_setting_t *other) noexcept : _setting { other } {}
         virtual ~setting() = default;
@@ -109,6 +109,8 @@ namespace groot {
         setting root() const noexcept;
 
         size_t size() const noexcept;
+
+        bool is_null() const noexcept { return _setting == nullptr; }
 
     protected:
         void assign_setting(config_setting_t *other) noexcept { _setting = other; }

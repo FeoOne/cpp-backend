@@ -42,7 +42,7 @@ namespace groot {
             memory += memory_pool_debug::BOUNDS_CHECK_SIZE;
 #endif
 
-            auto chunk { reinterpret_cast<fixed_memory_chunk *>(_memory) };
+            auto chunk { reinterpret_cast<fixed_memory_chunk *>(memory) };
             chunk->prev(nullptr);
             chunk->next(_free_chunks);
 
@@ -96,9 +96,7 @@ namespace groot {
             memory = reinterpret_cast<u8 *>(chunk) + CHUNK_HEAD_SIZE;
 
 #ifdef GR_TRASHING_MEMORY_POOL
-            std::memset(_memory,
-                    memory_pool_debug::TRASH_ON_CREATE_SIGNATURE,
-                    _data_size);
+            std::memset(memory, memory_pool_debug::TRASH_ON_CREATE_SIGNATURE, _data_size);
 #endif
         }
 
@@ -134,9 +132,7 @@ namespace groot {
         _free_chunks = chunk;
 
 #ifdef GR_TRASHING_MEMORY_POOL
-        std::memset(ptr,
-                memory_pool_debug::TRASH_ON_FREE_SIGNATURE,
-                _chunk_size - CHUNK_HEAD_SIZE);
+        std::memset(ptr, memory_pool_debug::TRASH_ON_FREE_SIGNATURE, _chunk_size - CHUNK_HEAD_SIZE);
 #endif
     }
 
@@ -175,7 +171,7 @@ namespace groot {
             result = static_cast<u8 *>(page->alloc());
             index = static_cast<index_type>(_pages.size() - 1);
 
-            lognotice("Created memory page with index %su.", index);
+            lognotice("Created memory page with index %u.", index);
         }
 
         // Write pool's index to the chunk

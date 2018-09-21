@@ -32,20 +32,20 @@ namespace rocket {
         }
 
         auto port { static_cast<s32>(consts::WEB_DEFAULT_HTTP_PORT) };
-        if (!get_config().lookup_s32("port", &port)) {
+        if (!get_config().lookup_int32<s32>("port", &port)) {
             logwarn("Used default web server port: '%d'.", port);
         }
 
         _server = soup_server_new(SOUP_SERVER_SERVER_HEADER, header, nullptr);
         if (_server != nullptr) {
             gboolean result { FALSE };
-            auto listen { get_config()[consts::CONFIG_KEY_LISTEN].to_string() };
-            if (listen == consts::CONFIG_WEB_LISTEN_ALL) {
+            auto listen { get_config()[consts::config::key::LISTEN].to_string() };
+            if (listen == consts::config::web::ALL) {
                 result = soup_server_listen_all(_server,
                                                 static_cast<guint>(port),
                                                 static_cast<SoupServerListenOptions>(0),
                                                 &error);
-            } else if (listen == consts::CONFIG_WEB_LISTEN_LOCAL) {
+            } else if (listen == consts::config::web::LOCAL) {
                 result = soup_server_listen_local(_server,
                                                   static_cast<guint>(port),
                                                   static_cast<SoupServerListenOptions>(0),

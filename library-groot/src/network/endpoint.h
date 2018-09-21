@@ -32,6 +32,14 @@ namespace groot {
         const std::string_view& get_host() const noexcept { return _host; }
         u16 get_port() const noexcept { return _port; }
 
+        static endpoint::sptr ipv4_endpoint(const std::string_view& host, u16 port) {
+            return endpoint::make_shared(ip_version::IPV4, host, port);
+        }
+
+        static endpoint::sptr ipv6_endpoint(const std::string_view& host, u16 port) {
+            return endpoint::make_shared(ip_version::IPV6, host, port);
+        }
+
     private:
         ip_version          _version;
         std::string_view    _host;
