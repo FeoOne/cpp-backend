@@ -270,6 +270,8 @@ namespace rocket {
         if (handle != nullptr && handle->data != nullptr) {
             static_cast<tcp_service *>(handle->data)->
                     on_alloc(reinterpret_cast<groot::network_handle *>(handle), suggested_size, buffer);
+        } else {
+            logerror("Failed to process alloc routine.");
         }
     }
 
@@ -279,6 +281,8 @@ namespace rocket {
         if (stream != nullptr && stream->data != nullptr) {
             static_cast<tcp_service *>(stream->data)->
                     on_read(reinterpret_cast<groot::network_handle *>(stream), nread, buffer);
+        } else {
+            logerror("Failed to process read routine.");
         }
     }
 

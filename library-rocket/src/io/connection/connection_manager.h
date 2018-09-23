@@ -96,7 +96,7 @@ namespace rocket {
          */
         connection_pointer get(groot::network_handle *handle) noexcept {
             connection_pointer connection { nullptr };
-            auto it = _connections.find(connection->handle());
+            auto it = _connections.find(handle);
             if (it != _connections.end()) {
                 connection = it->second;
             }
