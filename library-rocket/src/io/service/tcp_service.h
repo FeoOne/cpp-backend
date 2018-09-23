@@ -28,14 +28,10 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        uv_loop_t *                         _loop;
+        uv_loop_t *                             _loop;
+        tcp_connection_manager::uptr            _connections;
 
-        connection_manager::uptr            _connections;
-        groot::fixed_memory_pool::uptr      _connection_pool;
-
-        void listen(const groot::endpoint::sptr& endpoint,
-                    u16 backlog,
-                    u32 keepalive) noexcept;
+        void listen(const groot::endpoint::sptr& endpoint, u16 backlog, u32 keepalive) noexcept;
         void connect(const groot::endpoint::sptr& endpoint) noexcept;
 
         void setup_sockaddr(const groot::endpoint::sptr& endpoint, groot::socket_address *addr) noexcept;
@@ -45,10 +41,14 @@ namespace rocket {
 
         void on_connection(groot::network_handle *handle, int status) noexcept;
         void on_connect(uv_connect_t *request, int status) noexcept;
+        void on_alloc(groot::network_handle *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
+        void on_read(groot::network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept;
         void on_shutdown(uv_shutdown_t *request, int status) noexcept;
 
         static void connection_routine(uv_stream_t *stream, int status) noexcept;
         static void connect_routine(uv_connect_t *request, int status) noexcept;
+        static void alloc_routine(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
+        static void read_routine(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) noexcept;
         static void shutdown_routine(uv_shutdown_t *request, int status) noexcept;
 
     };

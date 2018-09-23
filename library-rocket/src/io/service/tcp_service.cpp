@@ -12,6 +12,12 @@
 
 #include "io/service/tcp_service.h"
 
+#define shutdown_connection(connection) \
+    connection->shutdown(&tcp_service::shutdown_routine)
+
+#define start_connection(connection)    \
+    connection->start(&tcp_service::alloc_routine, &tcp_service::read_routine)
+
 namespace rocket {
 
     tcp_service::tcp_service(const groot::setting& config,
@@ -19,10 +25,7 @@ namespace rocket {
                              const work_service_delegate *service_delegate) noexcept :
             crucial(config, router, service_delegate),
             _loop { nullptr },
-            _connections { connection_manager::make_unique() },
-            _connection_pool {
-                groot::fixed_memory_pool::make_unique(sizeof(tcp_connection), groot::memory::page_size())
-            }
+            _connections { tcp_connection_manager::make_unique() }
     {
     }
 
@@ -41,6 +44,8 @@ namespace rocket {
 
     void tcp_service::reset() noexcept
     {
+        // _connections->reset();
+
         _loop = nullptr;
     }
 
@@ -48,9 +53,9 @@ namespace rocket {
                              u16 backlog,
                              u32 keepalive) noexcept
     {
-        auto connection = new (_connection_pool->alloc()) tcp_connection(endpoint->get_version(),
-                                                                         connection::side::LOCAL,
-                                                                         connection::kind::SERVER);
+        auto connection {
+                _connections->acquire(endpoint->get_version(), connection::side::LOCAL, connection::kind::SERVER)
+        };
         connection->init(_loop, this);
 
         groot::socket_address addr {};
@@ -58,22 +63,20 @@ namespace rocket {
 
         if (connection->bind(&addr) && connection->listen(backlog, &tcp_service::connection_routine)) {
             lognotice("Successfully started server socket %s:%u.", endpoint->get_host().data(), endpoint->get_port());
-
             connection->set_nodelay(true);
             connection->set_nonblock(true);
             connection->set_keepalive(true, keepalive);
-
-            _connections->add(connection);
         } else {
             logerror("Failed to start server socket %s:%u.", endpoint->get_host().data(), endpoint->get_port());
+            _connections->release(connection);
         }
     }
 
     void tcp_service::connect(const groot::endpoint::sptr& endpoint) noexcept
     {
-        auto connection { new (_connection_pool->alloc()) tcp_connection(endpoint->get_version(),
-                                                                         connection::side::LOCAL,
-                                                                         connection::kind::CLIENT) };
+        auto connection {
+                _connections->acquire(endpoint->get_version(), connection::side::LOCAL, connection::kind::CLIENT)
+        };
         connection->init(_loop, this);
 
         groot::socket_address addr {};
@@ -81,19 +84,19 @@ namespace rocket {
 
         auto request = connection->connect(&addr, &tcp_service::connect_routine);
         if (request != nullptr) {
-            lognotice("Connecting to %s:%u.", endpoint->get_host().data(), endpoint->get_port());
-
+            lognotice("Connecting to %s:%u. Connection: 0x%" PRIxPTR ".",
+                      endpoint->get_host().data(),
+                      endpoint->get_port(),
+                      connection);
             connection->set_nodelay(true);
             connection->set_nonblock(true);
-
-            _connections->add(connection);
         } else {
             logerror("Failed to connect to %s:%u.", endpoint->get_host().data(), endpoint->get_port());
+            _connections->release(connection);
         }
     }
 
-    void tcp_service::setup_sockaddr(const groot::endpoint::sptr& endpoint,
-                                     groot::socket_address *addr) noexcept
+    void tcp_service::setup_sockaddr(const groot::endpoint::sptr& endpoint, groot::socket_address *addr) noexcept
     {
         switch (endpoint->get_version()) {
             case groot::ip_version::IPV4: {
@@ -124,8 +127,10 @@ namespace rocket {
             }
 
             // todo: implement ipv6
-            auto endpoint { groot::endpoint::ipv4_endpoint(server_config[consts::config::key::HOST].to_string(),
-                                                           server_config[consts::config::key::PORT].to_int32<u16>()) };
+            auto endpoint {
+                    groot::endpoint::ipv4_endpoint(server_config[consts::config::key::HOST].to_string(),
+                                                   server_config[consts::config::key::PORT].to_int32<u16>())
+            };
             auto backlog { server_config[consts::config::key::BACKLOG].to_int32<u16>() };
             auto keepalive { server_config[consts::config::key::KEEPALIVE].to_int32<u32>() };
 
@@ -150,8 +155,10 @@ namespace rocket {
             }
 
             // todo: implement ipv6
-            auto endpoint { groot::endpoint::ipv4_endpoint(client_config[consts::config::key::HOST].to_string(),
-                                                           client_config[consts::config::key::PORT].to_int32<u16>()) };
+            auto endpoint {
+                    groot::endpoint::ipv4_endpoint(client_config[consts::config::key::HOST].to_string(),
+                                                   client_config[consts::config::key::PORT].to_int32<u16>())
+            };
 
             connect(endpoint);
         }
@@ -165,48 +172,74 @@ namespace rocket {
         }
 
         auto server_connection { _connections->get(handle) };
-        auto client_connection { new (_connection_pool->alloc()) tcp_connection(server_connection->get_version(),
-                                                                                connection::side::REMOTE,
-                                                                                connection::kind::CLIENT) };
+        auto client_connection {
+            _connections->acquire(server_connection->version(), connection::side::REMOTE, connection::kind::CLIENT)
+        };
         client_connection->init(_loop, this);
 
         if (server_connection->accept(client_connection)) {
             lognotice("Accepted new connection 0x%" PRIxPTR ".", client_connection);
-
             client_connection->set_nodelay(true);
             client_connection->set_nonblock(true);
-
-            _connections->add(client_connection);
-            // todo@ Start read.
+            if (!start_connection(client_connection)) {
+                logerror("Failed to start read connection 0x%" PRIxPTR ".", client_connection);
+                shutdown_connection(client_connection);
+            }
         } else {
             logerror("Failed to accept connection.");
+            _connections->release(client_connection);
         }
     }
 
     void tcp_service::on_connect(uv_connect_t *request, int status) noexcept
     {
         auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
-        auto connection = _connections->get(handle);
+        auto connection { _connections->get(handle) };
         if (status == 0 && connection != nullptr) {
-            // @todo Start read.
+            lognotice("Successfully connected 0x%" PRIxPTR ".", connection);
+            if (!start_connection(connection)) {
+                logerror("Cant start read connection 0x%" PRIxPTR ".", connection);
+                shutdown_connection(connection);
+            }
         } else {
             if (connection != nullptr) {
                 logerror("Failed to connect. Shutting down connection 0x%" PRIxPTR ".", connection);
-                connection->shutdown(&tcp_service::shutdown_routine);
+                shutdown_connection(connection);
             }
+        }
+    }
+
+    void tcp_service::on_alloc(groot::network_handle *handle, size_t suggested_size, uv_buf_t *buffer) noexcept
+    {
+        auto connection { _connections->get(handle) };
+        if (connection == nullptr) {
+            logerror("Failed to alloc: connection not found.");
+            return;
+        }
+    }
+
+    void tcp_service::on_read(groot::network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept
+    {
+        auto connection { _connections->get(handle) };
+        if (connection == nullptr) {
+            logerror("Failed to read: connection not found.");
+            return;
         }
     }
 
     void tcp_service::on_shutdown(uv_shutdown_t *request, int status) noexcept
     {
-        auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
-        auto connection = _connections->get(handle);
-        if (status == 0 && connection) {
-            lognotice("Shutting down connection 0x%" PRIxPTR ".", connection);
-            _connections->remove(connection);
-            _connection_pool->free(connection);
+        if (status == 0) {
+            auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
+            auto connection = _connections->get(handle);
+            if (connection) {
+                lognotice("Shutting down connection 0x%" PRIxPTR ".", connection);
+                _connections->release(connection);
+            } else {
+                logerror("Failed to shutdown connection: not found.");
+            }
         } else {
-            logerror("Failed to shutdown connection.");
+            logerror("Failed to shutdown connection: %s (%s).", uv_strerror(status), uv_err_name(status));
         }
     }
 
@@ -217,7 +250,7 @@ namespace rocket {
             static_cast<tcp_service *>(stream->data)->
                     on_connection(reinterpret_cast<groot::network_handle *>(stream), status);
         } else {
-            logerror("Failed process new connection (%d).", status);
+            logerror("Failed process new connection: %s (%s).", uv_strerror(status), uv_err_name(status));
         }
     }
 
@@ -226,6 +259,26 @@ namespace rocket {
     {
         if (request != nullptr && request->data != nullptr) {
             static_cast<tcp_service *>(request->data)->on_connect(request, status);
+        } else {
+            logerror("Failed to process connect: %s (%s).", uv_strerror(status), uv_err_name(status));
+        }
+    }
+
+    // static
+    void tcp_service::alloc_routine(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buffer) noexcept
+    {
+        if (handle != nullptr && handle->data != nullptr) {
+            static_cast<tcp_service *>(handle->data)->
+                    on_alloc(reinterpret_cast<groot::network_handle *>(handle), suggested_size, buffer);
+        }
+    }
+
+    // static
+    void tcp_service::read_routine(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) noexcept
+    {
+        if (stream != nullptr && stream->data != nullptr) {
+            static_cast<tcp_service *>(stream->data)->
+                    on_read(reinterpret_cast<groot::network_handle *>(stream), nread, buffer);
         }
     }
 
@@ -234,7 +287,12 @@ namespace rocket {
     {
         if (request != nullptr && request->data != nullptr) {
             static_cast<tcp_service *>(request->data)->on_shutdown(request, status);
+        } else {
+            logerror("Failed to shutdown connection: %s (%s).", uv_strerror(status), uv_err_name(status));
         }
     }
 
 }
+
+#undef start_connection
+#undef shutdown_connection

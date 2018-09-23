@@ -56,6 +56,8 @@
 #include "network/network.h"
 #include "network/endpoint.h"
 
+#include "hardware/hardware.h"
+
 #include "external/uv_ex.h"
 #include "external/glib_ex.h"
 

@@ -11,6 +11,8 @@
 
 namespace rocket {
 
+    class work_service;
+
     class task {
     public:
         GR_DECLARE_SMARTPOINTERS(task)

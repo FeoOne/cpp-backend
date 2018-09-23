@@ -13,6 +13,8 @@ namespace rocket {
                            groot::ip_version version,
                            side side,
                            kind kind) noexcept :
+            _connect_request {},
+            _shutdown_request {},
             _handle {},
             _proto { proto },
             _version { version },

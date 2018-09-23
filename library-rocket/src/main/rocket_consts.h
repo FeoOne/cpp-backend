@@ -14,6 +14,8 @@
 #define RC_WORK_SERVICE_TYPE_MAX_KEY            16
 #define RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT      8
 
+#define RC_IO_BUFFER_SIZE                       4096
+
 //static constexpr std::string_view  { "" };
 
 namespace rocket {
@@ -46,6 +48,8 @@ namespace rocket {
                 static constexpr std::string_view BACKLOG { "backlog" };
                 static constexpr std::string_view KEEPALIVE { "keepalive" };
                 static constexpr std::string_view TYPE { "type" };
+                static constexpr std::string_view INPUT_BUFFER_SIZE { "input_buffer_size" };
+                static constexpr std::string_view OUTPUT_BUFFER_SIZE { "output_buffer_size" };
 
             };
 

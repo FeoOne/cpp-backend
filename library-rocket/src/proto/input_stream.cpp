@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "protocol/input_stream.h"
+#include "proto/input_stream.h"
 
 namespace rocket {
 

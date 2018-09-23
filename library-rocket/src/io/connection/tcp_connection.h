@@ -26,15 +26,14 @@ namespace rocket {
         void init(uv_loop_t *loop, void *data) noexcept final;
         bool bind(groot::socket_address *addr) noexcept final;
         bool listen(u16 backlog, uv_connection_cb cb) noexcept final;
-        bool accept(connection *connection) noexcept;
+        bool accept(connection *connection) noexcept final;
+        bool start(uv_alloc_cb alloc_cb, uv_read_cb read_cb) noexcept final;
         uv_connect_t *connect(groot::socket_address *addr, uv_connect_cb cb) noexcept final;
         uv_shutdown_t *shutdown(uv_shutdown_cb cb) noexcept final;
 
         void set_nodelay(bool enable) noexcept final;
         void set_nonblock(bool enable) noexcept final;
         void set_keepalive(bool enable, u32 delay) noexcept final;
-
-    private:
 
     };
 

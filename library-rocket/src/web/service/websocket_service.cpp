@@ -57,6 +57,7 @@ namespace rocket {
     void websocket_service::handle_ws_outgoing_message_task(const task::sptr& t) noexcept
     {
         auto task = std::static_pointer_cast<ws_outgoing_message_task>(t);
+        // todo: implement
     }
 
     void websocket_service::on_handler(SoupServer *server,

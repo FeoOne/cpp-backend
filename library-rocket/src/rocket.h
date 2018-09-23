@@ -31,6 +31,6 @@
 #include "web/page/web_view_loader.h"
 #include "web/page/web_view_manager.h"
 
-#include "protocol/protocol_machine.h"
+#include "proto/protocol_machine.h"
 
 #endif /* ROCKET_ROCKET_H */

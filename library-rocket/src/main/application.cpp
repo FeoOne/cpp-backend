@@ -185,6 +185,11 @@ namespace rocket {
         // Pre-initialize systems
         groot::log_manager::setup();
 
+#ifndef NDEBUG
+        // Print hardware info
+        groot::hardware::print_info();
+#endif
+
         // Create and start application
         auto app = application::make_unique(argc, argv, description);
         // Add user-defined job context creator
