@@ -1,6 +1,9 @@
 # ide
 .idea
 
+# dependencies
+3rdparty/*
+
 # cmake
 cmake/*
 cmake-build-*

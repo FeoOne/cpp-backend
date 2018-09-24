@@ -20,17 +20,20 @@
 
 namespace rocket {
 
-    struct consts { GR_DELETE_ALL_DEFAULT(consts)
+    struct consts {
+        GR_DELETE_ALL_DEFAULT(consts)
 
         /**
          * config
          */
-        struct config { GR_DELETE_ALL_DEFAULT(config)
+        struct config {
+            GR_DELETE_ALL_DEFAULT(config)
 
             /**
              * config::key
              */
-            struct key { GR_DELETE_ALL_DEFAULT(key)
+            struct key {
+                GR_DELETE_ALL_DEFAULT(key)
 
                 static constexpr std::string_view NAME { "name" };
                 static constexpr std::string_view PATH { "path" };
@@ -48,29 +51,28 @@ namespace rocket {
                 static constexpr std::string_view BACKLOG { "backlog" };
                 static constexpr std::string_view KEEPALIVE { "keepalive" };
                 static constexpr std::string_view TYPE { "type" };
-                static constexpr std::string_view INPUT_BUFFER_SIZE { "input_buffer_size" };
-                static constexpr std::string_view OUTPUT_BUFFER_SIZE { "output_buffer_size" };
-
+//                static constexpr std::string_view INPUT_BUFFER_SIZE { "input_buffer_size" };
+//                static constexpr std::string_view OUTPUT_BUFFER_SIZE { "output_buffer_size" };
             };
 
             /**
              * config::io
              */
-            struct io { GR_DELETE_ALL_DEFAULT(io)
+            struct io {
+                GR_DELETE_ALL_DEFAULT(io)
 
                 static constexpr std::string_view TCP { "tcp" };
                 static constexpr std::string_view UDP { "udp" };
-
             };
 
             /**
              * config::web
              */
-             struct web { GR_DELETE_ALL_DEFAULT(web)
+             struct web {
+                 GR_DELETE_ALL_DEFAULT(web)
 
                  static constexpr std::string_view ALL { "all" };
                  static constexpr std::string_view LOCAL { "local" };
-
              };
 
         };

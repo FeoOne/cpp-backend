@@ -10,9 +10,17 @@
 #include "logger/log_manager.h"
 
 #ifndef NDEBUG
-#   define GR_TRASHING_MEMORY_POOL  1
-#   define GR_BOUNDING_MEMORY_POOL  1
-#endif
+/**
+ * Mark pool memory chunk on any action (create pool/alloc chunk/free chunk).
+ * Should be used only for useful debugging.
+ */
+#define GR_TRASHING_MEMORY_POOL  1
+/**
+ * Wrap pool memory chunk with human readable 16 byte length guards.
+ * Should be used only for useful debugging.
+ */
+#define GR_BOUNDING_MEMORY_POOL  1
+#endif // NDEBUG
 
 namespace groot {
 

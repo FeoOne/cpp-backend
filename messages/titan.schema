@@ -1,4 +1,4 @@
-namespace hlproto.terra;
+namespace protocol.titan;
 
 union message {
     create_invoice,

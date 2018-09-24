@@ -23,7 +23,7 @@ namespace groot {
 
         static constexpr size_t             VERSION_MAJOR { GR_VERSION_MAJOR };
         static constexpr size_t             VERSION_MINOR { GR_VERSION_MINOR };
-        static constexpr size_t             VERSION_MAINTENANCE { GR_VERSION_MAINTENANCE };
+        static constexpr size_t             VERSION_PATCH { GR_VERSION_PATCH };
         static constexpr size_t             VERSION_BUILD { GR_VERSION_BUILD };
         static constexpr std::string_view   VERSION_FULL { GR_VERSION_FULL };
 

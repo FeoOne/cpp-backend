@@ -15,9 +15,9 @@ namespace groot {
      * Memory chunk data struct.
      */
     class float_memory_chunk final {
-        friend class float_memory_page;
-
         GR_DELETE_ALL_DEFAULT(float_memory_chunk)
+
+        friend class float_memory_page;
 
         float_memory_chunk *    _next;
         float_memory_chunk *    _prev;
@@ -53,10 +53,10 @@ namespace groot {
      * Memory page data struct.
      */
     class float_memory_page final {
-        friend class float_memory_pool;
-
         GR_DECLARE_SMARTPOINTERS(float_memory_page)
         GR_DELETE_ALL_DEFAULT(float_memory_page)
+
+        friend class float_memory_pool;
 
         static constexpr u32 CHUNK_HEAD_SIZE { sizeof(float_memory_chunk) };
         static constexpr u32 MIN_FREE_BLOCK_SIZE { 16 };

@@ -10,9 +10,7 @@ else()
     SET(UUID_FOUND FALSE)
 endif()
 
-if (UUID_FOUND)
-    message(STATUS "Found libuuid: ${UUID_LIBRARIES}, ${UUID_INCLUDE_DIR}")
-else()
+if (NOT UUID_FOUND)
     message(FATAL_ERROR "Couldn't find libuuid.")
 endif()
 

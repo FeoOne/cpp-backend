@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include <jemalloc/jemalloc.h>
+
 #define GR_DELETE_DEFAULT_CTOR(c)               c() = delete;
 #define GR_DELETE_DEFAULT_COPY_CTOR(c)          c(const c&) = delete;
 #define GR_DELETE_DEFAULT_MOVE_CTOR(c)          c(c&&) = delete;
@@ -45,11 +47,11 @@ namespace groot {
 
         template<typename T>
         static T *aligned_alloc(size_t size) noexcept {
-            return static_cast<T *>(_aligned_alloc(size));
+            return static_cast<T *>(aligned_alloc_impl(size));
         }
 
     private:
-        static void *_aligned_alloc(size_t size) noexcept;
+        static void *aligned_alloc_impl(size_t size) noexcept;
 
     };
 

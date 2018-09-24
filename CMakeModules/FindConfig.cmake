@@ -10,9 +10,7 @@ else()
     SET(CONFIG_FOUND FALSE)
 endif()
 
-if (CONFIG_FOUND)
-    message(STATUS "Found libconfig: ${Config_LIBRARIES}, ${Config_INCLUDE_DIR}")
-else()
+if (NOT CONFIG_FOUND)
     message(FATAL_ERROR "Couldn't find libconfig.")
 endif()
 

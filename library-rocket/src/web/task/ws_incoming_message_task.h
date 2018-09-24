@@ -13,7 +13,7 @@
 #include <groot.h>
 
 #include "task/task.h"
-#include "proto/protocol_machine.h"
+#include "protocol/protocol_machine.h"
 
 namespace rocket {
 

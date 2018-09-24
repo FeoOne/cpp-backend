@@ -141,6 +141,7 @@ namespace groot {
             _block_size { static_cast<u32>(data_size) + INDEX_SIZE },
             _page_size { static_cast<u32>(page_size) }
     {
+        logdebug("Creating fixed memory pool (data size: %lu, page size: %lu).", data_size, page_size);
         _pages.reserve(GR_PAGE_RESERVE_COUNT);
     }
 

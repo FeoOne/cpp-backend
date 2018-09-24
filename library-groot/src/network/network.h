@@ -22,6 +22,16 @@ namespace groot {
         IPV6,
     };
 
+    enum class connection_side {
+        LOCAL,
+        REMOTE,
+    };
+
+    enum class connection_kind {
+        CLIENT,
+        SERVER,
+    };
+
     union socket_address {
         sockaddr        sa;
         sockaddr_in     sin;

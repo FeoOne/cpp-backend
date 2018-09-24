@@ -11,26 +11,26 @@ function(setup_version)
 
     list(GET VERSION_LIST 0 MAJOR)
     list(GET VERSION_LIST 1 MINOR)
-    list(GET VERSION_LIST 2 MAINTENANCE)
-    list(GET VERSION_LIST 3 BUILD_NUM)
+    list(GET VERSION_LIST 2 PATCH)
+    list(GET VERSION_LIST 3 BUILD)
     list(REMOVE_AT VERSION_LIST 3)
 
     if (CMAKE_BUILD_TYPE EQUAL "Release")
         # increase build number for release configuration
-        math(EXPR BUILD_NUM "${BUILD_NUM} + 1")
+        math(EXPR BUILD "${BUILD} + 1")
     endif()
 
     list(JOIN VERSION_LIST "." FULL_VERSION)
 
-    message(STATUS "Workspace version: ${FULL_VERSION}, build number: ${BUILD_NUM}")
+    message(STATUS "Workspace version: ${FULL_VERSION}, build number: ${BUILD}")
 
     if (CMAKE_BUILD_TYPE EQUAL "Release")
-        file(WRITE "version.txt" "${FULL_VERSION}.${BUILD_NUM}")
+        file(WRITE "version.txt" "${FULL_VERSION}.${BUILD}")
     endif()
 
     set(WORKSPACE_VERSION_MAJOR ${MAJOR} PARENT_SCOPE)
     set(WORKSPACE_VERSION_MINOR ${MINOR} PARENT_SCOPE)
-    set(WORKSPACE_VERSION_MAINTENANCE ${MAINTENANCE} PARENT_SCOPE)
+    set(WORKSPACE_VERSION_PATCH ${PATCH} PARENT_SCOPE)
+    set(WORKSPACE_VERSION_BUILD ${BUILD} PARENT_SCOPE)
     set(WORKSPACE_VERSION_FULL ${FULL_VERSION} PARENT_SCOPE)
-    set(WORKSPACE_BUILD_NUMBER ${BUILD_NUM} PARENT_SCOPE)
 endfunction()

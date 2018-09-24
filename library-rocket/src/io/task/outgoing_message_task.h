@@ -9,22 +9,26 @@
 #define ROCKET_OUTGOING_MESSAGE_TASK_H
 
 #include "task/task.h"
-#include "io/connection/connection.h"
 
 namespace rocket {
 
-    class outgoing_message_task : public groot::crucial<task, outgoing_message_task> {
+    class outgoing_message_task final : public groot::crucial<task, outgoing_message_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(outgoing_message_task)
         GR_DELETE_ALL_DEFAULT(outgoing_message_task)
 
-        explicit outgoing_message_task(const connection::sptr& connection) noexcept : _connection { connection } {}
+        enum class priority {
+            urgent,
+            delayed
+        };
+
+        explicit outgoing_message_task(priority pri) noexcept : _priority { pri } {}
         virtual ~outgoing_message_task() = default;
 
-        connection::sptr get_connection() const noexcept { return _connection; }
+
 
     private:
-        connection::sptr        _connection;
+        priority        _priority;
 
     };
 

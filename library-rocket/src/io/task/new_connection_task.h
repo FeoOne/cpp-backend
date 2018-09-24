@@ -9,7 +9,7 @@
 #define ROCKET_NEW_CONNECTION_TASK_H
 
 #include "task/task.h"
-#include "io/connection/connection.h"
+
 
 namespace rocket {
 
@@ -18,13 +18,13 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(new_connection_task)
         GR_DELETE_ALL_DEFAULT(new_connection_task)
 
-        explicit new_connection_task(const connection::sptr& connection) noexcept : _connection { connection } {}
+        explicit new_connection_task(nullptr_t) noexcept {}
         virtual ~new_connection_task() = default;
 
-        connection::sptr get_connection() const noexcept { return _connection; }
+
 
     private:
-        connection::sptr        _connection;
+
 
     };
 

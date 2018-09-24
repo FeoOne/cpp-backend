@@ -22,7 +22,7 @@ namespace groot {
     }
 
     // static
-    void *memory::_aligned_alloc(size_t size) noexcept
+    void *memory::aligned_alloc_impl(size_t size) noexcept
     {
 #ifdef GR_PLATFORM_BSD
         return std::malloc(size);

@@ -12,7 +12,7 @@
 #include "io/connection/tcp_connection.h"
 #include "io/connection/udp_connection.h"
 
-#define RC_CONNECTION_POOL_PAGE_SIZE    groot::memory::page_size() * 16
+#define RC_CONNECTION_POOL_PAGE_SIZE    (4096 * 32)
 
 namespace rocket {
 
@@ -24,6 +24,7 @@ namespace rocket {
 
         using connection_type = T;
         using connection_pointer = T *;
+        using connection_handle_type = typename connection_type::handle_type;
 
         /**
          * Ctor.
@@ -50,8 +51,8 @@ namespace rocket {
          * @return
          */
         connection_pointer acquire(groot::ip_version version,
-                                   connection::side side,
-                                   connection::kind kind) noexcept {
+                                   groot::connection_side side,
+                                   groot::connection_kind kind) noexcept {
             auto connection {
                 new (_connection_pool->alloc()) connection_type(version, side, kind)
             };
@@ -94,7 +95,7 @@ namespace rocket {
          * @param handle
          * @return
          */
-        connection_pointer get(groot::network_handle *handle) noexcept {
+        connection_pointer get(connection_handle_type handle) noexcept {
             connection_pointer connection { nullptr };
             auto it = _connections.find(handle);
             if (it != _connections.end()) {
@@ -104,7 +105,7 @@ namespace rocket {
         }
 
     private:
-        std::unordered_map<groot::network_handle *, connection_pointer> _connections;
+        std::unordered_map<connection_handle_type, connection_pointer>  _connections;
         groot::fixed_memory_pool::uptr                                  _connection_pool;
 
     };

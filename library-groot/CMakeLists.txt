@@ -22,19 +22,33 @@ setup_compiler_flags(${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION})
 
+# jemalloc config
+
+set(Jemalloc_SOURCE_DIRS ${CMAKE_SOURCE_DIR}/3rdparty/jemalloc/include)
+set(Jemalloc_LIBRARIES ${CMAKE_SOURCE_DIR}/3rdparty/jemalloc/lib/libjemalloc.a)
+
+# include directories
+
 target_include_directories(${PROJECT_NAME}
-        PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/src
-            ${Config_INCLUDE_DIR}
-            ${GLib_INCLUDE_DIRS}
-            #${UUID_INCLUDE_DIR}
-            ${UV_INCLUDE_DIRS}
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${Jemalloc_SOURCE_DIRS}
+        ${Config_INCLUDE_DIR}
+        ${GLib_INCLUDE_DIRS}
+        ${UUID_INCLUDE_DIR}
+        ${UV_INCLUDE_DIRS}
         )
 
+# libraries
+
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC
+        ${Config_LIBRARIES}
+        ${UUID_LIBRARIES}
+        ${GLib_LIBRARY}
+        ${UV_LIBRARIES}
+        )
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
-            ${Config_LIBRARIES}
-            ${UUID_LIBRARIES}
-            ${GLib_LIBRARY}
-            ${UV_LIBRARIES}
+        ${Jemalloc_LIBRARIES}
         )

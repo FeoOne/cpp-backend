@@ -12,11 +12,11 @@
 
 #include "io/service/tcp_service.h"
 
-#define shutdown_connection(connection) \
-    connection->shutdown(&tcp_service::shutdown_routine)
-
 #define start_connection(connection)    \
     connection->start(&tcp_service::alloc_routine, &tcp_service::read_routine)
+
+#define shutdown_connection(connection) \
+    connection->shutdown(&tcp_service::shutdown_routine)
 
 namespace rocket {
 
@@ -54,7 +54,9 @@ namespace rocket {
                              u32 keepalive) noexcept
     {
         auto connection {
-                _connections->acquire(endpoint->get_version(), connection::side::LOCAL, connection::kind::SERVER)
+                _connections->acquire(endpoint->get_version(),
+                                      groot::connection_side::LOCAL,
+                                      groot::connection_kind::SERVER)
         };
         connection->init(_loop, this);
 
@@ -75,7 +77,9 @@ namespace rocket {
     void tcp_service::connect(const groot::endpoint::sptr& endpoint) noexcept
     {
         auto connection {
-                _connections->acquire(endpoint->get_version(), connection::side::LOCAL, connection::kind::CLIENT)
+                _connections->acquire(endpoint->get_version(),
+                                      groot::connection_side::LOCAL,
+                                      groot::connection_kind::CLIENT)
         };
         connection->init(_loop, this);
 
@@ -173,7 +177,9 @@ namespace rocket {
 
         auto server_connection { _connections->get(handle) };
         auto client_connection {
-            _connections->acquire(server_connection->version(), connection::side::REMOTE, connection::kind::CLIENT)
+            _connections->acquire(server_connection->version(),
+                                  groot::connection_side::REMOTE,
+                                  groot::connection_kind::CLIENT)
         };
         client_connection->init(_loop, this);
 
@@ -209,21 +215,53 @@ namespace rocket {
         }
     }
 
-    void tcp_service::on_alloc(groot::network_handle *handle, size_t suggested_size, uv_buf_t *buffer) noexcept
+    void tcp_service::on_alloc(groot::network_handle *handle,
+                               GR_UNUSED size_t suggested_size,
+                               uv_buf_t *buffer) noexcept
     {
         auto connection { _connections->get(handle) };
         if (connection == nullptr) {
             logerror("Failed to alloc: connection not found.");
             return;
         }
+
+        // todo: alloc memory
     }
 
-    void tcp_service::on_read(groot::network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept
+    void tcp_service::on_read(groot::network_handle *handle,
+                              ssize_t nread,
+                              GR_UNUSED const uv_buf_t *buffer) noexcept
     {
         auto connection { _connections->get(handle) };
         if (connection == nullptr) {
             logerror("Failed to read: connection not found.");
             return;
+        }
+
+        if (nread < 0) {
+            // Socket fatal error
+            auto status { static_cast<int>(nread) };
+            logerror("Read error: %s (%s).", uv_strerror(status), uv_err_name(status));
+            shutdown_connection(connection);
+            return;
+        }
+
+        // todo: read etc
+    }
+
+    void tcp_service::on_write(uv_write_t *request, int status) noexcept
+    {
+        if (status == 0) {
+            auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
+            auto connection = _connections->get(handle);
+            if (connection) {
+                logdebug("Writing to connection 0x%" PRIxPTR ".", connection);
+                // write
+            } else {
+                logerror("Failed to write: connection not presented.");
+            }
+        } else {
+            logerror("Failed to write: %s (%s).", uv_strerror(status), uv_err_name(status));
         }
     }
 
@@ -236,7 +274,7 @@ namespace rocket {
                 lognotice("Shutting down connection 0x%" PRIxPTR ".", connection);
                 _connections->release(connection);
             } else {
-                logerror("Failed to shutdown connection: not found.");
+                logerror("Failed to shutdown connection: connection not presented.");
             }
         } else {
             logerror("Failed to shutdown connection: %s (%s).", uv_strerror(status), uv_err_name(status));
@@ -287,6 +325,16 @@ namespace rocket {
     }
 
     // static
+    void tcp_service::write_routine(uv_write_t *request, int status) noexcept
+    {
+        if (request != nullptr && request->data != nullptr) {
+            static_cast<tcp_service *>(request->data)->on_write(request, status);
+        } else {
+            logerror("Failed to process write routine: %s (%s).", uv_strerror(status), uv_err_name(status));
+        }
+    }
+
+    // static
     void tcp_service::shutdown_routine(uv_shutdown_t *request, int status) noexcept
     {
         if (request != nullptr && request->data != nullptr) {
@@ -298,5 +346,5 @@ namespace rocket {
 
 }
 
-#undef start_connection
 #undef shutdown_connection
+#undef start_connection

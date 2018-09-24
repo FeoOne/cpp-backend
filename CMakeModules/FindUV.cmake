@@ -10,9 +10,7 @@ else()
     SET(UV_FOUND FALSE)
 endif()
 
-if (UV_FOUND)
-    message(STATUS "Found libuv: ${UV_LIBRARIES}, ${UV_INCLUDE_DIRS}")
-else()
+if (NOT UV_FOUND)
     message(FATAL_ERROR "Couldn't find libuv.")
 endif()
 

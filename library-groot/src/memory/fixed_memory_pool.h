@@ -16,9 +16,9 @@ namespace groot {
      * Memory chunk data struct.
      */
     class fixed_memory_chunk final {
-        friend class fixed_memory_page;
-
         GR_DELETE_ALL_DEFAULT(fixed_memory_chunk)
+
+        friend class fixed_memory_page;
 
         fixed_memory_chunk *    _next;
         fixed_memory_chunk *    _prev;
@@ -42,10 +42,10 @@ namespace groot {
      * Memory page data struct.
      */
     class fixed_memory_page final {
-        friend class fixed_memory_pool;
-
         GR_DECLARE_SMARTPOINTERS(fixed_memory_page)
         GR_DELETE_ALL_DEFAULT(fixed_memory_page)
+
+        friend class fixed_memory_pool;
 
         static constexpr u32 CHUNK_HEAD_SIZE { sizeof(fixed_memory_chunk) };
 

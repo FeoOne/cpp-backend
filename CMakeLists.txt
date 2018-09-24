@@ -19,9 +19,6 @@ add_subdirectory(library-groot)
 # engine
 add_subdirectory(library-rocket)
 
-# shared constants
-add_subdirectory(library-mantis)
-
 # db operator
 add_subdirectory(module-strange)
 
