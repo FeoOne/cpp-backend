@@ -43,7 +43,6 @@ namespace rocket {
         while (!queue()->empty()) {
             auto task { queue()->dequeue() };
             handler()->handle_task(task);
-            // @todo Handle task.
         }
     }
 

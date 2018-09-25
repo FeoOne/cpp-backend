@@ -23,7 +23,7 @@ namespace rocket {
 
     void io_stream::grow_if_needed() noexcept
     {
-        if (available_size() >= _size - _size / 10) {
+        if (free_size() >= _size - _size / 10) {
             _size *= 2;
             _memory = reinterpret_cast<u8 *>(je_realloc(_memory, _size));
         }

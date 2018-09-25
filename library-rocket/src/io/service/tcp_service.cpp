@@ -240,7 +240,7 @@ namespace rocket {
         read_stream->grow_if_needed(); // todo: add size check to prevent unexpected growing
 
         buffer->base = reinterpret_cast<char *>(read_stream->tail());
-        buffer->len = read_stream->available_size();
+        buffer->len = read_stream->free_size();
     }
 
     void tcp_service::on_read(groot::network_handle *handle,

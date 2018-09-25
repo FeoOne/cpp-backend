@@ -26,7 +26,7 @@ namespace rocket {
         void increase_tail(size_t inc) noexcept { _tail += inc; }
 
         size_t used_size() const noexcept { return _tail - _head; }
-        size_t available_size() const noexcept { return _size - _tail; }
+        size_t free_size() const noexcept { return _size - _tail; }
 
         void grow_if_needed() noexcept;
         void flush_if_needed() noexcept;
