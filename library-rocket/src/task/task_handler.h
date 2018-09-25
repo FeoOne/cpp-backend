@@ -8,17 +8,20 @@
 #ifndef ROCKET_TASK_HANDLER_H
 #define ROCKET_TASK_HANDLER_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 
 namespace rocket {
 
+    /**
+     * Interface which designed to encapsulate task handling logic for `work_context`.
+     */
     class task_handler {
     public:
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_handler)
 
         virtual ~task_handler() = default;
 
-        virtual void handle_task(const task::sptr& task) const noexcept = 0;
+        virtual void handle_task(basic_task *task) const noexcept = 0;
 
     protected:
         task_handler() = default;

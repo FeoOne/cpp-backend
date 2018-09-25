@@ -29,8 +29,8 @@ namespace rocket {
                 _handler { handler }
         {}
 
-        task_queue *get_queue() const noexcept { return _queue; }
-        const task_handler *get_task_handler() noexcept { return _handler; }
+        task_queue *queue() const noexcept { return _queue; }
+        const task_handler *handler() noexcept { return _handler; }
 
     private:
         task_queue *                _queue;

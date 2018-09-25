@@ -9,6 +9,7 @@
 #include "io/connection/tcp_connection.h"
 #include "io/task/new_connection_task.h"
 #include "io/task/close_connection_task.h"
+#include "io/service/request_processing_service.h"
 
 #include "io/service/tcp_service.h"
 
@@ -44,9 +45,15 @@ namespace rocket {
 
     void tcp_service::reset() noexcept
     {
+        // todo: reset resources
         // _connections->reset();
 
         _loop = nullptr;
+    }
+
+    void tcp_service::shutdown(tcp_connection *connection) noexcept
+    {
+        shutdown_connection(connection);
     }
 
     void tcp_service::listen(const groot::endpoint::sptr& endpoint,
@@ -64,7 +71,10 @@ namespace rocket {
         setup_sockaddr(endpoint, &addr);
 
         if (connection->bind(&addr) && connection->listen(backlog, &tcp_service::connection_routine)) {
-            lognotice("Successfully started server socket %s:%u.", endpoint->get_host().data(), endpoint->get_port());
+            lognotice("Successfully started server socket %s:%u. Connection: 0x%llx",
+                      endpoint->get_host().data(),
+                      endpoint->get_port(),
+                      connection);
             connection->set_nodelay(true);
             connection->set_nonblock(true);
             connection->set_keepalive(true, keepalive);
@@ -116,7 +126,7 @@ namespace rocket {
 
     void tcp_service::setup_servers() noexcept
     {
-        auto servers_config { get_config()[consts::config::key::SERVERS] };
+        auto servers_config { config()[consts::config::key::SERVERS] };
 
         if (servers_config.is_null()) {
             return;
@@ -144,7 +154,7 @@ namespace rocket {
 
     void tcp_service::setup_clients() noexcept
     {
-        auto clients_config { get_config()[consts::config::key::CLIENTS] };
+        auto clients_config { config()[consts::config::key::CLIENTS] };
 
         if (clients_config.is_null()) {
             return;
@@ -225,7 +235,12 @@ namespace rocket {
             return;
         }
 
-        // todo: alloc memory
+        auto read_stream { connection->read_stream() };
+
+        read_stream->grow_if_needed(); // todo: add size check to prevent unexpected growing
+
+        buffer->base = reinterpret_cast<char *>(read_stream->tail());
+        buffer->len = read_stream->available_size();
     }
 
     void tcp_service::on_read(groot::network_handle *handle,
@@ -246,7 +261,11 @@ namespace rocket {
             return;
         }
 
-        // todo: read etc
+        if (nread > 0) {
+            connection->read_stream()->increase_tail(static_cast<size_t>(nread));
+
+            delegate()->get_service<request_processing_service>()->process_input(connection);
+        }
     }
 
     void tcp_service::on_write(uv_write_t *request, int status) noexcept

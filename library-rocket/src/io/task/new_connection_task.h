@@ -8,12 +8,12 @@
 #ifndef ROCKET_NEW_CONNECTION_TASK_H
 #define ROCKET_NEW_CONNECTION_TASK_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 
 
 namespace rocket {
 
-    class new_connection_task : public groot::crucial<task, new_connection_task> {
+    class new_connection_task : public groot::crucial<basic_task, new_connection_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(new_connection_task)
         GR_DELETE_ALL_DEFAULT(new_connection_task)

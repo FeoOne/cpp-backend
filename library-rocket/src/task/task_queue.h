@@ -5,7 +5,7 @@
 #ifndef ROCKET_TASK_QUEUE_H
 #define ROCKET_TASK_QUEUE_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 #include "main/rocket_consts.h"
 
 namespace rocket {
@@ -17,22 +17,22 @@ namespace rocket {
 
         virtual ~task_queue() = default;
 
-        virtual void enqueue(const task::sptr& task) noexcept = 0;
-        virtual task::sptr dequeue() noexcept = 0;
+        virtual void enqueue(basic_task *task) noexcept = 0;
+        virtual basic_task *dequeue() noexcept = 0;
 
         virtual bool empty() const noexcept = 0;
 
     protected:
         explicit task_queue(const std::string_view& domain) noexcept;
 
-        void push(const task::sptr& task) noexcept;
-        task::sptr pop() noexcept;
+        void push(basic_task *task) noexcept;
+        basic_task *pop() noexcept;
 
         bool is_empty() const noexcept;
 
     private:
-        std::string_view                _domain;
-        std::queue<task::sptr>          _queue;
+        std::string_view            _domain;
+        std::queue<basic_task *>    _queue;
 
     };
 

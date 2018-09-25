@@ -12,12 +12,12 @@
 
 #include <groot.h>
 
-#include "task/task.h"
+#include "task/basic_task.h"
 #include "protocol/protocol_machine.h"
 
 namespace rocket {
 
-    class ws_incoming_message_task : public groot::crucial<task, ws_incoming_message_task> {
+    class ws_incoming_message_task : public groot::crucial<basic_task, ws_incoming_message_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(ws_incoming_message_task)
         GR_DELETE_ALL_DEFAULT(ws_incoming_message_task)

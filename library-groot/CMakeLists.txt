@@ -47,8 +47,5 @@ target_link_libraries(${PROJECT_NAME}
         ${UUID_LIBRARIES}
         ${GLib_LIBRARY}
         ${UV_LIBRARIES}
-        )
-target_link_libraries(${PROJECT_NAME}
-        PRIVATE
         ${Jemalloc_LIBRARIES}
         )

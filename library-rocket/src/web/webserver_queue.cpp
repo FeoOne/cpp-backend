@@ -16,14 +16,14 @@ namespace rocket {
     }
 
     // virtual
-    void webserver_queue::enqueue(const task::sptr& task) noexcept
+    void webserver_queue::enqueue(basic_task *task) noexcept
     {
         std::unique_lock<std::timed_mutex> lock { _mutex };
         push(task);
     }
 
     // virtual
-    task::sptr webserver_queue::dequeue() noexcept
+    basic_task *webserver_queue::dequeue() noexcept
     {
         std::unique_lock<std::timed_mutex> lock { _mutex };
         return pop();

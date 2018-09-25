@@ -26,7 +26,7 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        void handle_db_request_task(const task::sptr& t) noexcept;
+        void handle_db_request_task(basic_task *task) noexcept;
 
     };
 

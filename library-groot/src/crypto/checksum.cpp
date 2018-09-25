@@ -5,12 +5,12 @@
  * @brief
  */
 
-#include "algorythm/algorythm.h"
+#include "checksum.h"
 
 namespace groot {
 
     // static
-    u16 algorythm::crc16(u8 *buffer, size_t size) noexcept
+    u16 checksum::crc16(u8 *buffer, size_t size) noexcept
     {
         static u16 xcrc16tab[] = {
                 0x0000,  0x1021,  0x2042,  0x3063,  0x4084,  0x50a5,  0x60c6,  0x70e7,

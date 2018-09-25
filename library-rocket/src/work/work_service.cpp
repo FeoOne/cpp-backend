@@ -21,12 +21,12 @@ namespace rocket {
         _handlers.fill(nullptr);
     }
 
-    void work_service::handle_task(const task::sptr& task) const noexcept
+    void work_service::handle_task(basic_task *task) const noexcept
     {
         _handlers[task->get_key()](task);
     }
 
-    void work_service::assign_task_handler(task::key_type task_key, handler&& handler) noexcept
+    void work_service::assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept
     {
         _handlers[task_key] = std::move(handler);
     }

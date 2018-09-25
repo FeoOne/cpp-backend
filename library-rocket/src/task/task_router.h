@@ -26,13 +26,13 @@ namespace rocket {
             return get_queue(T::key());
         }
 
-        void assign_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept;
+        void assign_route(basic_task::key_type task_key, groot::crucial_key_type context_key) noexcept;
 
-        void enqueue(const task::sptr& task) noexcept;
+        void enqueue(basic_task *task) noexcept;
 
     private:
         std::array<task_queue::uptr, RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>    _queues;
-        std::array<groot::crucial_key_type, task::MAX_KEY>                  _context_keys;
+        std::array<groot::crucial_key_type, basic_task::MAX_KEY>            _context_keys;
 
     };
 

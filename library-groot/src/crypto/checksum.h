@@ -1,18 +1,18 @@
 /**
- * @file algorythm.h
+ * @file checksum.h
  * @author Feo
  * @date 24/08/2018
  * @brief
  */
 
-#ifndef GROOT_ALGORYTHM_H
-#define GROOT_ALGORYTHM_H
+#ifndef GROOT_CHECKSUM_H
+#define GROOT_CHECKSUM_H
 
 #include "scalar/numeric.h"
 
 namespace groot {
 
-    class algorythm {
+    class checksum {
     public:
         /**
          * CRC-CCITT crc16
@@ -28,4 +28,4 @@ namespace groot {
 
 }
 
-#endif /* GROOT_ALGORYTHM_H */
+#endif /* GROOT_CHECKSUM_H */

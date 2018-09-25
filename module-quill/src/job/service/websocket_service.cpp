@@ -40,9 +40,9 @@ namespace quill {
 
     }
 
-    void websocket_service::handle_ws_incoming_message_task(const rocket::task::sptr& t) noexcept
+    void websocket_service::handle_ws_incoming_message_task(rocket::basic_task *base_task) noexcept
     {
-        auto task = std::static_pointer_cast<rocket::ws_incoming_message_task>(t);
+        auto task { reinterpret_cast<rocket::ws_incoming_message_task *>(base_task) };
         if (task->get_data_type() == SOUP_WEBSOCKET_DATA_BINARY) {
             lognotice("magic: 0x%lX, opcode: %lu, length: %lu",
                     task->get_header()->get_magic(),
@@ -50,9 +50,9 @@ namespace quill {
                     task->get_header()->get_length());
             if (task->get_header()->get_magic() == rocket::consts::PROTOCOL_MAGIC) {
                 // @todo Version check
-                auto result = _processors[task->get_header()->get_opcode()](task);
-                if (result) {
-                    get_router()->enqueue(result);
+                auto result { _processors[task->get_header()->get_opcode()](task) };
+                if (result != nullptr) {
+                    router()->enqueue(result);
                 }
             }
         } else {
@@ -62,8 +62,8 @@ namespace quill {
         }
     }
 
-    rocket::ws_outgoing_message_task::sptr
-    websocket_service::process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept
+    rocket::ws_outgoing_message_task *
+    websocket_service::process_create_invoice_message(rocket::ws_incoming_message_task *task) noexcept
     {
 //        auto msg = message::terra::create_invoice::make_shared(task->get_binary());
 //

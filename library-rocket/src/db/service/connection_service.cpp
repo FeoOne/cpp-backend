@@ -57,17 +57,17 @@ namespace rocket {
     void connection_service::read_config() noexcept
     {
         // conninfo
-        if (!get_config().lookup_string(consts::config::key::CONNINFO, &_conninfo)) {
+        if (!config().lookup_string(consts::config::key::CONNINFO, &_conninfo)) {
             logemerg("Can't setup db connection service: no '%s' presented.", consts::config::key::CONNINFO.data());
         }
 
         // max connection count
-        get_config().lookup_int32<size_t>(consts::config::key::MAX_CONNECTION_COUNT,
+        config().lookup_int32<size_t>(consts::config::key::MAX_CONNECTION_COUNT,
                                           &_max_connection_count,
                                           RC_DEFAULT_MAX_CONNECTION_COUNT);
 
         // connect interval
-        get_config().lookup_int64<u64>(consts::config::key::CONNECT_INTERVAL,
+        config().lookup_int64<u64>(consts::config::key::CONNECT_INTERVAL,
                                        &_connect_interval,
                                        RC_DEFAULT_CONNECT_INTERVAL);
     }

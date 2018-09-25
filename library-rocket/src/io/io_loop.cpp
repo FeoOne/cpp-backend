@@ -40,9 +40,9 @@ namespace rocket {
 
     void io_loop::on_async() noexcept
     {
-        while (!get_queue()->empty()) {
-            auto task = get_queue()->dequeue();
-            // @todo Handle task.
+        while (!queue()->empty()) {
+            auto task = queue()->dequeue();
+            handler()->handle_task(task);
         }
     }
 

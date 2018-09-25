@@ -9,20 +9,22 @@
 
 namespace rocket {
 
+    // todo: not implemeted
+
     db_queue::db_queue() :
             task_queue(consts::DOMAIN_TASK_QUEUE_SYSTEM)
     {
     }
 
     // virtual
-    void db_queue::enqueue(const task::sptr& task) noexcept
+    void db_queue::enqueue(basic_task *task) noexcept
     {
 
         push(task);
     }
 
     // virtual
-    task::sptr db_queue::dequeue() noexcept
+    basic_task *db_queue::dequeue() noexcept
     {
 
         return pop();

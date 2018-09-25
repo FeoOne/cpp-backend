@@ -36,9 +36,9 @@ namespace rocket {
 
     gboolean webserver_loop::on_idle() noexcept
     {
-        if (!get_queue()->empty()) {
-            auto task = get_queue()->dequeue();
-            get_task_handler()->handle_task(task);
+        if (!queue()->empty()) {
+            auto task = queue()->dequeue();
+            handler()->handle_task(task);
         }
         return TRUE; // @todo Return smart result, depend on state.
     }

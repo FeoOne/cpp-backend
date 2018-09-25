@@ -8,12 +8,12 @@
 #ifndef ROCKET_HTTP_REQUEST_TASK_H
 #define ROCKET_HTTP_REQUEST_TASK_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 #include "web/http/http_request.h"
 
 namespace rocket {
 
-    class http_request_task : public groot::crucial<task, http_request_task> {
+    class http_request_task : public groot::crucial<basic_task, http_request_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(http_request_task)
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_request_task)

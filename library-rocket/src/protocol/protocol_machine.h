@@ -29,10 +29,6 @@ namespace rocket {
 
     };
 
-    struct message {
-
-    };
-
     class protocol_machine {
     public:
         protocol_machine() {  }

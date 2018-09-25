@@ -7,6 +7,8 @@
 
 #include "io/connection/tcp_connection.h"
 
+#define RC_READ_STREAM_INITIAL_SIZE 4096
+
 namespace rocket {
 
     tcp_connection::tcp_connection(groot::ip_version version,
@@ -16,6 +18,8 @@ namespace rocket {
             _version { version },
             _side { side },
             _kind { kind },
+            _read_stream { RC_READ_STREAM_INITIAL_SIZE },
+            _write_request {} ,
             _connect_request {},
             _shutdown_request {}
     {

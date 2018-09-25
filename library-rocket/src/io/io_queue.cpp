@@ -15,14 +15,14 @@ namespace rocket {
     }
 
     // virtual
-    void io_queue::enqueue(const task::sptr& task) noexcept
+    void io_queue::enqueue(basic_task *task) noexcept
     {
 
         push(task);
     }
 
     // virtual
-    task::sptr io_queue::dequeue() noexcept
+    basic_task *io_queue::dequeue() noexcept
     {
 
         return pop();

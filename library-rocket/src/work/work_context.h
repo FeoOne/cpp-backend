@@ -51,7 +51,7 @@ namespace rocket {
          * Task acceptance.
          * @param task Task.
          */
-        void handle_task(const task::sptr& task) const noexcept final;
+        void handle_task(basic_task *task) const noexcept final;
 
         /**
          * Setup services before start.
@@ -91,7 +91,7 @@ namespace rocket {
          * @param task_key Task key.
          * @param service_key Service key.
          */
-        void bind_task_route(task::key_type task_key, work_service::key_type service_key) noexcept;
+        void bind_task_route(basic_task::key_type task_key, work_service::key_type service_key) noexcept;
 
         /**
          * Add service for own.
@@ -109,7 +109,7 @@ namespace rocket {
          * Store task relation to concrete service.
          * Local (within context) post-route task router.
          */
-        std::array<task::key_type, task::MAX_KEY>               _handler_bindings;
+        std::array<basic_task::key_type, basic_task::MAX_KEY>               _handler_bindings;
 
         /**
          * Work loop private implementation getter.

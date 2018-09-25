@@ -17,7 +17,7 @@ namespace rocket {
     }
 
     // virtual
-    void job_queue::enqueue(const task::sptr& task) noexcept
+    void job_queue::enqueue(basic_task *task) noexcept
     {
         {
             GR_ULOCK(lock, _mutex);
@@ -27,7 +27,7 @@ namespace rocket {
     }
 
     // virtual
-    task::sptr job_queue::dequeue() noexcept
+    basic_task *job_queue::dequeue() noexcept
     {
         GR_ULOCK(lock, _mutex);
 

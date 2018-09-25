@@ -32,6 +32,7 @@
 
 #include "util/crucial.h"
 #include "util/optional.h"
+#include "util/object_pool.h"
 
 #include "main/tools.h"
 #include "main/platform.h"
@@ -49,7 +50,6 @@
 #include "memory/memory.h"
 #include "memory/fixed_memory_pool.h"
 #include "memory/float_memory_pool.h"
-#include "memory/object_pool.h"
 
 #include "config/config.h"
 #include "config/command_line_argument_parser.h"
@@ -58,6 +58,8 @@
 #include "network/endpoint.h"
 
 #include "hardware/hardware.h"
+
+#include "crypto/checksum.h"
 
 #include "external/uv_ex.h"
 #include "external/glib_ex.h"

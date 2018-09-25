@@ -48,12 +48,12 @@ namespace rocket {
         }
     }
 
-    void work_context::handle_task(const task::sptr& task) const noexcept
+    void work_context::handle_task(basic_task *task) const noexcept
     {
         _services[_handler_bindings[task->get_key()]]->handle_task(task);
     }
 
-    void work_context::bind_task_route(task::key_type task_key, work_service::key_type service_key) noexcept
+    void work_context::bind_task_route(basic_task::key_type task_key, work_service::key_type service_key) noexcept
     {
         _handler_bindings[task_key] = service_key;
     }

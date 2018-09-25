@@ -8,6 +8,7 @@
 #ifndef GROOT_MEMORY_H
 #define GROOT_MEMORY_H
 
+#include <atomic>
 #include <memory>
 
 #include <jemalloc/jemalloc.h>

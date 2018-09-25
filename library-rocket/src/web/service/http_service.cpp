@@ -48,14 +48,16 @@ namespace rocket {
                                    consts::WEB_DEFAULT_HTTP_ROUTE.data());
     }
 
-    void http_service::handle_http_response_task(const task::sptr& t) noexcept
+    void http_service::handle_http_response_task(basic_task *base_task) noexcept
     {
-        auto task = std::static_pointer_cast<rocket::http_response_task>(t);
-        auto response = task->get_response();
-        auto request = response->get_request();
+        auto task { reinterpret_cast<rocket::http_response_task *>(base_task) };
+        auto response { task->get_response() };
+        auto request { response->get_request() };
 
         soup_server_unpause_message(delegate()->get_service<webserver_service>()->get_server(),
                                     request->get_message());
+
+        basic_task::destroy(task);
     }
 
     void http_service::handler(SoupServer *server,
@@ -72,7 +74,8 @@ namespace rocket {
 
         std::string_view p { path };
         auto request { http_request::make_shared(message, p, query, client) };
-        get_router()->enqueue(http_request_task::make_shared(request));
+        auto task { basic_task::create<http_request_task>(request) };
+        router()->enqueue(task);
 
         soup_server_pause_message(delegate()->get_service<webserver_service>()->get_server(), message);
     }

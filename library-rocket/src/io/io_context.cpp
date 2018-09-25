@@ -8,8 +8,10 @@
 #include "io/io_loop.h"
 #include "io/service/tcp_service.h"
 #include "io/service/udp_service.h"
-#include "io/service/message_filter_service.h"
-#include "io/task/outgoing_message_task.h"
+#include "io/service/response_processing_service.h"
+#include "io/service/request_processing_service.h"
+#include "io/task/message_response_task.h"
+#include "io/task/close_connection_task.h"
 
 #include "io/io_context.h"
 
@@ -20,9 +22,11 @@ namespace rocket {
     {
         add_service(tcp_service::make_unique(get_config(), get_router(), this));
         add_service(udp_service::make_unique(get_config(), get_router(), this));
-        add_service(message_filter_service::make_unique(get_config(), get_router(), this));
+        add_service(response_processing_service::make_unique(get_config(), get_router(), this));
+        add_service(request_processing_service::make_unique(get_config(), get_router(), this));
 
-        RC_BIND_TASK_ROUTE(outgoing_message_task, message_filter_service);
+        //RC_BIND_TASK_ROUTE(close_connection_task, );
+        RC_BIND_TASK_ROUTE(message_response_task, response_processing_service);
     }
 
 }

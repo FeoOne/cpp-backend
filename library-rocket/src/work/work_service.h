@@ -31,26 +31,26 @@ namespace rocket {
         virtual void setup() noexcept = 0;
         virtual void reset() noexcept = 0;
 
-        void handle_task(const task::sptr& task) const noexcept;
+        void handle_task(basic_task *task) const noexcept;
 
     protected:
-        using handler = std::function<void(const task::sptr&)>;
+        using task_handler = std::function<void(basic_task *)>;
 
         explicit work_service(const groot::setting& config,
                               task_router *router,
                               const work_service_delegate *delegate) noexcept;
 
-        const groot::setting& get_config() const noexcept { return _config; }
-        task_router *get_router() const noexcept { return _router; }
+        const groot::setting& config() const noexcept { return _config; }
+        task_router *router() const noexcept { return _router; }
         const work_service_delegate *delegate() const noexcept { return _delegate; }
 
-        void assign_task_handler(task::key_type task_key, handler&& handler) noexcept;
+        void assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept;
 
     private:
         const groot::setting                    _config;
         task_router *                           _router;
         const work_service_delegate *           _delegate;
-        std::array<handler, task::MAX_KEY>      _handlers;
+        std::array<task_handler, basic_task::MAX_KEY>      _handlers;
 
     };
 

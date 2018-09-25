@@ -27,6 +27,8 @@ namespace rocket {
         void setup() noexcept final;
         void reset() noexcept final;
 
+        void shutdown(tcp_connection *connection) noexcept;
+
     private:
         uv_loop_t *                             _loop;
         tcp_connection_manager::uptr            _connections;

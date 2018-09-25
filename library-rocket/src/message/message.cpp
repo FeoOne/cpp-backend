@@ -5,4 +5,14 @@
  * @brief
  */
 
-#include "message.h"
+#include "message/message.h"
+
+namespace rocket {
+
+    bool message_header::is_magic_correct() const noexcept
+    {
+        static constexpr u32 hex { 0x31337fe0 };
+        return magic() == hex;
+    }
+
+}

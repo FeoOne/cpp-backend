@@ -13,8 +13,8 @@
 #include "io/io_context.h"
 #include "io/task/new_connection_task.h"
 #include "io/task/close_connection_task.h"
-#include "io/task/incoming_message_task.h"
-#include "io/task/outgoing_message_task.h"
+#include "io/task/message_request_task.h"
+#include "io/task/message_response_task.h"
 #include "db/db_queue.h"
 #include "db/db_context.h"
 #include "db/task/db_request_task.h"
@@ -101,8 +101,8 @@ namespace rocket {
         if (_need_io_worker) {
             RC_ASSIGN_ROUTE(new_connection_task, job_context);
             RC_ASSIGN_ROUTE(close_connection_task, job_context);
-            RC_ASSIGN_ROUTE(incoming_message_task, job_context);
-            RC_ASSIGN_ROUTE(outgoing_message_task, io_context);
+            RC_ASSIGN_ROUTE(message_request_task, job_context);
+            RC_ASSIGN_ROUTE(message_response_task, io_context);
         }
 
         // db routes

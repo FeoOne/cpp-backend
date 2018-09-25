@@ -37,7 +37,7 @@ namespace rocket {
 
     }
 
-    void request_service::handle_db_request_task(const task::sptr& t) noexcept
+    void request_service::handle_db_request_task(basic_task *t) noexcept
     {
 
     }

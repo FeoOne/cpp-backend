@@ -10,14 +10,15 @@
 
 #include <groot.h>
 
+#include "io/connection/io_stream.h"
+#include "io/connection/connection_link.h"
+
 namespace rocket {
 
     class tcp_connection final {
     public:
         GR_DECLARE_SMARTPOINTERS(tcp_connection)
         GR_DELETE_ALL_DEFAULT(tcp_connection)
-
-        using handle_type = groot::network_handle *;
 
         explicit tcp_connection(groot::ip_version version,
                                 groot::connection_side side,
@@ -37,16 +38,23 @@ namespace rocket {
         void set_nonblock(bool enable) noexcept;
         void set_keepalive(bool enable, u32 delay) noexcept;
 
-        handle_type handle() noexcept { return &_handle; }
+        connection_link::handle_type handle() noexcept { return &_handle; }
         groot::ip_version version() const noexcept { return _version; }
         groot::connection_side side() const noexcept { return _side; }
         groot::connection_kind kind() const noexcept { return _kind; }
+
+        io_stream *read_stream() noexcept { return &_read_stream; }
+
+        inline connection_link link() noexcept {
+            return connection_link { groot::network_protocol::TCP, &_handle };
+        }
 
     private:
         groot::network_handle       _handle;
         groot::ip_version           _version;
         groot::connection_side      _side;
         groot::connection_kind      _kind;
+        io_stream                   _read_stream;
         uv_write_t                  _write_request;
         uv_connect_t                _connect_request;
         uv_shutdown_t               _shutdown_request;

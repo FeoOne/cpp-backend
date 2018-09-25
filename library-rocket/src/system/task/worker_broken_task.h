@@ -8,12 +8,12 @@
 #ifndef ROCKET_WORKER_BROKE_DOWN_H
 #define ROCKET_WORKER_BROKE_DOWN_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 #include "work/work_context.h"
 
 namespace rocket {
 
-    class worker_broken_task : public groot::crucial<task, worker_broken_task> {
+    class worker_broken_task : public groot::crucial<basic_task, worker_broken_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(worker_broken_task)
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(worker_broken_task)

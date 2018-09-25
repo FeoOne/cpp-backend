@@ -12,14 +12,14 @@ namespace rocket {
     {
     }
 
-    void task_queue::push(const task::sptr& task) noexcept
+    void task_queue::push(basic_task *task) noexcept
     {
         _queue.push(task);
     }
 
-    task::sptr task_queue::pop() noexcept
+    basic_task *task_queue::pop() noexcept
     {
-        task::sptr task { _queue.front() };
+        auto task { _queue.front() };
         _queue.pop();
         return task;
     }

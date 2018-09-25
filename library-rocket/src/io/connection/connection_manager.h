@@ -24,7 +24,6 @@ namespace rocket {
 
         using connection_type = T;
         using connection_pointer = T *;
-        using connection_handle_type = typename connection_type::handle_type;
 
         /**
          * Ctor.
@@ -95,7 +94,7 @@ namespace rocket {
          * @param handle
          * @return
          */
-        connection_pointer get(connection_handle_type handle) noexcept {
+        connection_pointer get(connection_link::handle_type handle) noexcept {
             connection_pointer connection { nullptr };
             auto it = _connections.find(handle);
             if (it != _connections.end()) {
@@ -105,8 +104,8 @@ namespace rocket {
         }
 
     private:
-        std::unordered_map<connection_handle_type, connection_pointer>  _connections;
-        groot::fixed_memory_pool::uptr                                  _connection_pool;
+        std::unordered_map<connection_link::handle_type, connection_pointer>    _connections;
+        groot::fixed_memory_pool::uptr                                          _connection_pool;
 
     };
 

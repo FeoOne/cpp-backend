@@ -28,7 +28,7 @@ namespace rocket {
         void reset() noexcept final;
 
     private:
-        void handle_http_response_task(const task::sptr& t) noexcept;
+        void handle_http_response_task(basic_task *base_task) noexcept;
 
         void handler(SoupServer *server,
                      SoupMessage *message,

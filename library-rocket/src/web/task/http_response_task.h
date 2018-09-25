@@ -8,12 +8,12 @@
 #ifndef ROCKET_HTTP_RESPONSE_TASK_H
 #define ROCKET_HTTP_RESPONSE_TASK_H
 
-#include "task/task.h"
+#include "task/basic_task.h"
 #include "web/http/http_response.h"
 
 namespace rocket {
 
-    class http_response_task : public groot::crucial<task, http_response_task> {
+    class http_response_task : public groot::crucial<basic_task, http_response_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(http_response_task)
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_response_task)

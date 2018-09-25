@@ -33,7 +33,7 @@ namespace rocket {
             logcrit("Failed to start http service w/o server.");
         }
 
-        auto websocket_config { get_config()[consts::config::key::WEBSOCKET] };
+        auto websocket_config { config()[consts::config::key::WEBSOCKET] };
         auto path { websocket_config[consts::config::key::PATH].to_string() }; // @todo Make array of pathes.
 
         soup_server_add_websocket_handler(server,
@@ -47,17 +47,20 @@ namespace rocket {
 
     void websocket_service::reset() noexcept
     {
-        auto websocket_config { get_config()[consts::config::key::WEBSOCKET] };
+        auto websocket_config { config()[consts::config::key::WEBSOCKET] };
         auto path { websocket_config[consts::config::key::PATH].to_string() };
 
         soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
                                    path.data());
     }
 
-    void websocket_service::handle_ws_outgoing_message_task(const task::sptr& t) noexcept
+    void websocket_service::handle_ws_outgoing_message_task(basic_task *base_task) noexcept
     {
-        auto task = std::static_pointer_cast<ws_outgoing_message_task>(t);
+        auto task { reinterpret_cast<ws_outgoing_message_task *>(base_task) };
+
         // todo: implement
+
+        basic_task::destroy(task);
     }
 
     void websocket_service::on_handler(SoupServer *server,
@@ -81,8 +84,8 @@ namespace rocket {
                                        SoupWebsocketDataType data_type,
                                        GBytes *data) noexcept
     {
-        auto task = ws_incoming_message_task::make_shared(connection, data_type, data);
-        get_router()->enqueue(task);
+        auto task { basic_task::create<ws_incoming_message_task>(connection, data_type, data) };
+        router()->enqueue(task);
     }
 
     void websocket_service::on_error(SoupWebsocketConnection *connection, GError *error) noexcept

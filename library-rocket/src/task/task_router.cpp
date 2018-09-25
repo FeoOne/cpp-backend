@@ -23,12 +23,12 @@ namespace rocket {
         return _queues[context_key].get();
     }
 
-    void task_router::assign_route(task::key_type task_key, groot::crucial_key_type context_key) noexcept
+    void task_router::assign_route(basic_task::key_type task_key, groot::crucial_key_type context_key) noexcept
     {
         _context_keys[task_key] = context_key;
     }
 
-    void task_router::enqueue(const task::sptr& task) noexcept
+    void task_router::enqueue(basic_task *task) noexcept
     {
         _queues[_context_keys[task->get_key()]]->enqueue(task);
     }

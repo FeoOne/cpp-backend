@@ -17,8 +17,8 @@ namespace rocket {
         webserver_queue();
         virtual ~webserver_queue() = default;
 
-        void enqueue(const task::sptr& task) noexcept final;
-        task::sptr dequeue() noexcept final;
+        void enqueue(basic_task *task) noexcept final;
+        basic_task *dequeue() noexcept final;
 
         bool empty() const noexcept final;
 

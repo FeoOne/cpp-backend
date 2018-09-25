@@ -27,14 +27,14 @@ namespace quill {
 
     private:
         using message_processor =
-                std::function<rocket::ws_outgoing_message_task::sptr(const rocket::ws_incoming_message_task::sptr&)>;
+                std::function<rocket::ws_outgoing_message_task *(const rocket::ws_incoming_message_task *)>;
 
         std::unordered_map<u32, message_processor>      _processors;
 
-        void handle_ws_incoming_message_task(const rocket::task::sptr& t) noexcept;
+        void handle_ws_incoming_message_task(rocket::basic_task *base_task) noexcept;
 
-        rocket::ws_outgoing_message_task::sptr
-        process_create_invoice_message(const rocket::ws_incoming_message_task::sptr& task) noexcept;
+        rocket::ws_outgoing_message_task *
+        process_create_invoice_message(rocket::ws_incoming_message_task *task) noexcept;
 
     };
 

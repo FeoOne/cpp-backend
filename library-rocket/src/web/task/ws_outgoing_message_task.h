@@ -10,11 +10,11 @@
 
 #include <libsoup/soup.h>
 
-#include "task/task.h"
+#include "task/basic_task.h"
 
 namespace rocket {
 
-    class ws_outgoing_message_task : public groot::crucial<task, ws_outgoing_message_task> {
+    class ws_outgoing_message_task : public groot::crucial<basic_task, ws_outgoing_message_task> {
     public:
         GR_DECLARE_SMARTPOINTERS(ws_outgoing_message_task)
         GR_DELETE_ALL_DEFAULT(ws_outgoing_message_task)
