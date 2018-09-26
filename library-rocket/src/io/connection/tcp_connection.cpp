@@ -11,9 +11,11 @@
 
 namespace rocket {
 
-    tcp_connection::tcp_connection(groot::ip_version version,
+    tcp_connection::tcp_connection(u64 id,
+                                   groot::ip_version version,
                                    groot::connection_side side,
                                    groot::connection_kind kind) noexcept :
+            _id { id },
             _handle {},
             _version { version },
             _side { side },
@@ -23,6 +25,11 @@ namespace rocket {
             _connect_request {},
             _shutdown_request {}
     {
+    }
+
+    tcp_connection::~tcp_connection()
+    {
+        _id = 0;
     }
 
     void tcp_connection::init(uv_loop_t *loop, void *data) noexcept

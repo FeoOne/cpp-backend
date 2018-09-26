@@ -19,7 +19,7 @@ namespace rocket {
     public:
         GR_DELETE_ALL_DEFAULT(message_header)
 
-        static constexpr size_t SIZE { 16 };
+        static constexpr size_t SIZE { 20 };
 
         explicit message_header(u8 *memory) noexcept : _memory { memory } {}
         ~message_header() = default;
@@ -27,14 +27,14 @@ namespace rocket {
         u32 magic() const noexcept { return *reinterpret_cast<u32 *>(&_memory[MAGIC_OFFSET]); }
         u32 opcode() const noexcept { return *reinterpret_cast<u32 *>(&_memory[OPCODE_OFFSET]); }
         u32 version() const noexcept { return *reinterpret_cast<u32 *>(&_memory[VERSION_OFFSET]); }
-        u16 length() const noexcept { return *reinterpret_cast<u16 *>(&_memory[LENGTH_OFFSET]); }
-        u16 crc16() const noexcept { return *reinterpret_cast<u16 *>(&_memory[CRC16_OFFSET]); }
+        u32 length() const noexcept { return *reinterpret_cast<u16 *>(&_memory[LENGTH_OFFSET]); }
+        u32 crc32() const noexcept { return *reinterpret_cast<u16 *>(&_memory[CRC32_OFFSET]); }
 
         void magic(u32 value) noexcept { std::memcpy(&_memory[MAGIC_OFFSET], &value, sizeof(value)); }
         void opcode(u32 value) noexcept { std::memcpy(&_memory[OPCODE_OFFSET], &value, sizeof(value)); }
         void version(u32 value) noexcept { std::memcpy(&_memory[VERSION_OFFSET], &value, sizeof(value)); }
-        void length(u16 value) noexcept { std::memcpy(&_memory[LENGTH_OFFSET], &value, sizeof(value)); }
-        void crc16(u16 value) noexcept { std::memcpy(&_memory[CRC16_OFFSET], &value, sizeof(value)); }
+        void length(u32 value) noexcept { std::memcpy(&_memory[LENGTH_OFFSET], &value, sizeof(value)); }
+        void crc32(u32 value) noexcept { std::memcpy(&_memory[CRC32_OFFSET], &value, sizeof(value)); }
 
         bool is_magic_correct() const noexcept;
 
@@ -43,7 +43,7 @@ namespace rocket {
         static constexpr size_t OPCODE_OFFSET { 4 };
         static constexpr size_t VERSION_OFFSET { 8 };
         static constexpr size_t LENGTH_OFFSET { 12 };
-        static constexpr size_t CRC16_OFFSET { 14 };
+        static constexpr size_t CRC32_OFFSET { 16 };
 
         u8 *    _memory;
 
@@ -54,7 +54,7 @@ namespace rocket {
      */
     class message {
     public:
-        using opcode_type = u16;
+        using opcode_type = u32;
 
         explicit message(nullptr_t) noexcept {}
         virtual ~message() {}

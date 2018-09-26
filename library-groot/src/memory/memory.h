@@ -47,11 +47,19 @@ namespace groot {
         static size_t page_size() noexcept;
 
         template<typename T>
-        static T *aligned_alloc(size_t size) noexcept {
-            return static_cast<T *>(aligned_alloc_impl(size));
+        static inline T *malloc(size_t size) noexcept {
+            return reinterpret_cast<T *>(malloc_impl(size));
         }
 
+        template<typename T>
+        static inline T *aligned_alloc(size_t size) noexcept {
+            return reinterpret_cast<T *>(aligned_alloc_impl(size));
+        }
+
+        static void free(void *mem) noexcept;
+
     private:
+        static void *malloc_impl(size_t size) noexcept;
         static void *aligned_alloc_impl(size_t size) noexcept;
 
     };

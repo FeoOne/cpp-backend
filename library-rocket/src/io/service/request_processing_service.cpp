@@ -59,13 +59,18 @@ namespace rocket {
         read_stream->increase_head(message_header::SIZE);
 
         // validate checksum
-        if (header.crc16() != groot::checksum::crc16(read_stream->head(), header.length())) {
-            logerror("CRC16 checksum mismatch for connection 0x%llx.", connection);
+        if (header.crc32() != groot::checksum::crc32(read_stream->head(), header.length())) {
+            logerror("CRC32 checksum mismatch for connection 0x%llx.", connection);
             delegate()->get_service<tcp_service>()->shutdown(connection);
             return;
         }
 
-        auto task { basic_task::create<message_request_task>(header.opcode(), read_stream->head(), header.length()) };
+        auto task {
+            basic_task::create<message_request_task>(connection->link(),
+                                                     header.opcode(),
+                                                     read_stream->head(),
+                                                     header.length())
+        };
         router()->enqueue(task);
 
         read_stream->increase_head(header.length());

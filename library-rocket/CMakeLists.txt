@@ -24,9 +24,9 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         groot
-        ${GIO_INCLUDE_DIRS}
         ${GObject_INCLUDE_DIRS}
         ${Soup_INCLUDE_DIRS}
+        ${GIO_INCLUDE_DIRS}
         ${PQ_INCLUDE_DIR}
         )
 

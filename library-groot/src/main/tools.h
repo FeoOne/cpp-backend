@@ -18,5 +18,6 @@
 #define GR_ULOCK(n, m)      std::unique_lock<decltype(m)> n(m)
 
 #define GR_UNUSED           [[maybe_unused]]
+#define GR_NORETURN         [[noreturn]]
 
 #endif /* GROOT_TOOLS_H */

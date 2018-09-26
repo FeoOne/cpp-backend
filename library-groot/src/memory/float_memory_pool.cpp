@@ -50,7 +50,7 @@ namespace groot {
     //virtual
     float_memory_page::~float_memory_page()
     {
-        delete[] _memory;
+        memory::free(_memory);
     }
 
     void *float_memory_page::alloc(u32 alloc_size) noexcept

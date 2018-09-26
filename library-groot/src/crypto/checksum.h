@@ -21,6 +21,7 @@ namespace groot {
          * @return CRC16 result.
          */
         static u16 crc16(u8 *buffer, size_t size) noexcept;
+        static u32 crc32(u8 *buffer, size_t size) noexcept;
 
     private:
 

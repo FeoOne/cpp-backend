@@ -10,7 +10,7 @@
 namespace rocket {
 
     io_stream::io_stream(size_t initial_size) noexcept :
-            _memory { reinterpret_cast<u8 *>(je_malloc(initial_size)) },
+            _memory { groot::memory::malloc<u8>(initial_size) },
             _head { 0 },
             _tail { 0 },
             _size { initial_size }
@@ -18,7 +18,7 @@ namespace rocket {
     }
 
     io_stream::~io_stream() {
-        je_free(_memory);
+        groot::memory::free(_memory);
     }
 
     void io_stream::grow_if_needed() noexcept

@@ -10,6 +10,7 @@
 
 #include "task/basic_task.h"
 #include "message/message.h"
+#include "io/connection/connection_link.h"
 
 namespace rocket {
 
@@ -21,10 +22,14 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(message_request_task)
         GR_DELETE_ALL_DEFAULT(message_request_task)
 
-        explicit message_request_task(message::opcode_type opcode, u8 *memory, size_t length) noexcept;
+        explicit message_request_task(const connection_link& source,
+                                      message::opcode_type opcode,
+                                      u8 *memory,
+                                      size_t length) noexcept;
         virtual ~message_request_task();
 
     private:
+        connection_link         _source;
         message::opcode_type    _opcode;
         u8 *                    _memory;
         size_t                  _length;

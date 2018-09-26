@@ -9,13 +9,17 @@
 
 namespace rocket {
 
-    message_request_task::message_request_task(message::opcode_type opcode, u8 *memory, size_t length) noexcept :
+    message_request_task::message_request_task(const connection_link& source,
+                                               message::opcode_type opcode,
+                                               u8 *memory,
+                                               size_t length) noexcept :
+            _source { source },
             _opcode { opcode },
             _memory { nullptr },
             _length { length }
     {
         if (length > 0) {
-            _memory = reinterpret_cast<u8 *>(je_malloc(length));
+            _memory = groot::memory::aligned_alloc<u8>(length);
             if (_memory != nullptr) {
                 _memory = reinterpret_cast<u8 *>(std::memcpy(_memory, memory, length));
             }
@@ -26,7 +30,7 @@ namespace rocket {
     message_request_task::~message_request_task()
     {
         if (_memory != nullptr) {
-            je_free(_memory);
+            groot::memory::free(_memory);
         }
     }
 

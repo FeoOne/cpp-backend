@@ -31,6 +31,11 @@
 #include "web/page/web_view_loader.h"
 #include "web/page/web_view_manager.h"
 
+#include "io/task/new_connection_task.h"
+#include "io/task/message_request_task.h"
+#include "io/task/message_response_task.h"
+#include "io/task/close_connection_task.h"
+
 #include "protocol/protocol_machine.h"
 
 #endif /* ROCKET_ROCKET_H */

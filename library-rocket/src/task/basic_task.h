@@ -19,17 +19,16 @@ namespace rocket {
         GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(basic_task)
         GR_CRUCIAL_BASE_DEFINITION(RC_TASK_TYPE_MAX_KEY_COUNT)
 
-        virtual ~basic_task() = 0;
+        virtual ~basic_task() = default;
 
         template<typename T, typename... Args>
         static T *create(Args&&... args) noexcept {
-            return new (je_malloc(sizeof(T))) T(std::forward<Args>(args)...);
+            return new (groot::memory::malloc<void>(sizeof(T))) T(std::forward<Args>(args)...);
         }
 
-        template<typename T>
-        static void destroy(T *any_task) noexcept {
-            any_task->~T();
-            je_free(any_task);
+        static void destroy(basic_task *any_task) noexcept {
+            any_task->~basic_task();
+            groot::memory::free(any_task);
         }
 
     protected:

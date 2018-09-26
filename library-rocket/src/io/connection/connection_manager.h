@@ -12,7 +12,7 @@
 #include "io/connection/tcp_connection.h"
 #include "io/connection/udp_connection.h"
 
-#define RC_CONNECTION_POOL_PAGE_SIZE    (4096 * 32)
+#define RC_CONNECTION_POOL_PAGE_SIZE    (4096 * 4)
 
 namespace rocket {
 
@@ -31,34 +31,42 @@ namespace rocket {
          * @param output_buffer_size
          */
         connection_manager() :
-                _connections {},
+                _id_counter { 0 },
+                _connections_by_id {},
                 _connection_pool {
                     groot::fixed_memory_pool::make_unique(sizeof(connection_type), RC_CONNECTION_POOL_PAGE_SIZE)
                 }
         {
-            _connections.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
+            _connections_by_id.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
+            _connections_by_handle.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
         }
 
         ~connection_manager() = default;
 
         /**
          * Acquire new connection.
-         * @param handle
          * @param version
          * @param side
          * @param kind
          * @return
          */
-        connection_pointer acquire(groot::ip_version version,
-                                   groot::connection_side side,
-                                   groot::connection_kind kind) noexcept {
+        inline connection_pointer acquire(groot::ip_version version,
+                                          groot::connection_side side,
+                                          groot::connection_kind kind) noexcept {
+            // increment connection id counter
+            do {
+                ++_id_counter;
+            } while (_id_counter == 0); // 0 id = invalid connection
+
+            // create connection
             auto connection {
-                new (_connection_pool->alloc()) connection_type(version, side, kind)
+                new (_connection_pool->alloc()) connection_type(_id_counter, version, side, kind)
             };
 
             if (connection != nullptr) {
-                _connections.insert({ connection->handle(), connection });
-                logdebug("Acquired connection 0x%" PRIxPTR ".", connection);
+                _connections_by_id.insert({ connection->id(), connection });
+                _connections_by_handle.insert({ connection->handle(), connection });
+                logdebug("Acquired connection with id: %lu.", connection->id());
             } else {
                 logerror("Failed to acquire connection.");
             }
@@ -70,42 +78,76 @@ namespace rocket {
          * Return unnecessary connection.
          * @param connection Connection to release.
          */
-        void release(connection_pointer connection) noexcept {
+        inline void release(connection_pointer connection) noexcept {
             if (connection == nullptr) {
                 logerror("Can't release null pointer.");
                 return;
             }
 
-            auto it = _connections.find(connection->handle());
-            if (it == _connections.end()) {
-                logerror("Can't find connection to release.");
+            // by id
+            auto it_by_id = _connections_by_id.find(connection->id());
+            if (it_by_id == _connections_by_id.end()) {
+                logerror("Connection with id %lu not presented.", connection->id());
                 return;
             }
 
-            _connections.erase(it);
+            // by handle
+            auto it_by_handle = _connections_by_handle.find(connection->handle());
+            if (it_by_handle == _connections_by_handle.end()) {
+                logerror("Connection handle with id %lu not presented.", connection->id());
+                return;
+            }
 
-            logdebug("Released connection 0x%" PRIxPTR ".", connection);
+            _connections_by_id.erase(it_by_id);
+            _connections_by_handle.erase(it_by_handle);
+
+            logdebug("Released connection with id %lu.", connection->id());
 
             _connection_pool->free(connection);
         }
 
         /**
-         *
-         * @param handle
-         * @return
+         * Get connection by handle.
+         * @param handle Connection's handle.
+         * @return Connection pointer if `handle` presented, `nullptr` otherwise.
          */
-        connection_pointer get(connection_link::handle_type handle) noexcept {
+        inline connection_pointer get(groot::network_handle *handle) noexcept {
             connection_pointer connection { nullptr };
-            auto it = _connections.find(handle);
-            if (it != _connections.end()) {
+            auto it = _connections_by_handle.find(handle);
+            if (it != _connections_by_handle.end()) {
                 connection = it->second;
             }
             return connection;
         }
 
+        /**
+         * Get connection by id.
+         * @param id Connection's id.
+         * @return Connection pointer if `id` presented, `nullptr` otherwise.
+         */
+        inline connection_pointer get(u64 id) noexcept {
+            connection_pointer connection { nullptr };
+            auto it = _connections_by_id.find(id);
+            if (it != _connections_by_id.end()) {
+                connection = it->second;
+            }
+            return connection;
+        }
+
+        /**
+         * Get connection by link.
+         * @param link Connection's link.
+         * @return Connection pointer if `link.id()` presented, `nullptr` otherwise.
+         */
+        inline connection_pointer get(const connection_link& link) noexcept {
+            return get(link.connection_id());
+        }
+
     private:
-        std::unordered_map<connection_link::handle_type, connection_pointer>    _connections;
-        groot::fixed_memory_pool::uptr                                          _connection_pool;
+        u64                                                                 _id_counter;
+        std::unordered_map<u64, connection_pointer>                         _connections_by_id;
+        std::unordered_map<groot::network_handle *, connection_pointer>     _connections_by_handle;
+        groot::fixed_memory_pool::uptr                                      _connection_pool;
 
     };
 

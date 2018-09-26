@@ -43,6 +43,7 @@ namespace quill {
     void websocket_service::handle_ws_incoming_message_task(rocket::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<rocket::ws_incoming_message_task *>(base_task) };
+
         if (task->get_data_type() == SOUP_WEBSOCKET_DATA_BINARY) {
             lognotice("magic: 0x%lX, opcode: %lu, length: %lu",
                     task->get_header()->get_magic(),
@@ -60,6 +61,8 @@ namespace quill {
             gconstpointer ptr = g_bytes_get_data(task->get_bytes(), &sz);
             lognotice("Text message from ws: %s", ptr);
         }
+
+        rocket::basic_task::destroy(task);
     }
 
     rocket::ws_outgoing_message_task *

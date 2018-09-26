@@ -22,13 +22,20 @@ namespace groot {
     }
 
     // static
+    void *memory::malloc_impl(size_t size) noexcept
+    {
+        return je_malloc(size);
+    }
+
+    // static
     void *memory::aligned_alloc_impl(size_t size) noexcept
     {
-#ifdef GR_PLATFORM_BSD
-        return std::malloc(size);
-#else
-        return aligned_alloc(page_size(), size);
-#endif
+        return je_aligned_alloc(page_size(), size);
+    }
+
+    // static
+    void memory::free(void *mem) noexcept {
+        je_free(mem);
     }
 
 }

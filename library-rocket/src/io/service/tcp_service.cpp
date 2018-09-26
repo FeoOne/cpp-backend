@@ -71,9 +71,10 @@ namespace rocket {
         setup_sockaddr(endpoint, &addr);
 
         if (connection->bind(&addr) && connection->listen(backlog, &tcp_service::connection_routine)) {
-            lognotice("Successfully started server socket %s:%u. Connection: 0x%llx",
+            lognotice("Successfully started server socket %s:%u. Connection id: %lu, ptr: 0x%llx.",
                       endpoint->get_host().data(),
                       endpoint->get_port(),
+                      connection->id(),
                       connection);
             connection->set_nodelay(true);
             connection->set_nonblock(true);
@@ -98,9 +99,10 @@ namespace rocket {
 
         auto request = connection->connect(&addr, &tcp_service::connect_routine);
         if (request != nullptr) {
-            lognotice("Connecting to %s:%u. Connection: 0x%" PRIxPTR ".",
+            lognotice("Connecting to %s:%u. Connection id: %lu, ptr: 0x%llx.",
                       endpoint->get_host().data(),
                       endpoint->get_port(),
+                      connection->id(),
                       connection);
             connection->set_nodelay(true);
             connection->set_nonblock(true);
@@ -194,11 +196,15 @@ namespace rocket {
         client_connection->init(_loop, this);
 
         if (server_connection->accept(client_connection)) {
-            lognotice("Accepted new connection 0x%" PRIxPTR ".", client_connection);
+            lognotice("Accepted new connection with id: %lu, ptr: 0x%llx.",
+                      client_connection->id(),
+                      client_connection);
             client_connection->set_nodelay(true);
             client_connection->set_nonblock(true);
             if (!start_connection(client_connection)) {
-                logerror("Failed to start read connection 0x%" PRIxPTR ".", client_connection);
+                logerror("Failed to start read connection with id: %lu, ptr: 0x%llx.",
+                         client_connection->id(),
+                         client_connection);
                 shutdown_connection(client_connection);
             }
         } else {
@@ -212,14 +218,16 @@ namespace rocket {
         auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
         auto connection { _connections->get(handle) };
         if (status == 0 && connection != nullptr) {
-            lognotice("Successfully connected 0x%" PRIxPTR ".", connection);
+            lognotice("Successfully connected id: %lu, ptr: 0x%llx.", connection->id(), connection);
             if (!start_connection(connection)) {
-                logerror("Cant start read connection 0x%" PRIxPTR ".", connection);
+                logerror("Cant start read connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
                 shutdown_connection(connection);
             }
         } else {
             if (connection != nullptr) {
-                logerror("Failed to connect. Shutting down connection 0x%" PRIxPTR ".", connection);
+                logerror("Failed to connect. Shutting down connection with id: %lu, ptr: 0x%llx.",
+                         connection->id(),
+                         connection);
                 shutdown_connection(connection);
             }
         }
@@ -274,7 +282,7 @@ namespace rocket {
             auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
             auto connection = _connections->get(handle);
             if (connection) {
-                logdebug("Writing to connection 0x%" PRIxPTR ".", connection);
+                logdebug("Writing to connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
                 // write
             } else {
                 logerror("Failed to write: connection not presented.");
@@ -290,7 +298,7 @@ namespace rocket {
             auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
             auto connection = _connections->get(handle);
             if (connection) {
-                lognotice("Shutting down connection 0x%" PRIxPTR ".", connection);
+                lognotice("Shutting down connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
                 _connections->release(connection);
             } else {
                 logerror("Failed to shutdown connection: connection not presented.");

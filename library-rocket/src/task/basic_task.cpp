@@ -10,9 +10,4 @@ namespace rocket {
 
     GR_CRUCIAL_BASE_DECLARATION(basic_task)
 
-    // pure virtual
-    basic_task::~basic_task()
-    {
-    }
-
 }

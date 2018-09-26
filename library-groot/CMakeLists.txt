@@ -9,6 +9,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/groot_consts_gen.h.in
         )
 
 find_package(Config REQUIRED)
+find_package(zlib REQUIRED)
 find_package(GLib REQUIRED)
 find_package(UUID REQUIRED)
 find_package(UV REQUIRED)
@@ -34,8 +35,9 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${Jemalloc_SOURCE_DIRS}
         ${Config_INCLUDE_DIR}
-        ${GLib_INCLUDE_DIRS}
+        ${ZLIB_INCLUDE_DIRS}
         ${UUID_INCLUDE_DIR}
+        ${GLib_INCLUDE_DIRS}
         ${UV_INCLUDE_DIRS}
         )
 
@@ -43,9 +45,10 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
+        ${Jemalloc_LIBRARIES}
         ${Config_LIBRARIES}
+        ${ZLIB_LIBRARIES}
         ${UUID_LIBRARIES}
         ${GLib_LIBRARY}
         ${UV_LIBRARIES}
-        ${Jemalloc_LIBRARIES}
         )

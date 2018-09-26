@@ -72,7 +72,7 @@ namespace groot {
     // virtual
     fixed_memory_page::~fixed_memory_page()
     {
-        delete[] _memory;
+        memory::free(_memory);
     }
 
     void *fixed_memory_page::alloc() noexcept
