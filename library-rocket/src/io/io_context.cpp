@@ -20,10 +20,10 @@ namespace rocket {
     io_context::io_context(const groot::setting& config, task_router *router) noexcept :
             crucial(config, router, io_loop::make_unique(router->get_queue<io_context>(), this))
     {
-        add_service(tcp_service::make_unique(get_config(), get_router(), this));
-        add_service(udp_service::make_unique(get_config(), get_router(), this));
-        add_service(response_processing_service::make_unique(get_config(), get_router(), this));
-        add_service(request_processing_service::make_unique(get_config(), get_router(), this));
+        add_service(tcp_service::make_unique(config, router, this));
+        add_service(udp_service::make_unique(config, router, this));
+        add_service(request_processing_service::make_unique(config, router, this));
+        add_service(response_processing_service::make_unique(config, router, this));
 
         //RC_BIND_TASK_ROUTE(close_connection_task, );
         RC_BIND_TASK_ROUTE(message_response_task, response_processing_service);

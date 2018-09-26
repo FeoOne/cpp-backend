@@ -19,9 +19,9 @@ namespace rocket {
     webserver_context::webserver_context(const groot::setting& config, task_router *router) noexcept :
             crucial(config, router, webserver_loop::make_unique(router->get_queue<webserver_context>(), this))
     {
-        add_service(webserver_service::make_unique(get_config(), get_router(), this));
-        add_service(http_service::make_unique(get_config(), get_router(), this));
-        add_service(websocket_service::make_unique(get_config(), get_router(), this));
+        add_service(webserver_service::make_unique(config, router, this));
+        add_service(http_service::make_unique(config, router, this));
+        add_service(websocket_service::make_unique(config, router, this));
 
         RC_BIND_TASK_ROUTE(http_response_task, http_service);
         RC_BIND_TASK_ROUTE(ws_outgoing_message_task, websocket_service);

@@ -78,13 +78,13 @@ namespace rocket {
          * Config getter.
          * @return Config node with settings regarding concrete work context.
          */
-        const groot::setting& get_config() const noexcept { return _config; }
+        const groot::setting& config() const noexcept { return _config; }
 
         /**
          * Task router getter.
          * @return Pointer to task router.
          */
-        task_router *get_router() noexcept { return _router; }
+        task_router *router() noexcept { return _router; }
 
         /**
          * Indicate which service must handle concrete task.
