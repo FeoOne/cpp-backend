@@ -11,12 +11,8 @@
 #include <groot.h>
 
 #define RC_TASK_TYPE_MAX_KEY_COUNT              32
-#define RC_WORK_SERVICE_TYPE_MAX_KEY            16
+#define RC_WORK_SERVICE_TYPE_MAX_KEY            64
 #define RC_WORK_CONTEXT_TYPE_MAX_KEY_COUNT      8
-
-#define RC_IO_BUFFER_SIZE                       4096
-
-//static constexpr std::string_view  { "" };
 
 namespace rocket {
 
