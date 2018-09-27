@@ -1,16 +1,16 @@
 /**
  * @file io_service.h
  * @author Feo
- * @date 26/09/2018
+ * @date 27/09/2018
  * @brief
  */
 
-#ifndef QUILL_IO_SERVICE_H
-#define QUILL_IO_SERVICE_H
+#ifndef STRANGE_IO_SERVICE_H
+#define STRANGE_IO_SERVICE_H
 
 #include <rocket.h>
 
-namespace quill {
+namespace strange {
 
     class io_service : public groot::crucial<rocket::work_service, io_service> {
     public:
@@ -34,4 +34,4 @@ namespace quill {
 
 }
 
-#endif /* QUILL_IO_SERVICE_H */
+#endif /* STRANGE_IO_SERVICE_H */

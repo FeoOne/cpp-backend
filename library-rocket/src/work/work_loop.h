@@ -8,8 +8,8 @@
 #ifndef ROCKET_EXECUTION_LOOP_H
 #define ROCKET_EXECUTION_LOOP_H
 
-#include "task/task_queue.h"
 #include "task/task_handler.h"
+#include "task/queue/task_queue.h"
 
 namespace rocket {
 

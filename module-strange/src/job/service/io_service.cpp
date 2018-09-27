@@ -1,13 +1,13 @@
 /**
  * @file io_service.cpp
  * @author Feo
- * @date 26/09/2018
+ * @date 27/09/2018
  * @brief
  */
 
 #include "job/service/io_service.h"
 
-namespace quill {
+namespace strange {
 
     io_service::io_service(const groot::setting& config,
                            rocket::task_router *router,
@@ -58,3 +58,4 @@ namespace quill {
     }
 
 }
+

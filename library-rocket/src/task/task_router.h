@@ -6,7 +6,7 @@
 #define ROCKET_TASK_ROUTER_H
 
 #include "main/rocket_consts.h"
-#include "task/task_queue.h"
+#include "task/queue/task_queue.h"
 
 namespace rocket {
 

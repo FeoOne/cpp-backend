@@ -97,7 +97,7 @@ namespace groot {
 
     void config::load(const std::string_view &filename) noexcept
     {
-        lognotice("Loading config from path: '%s'...", filename.data());
+        lognotice("Loading config from path: '%s'.", filename.data());
 
         auto ptr = _config.get();
         config_init(ptr);

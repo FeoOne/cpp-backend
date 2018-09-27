@@ -22,14 +22,19 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(message_request_task)
         GR_DELETE_ALL_DEFAULT(message_request_task)
 
-        explicit message_request_task(const connection_link& source,
+        explicit message_request_task(const connection_link& link,
                                       message::opcode_type opcode,
                                       u8 *memory,
                                       size_t length) noexcept;
         virtual ~message_request_task();
 
+        const connection_link& link() const noexcept { return _link; }
+        message::opcode_type opcode() const noexcept { return _opcode; }
+        const u8 *memory() const noexcept { return _memory; }
+        size_t length() const noexcept { return _length; }
+
     private:
-        connection_link         _source;
+        connection_link         _link;
         message::opcode_type    _opcode;
         u8 *                    _memory;
         size_t                  _length;

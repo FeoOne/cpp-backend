@@ -9,11 +9,11 @@
 
 namespace rocket {
 
-    message_request_task::message_request_task(const connection_link& source,
+    message_request_task::message_request_task(const connection_link& link,
                                                message::opcode_type opcode,
                                                u8 *memory,
                                                size_t length) noexcept :
-            _source { source },
+            _link { link },
             _opcode { opcode },
             _memory { nullptr },
             _length { length }

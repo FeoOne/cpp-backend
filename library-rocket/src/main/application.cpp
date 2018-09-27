@@ -9,25 +9,21 @@
 
 #include "main/application.h"
 #include "main/rocket_consts.h"
-#include "io/io_queue.h"
+#include "task/queue/quiet_task_queue.h"
+#include "task/queue/condition_task_queue.h"
 #include "io/io_context.h"
-#include "io/task/new_connection_task.h"
-#include "io/task/close_connection_task.h"
+#include "io/task/connection_status_changed_task.h"
 #include "io/task/message_request_task.h"
 #include "io/task/message_response_task.h"
-#include "db/db_queue.h"
 #include "db/db_context.h"
 #include "db/task/db_request_task.h"
 #include "db/task/db_response_task.h"
-#include "job/job_queue.h"
 #include "job/job_context.h"
-#include "web/webserver_queue.h"
 #include "web/webserver_context.h"
 #include "web/task/http_request_task.h"
 #include "web/task/http_response_task.h"
 #include "web/task/ws_incoming_message_task.h"
 #include "web/task/ws_outgoing_message_task.h"
-#include "system/system_queue.h"
 #include "system/system_context.h"
 
 #define RC_ADD_QUEUE(context, queue)    _router->add_queue(context::key(), queue::make_unique())
@@ -80,18 +76,18 @@ namespace rocket {
     void application::create_queues() noexcept
     {
         // required
-        RC_ADD_QUEUE(job_context, job_queue);
-        RC_ADD_QUEUE(system_context, system_queue);
+        RC_ADD_QUEUE(job_context, condition_task_queue);
+        RC_ADD_QUEUE(system_context, condition_task_queue);
 
         // optional
         if (_need_io_worker) {
-            RC_ADD_QUEUE(io_context, io_queue);
+            RC_ADD_QUEUE(io_context, quiet_task_queue);
         }
         if (_need_db_worker) {
-            RC_ADD_QUEUE(db_context, db_queue);
+            RC_ADD_QUEUE(db_context, quiet_task_queue);
         }
         if (_need_web_worker) {
-            RC_ADD_QUEUE(webserver_context, webserver_queue);
+            RC_ADD_QUEUE(webserver_context, quiet_task_queue);
         }
     }
 
@@ -99,8 +95,7 @@ namespace rocket {
     {
         // io routes
         if (_need_io_worker) {
-            RC_ASSIGN_ROUTE(new_connection_task, job_context);
-            RC_ASSIGN_ROUTE(close_connection_task, job_context);
+            RC_ASSIGN_ROUTE(connection_status_changed_task, job_context);
             RC_ASSIGN_ROUTE(message_request_task, job_context);
             RC_ASSIGN_ROUTE(message_response_task, io_context);
         }

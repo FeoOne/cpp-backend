@@ -6,14 +6,13 @@
 #define ROCKET_TASK_QUEUE_H
 
 #include "task/basic_task.h"
-#include "main/rocket_consts.h"
 
 namespace rocket {
 
     class task_queue {
     public:
         GR_DECLARE_SMARTPOINTERS(task_queue)
-        GR_DELETE_ALL_DEFAULT(task_queue)
+        GR_DELETE_ALL_DEFAULT_EXCEPT_CTOR(task_queue)
 
         virtual ~task_queue() = default;
 
@@ -23,16 +22,9 @@ namespace rocket {
         virtual bool empty() const noexcept = 0;
 
     protected:
-        explicit task_queue(const std::string_view& domain) noexcept;
+        std::queue<basic_task *>        _queue;
 
-        void push(basic_task *task) noexcept;
-        basic_task *pop() noexcept;
-
-        bool is_empty() const noexcept;
-
-    private:
-        std::string_view            _domain;
-        std::queue<basic_task *>    _queue;
+        task_queue() : _queue {} {}
 
     };
 

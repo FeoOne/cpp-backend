@@ -7,8 +7,6 @@
 
 #include "io/io_loop.h"
 #include "io/connection/tcp_connection.h"
-#include "io/task/new_connection_task.h"
-#include "io/task/close_connection_task.h"
 #include "io/service/request_processing_service.h"
 
 #include "io/service/tcp_service.h"
@@ -180,6 +178,14 @@ namespace rocket {
         }
     }
 
+    void tcp_service::produce_task_about_connection_status(
+            const connection_link &link,
+            connection_status_changed_task::connection_status status
+            ) noexcept
+    {
+        router()->enqueue(basic_task::create<connection_status_changed_task>(link, status));
+    }
+
     void tcp_service::on_connection(groot::network_handle *handle, int status) noexcept
     {
         if (status != 0) {
@@ -206,6 +212,9 @@ namespace rocket {
                          client_connection->id(),
                          client_connection);
                 shutdown_connection(client_connection);
+            } else {
+                produce_task_about_connection_status(client_connection->link(),
+                                                     connection_status_changed_task::connection_status::opened);
             }
         } else {
             logerror("Failed to accept connection.");
@@ -213,6 +222,11 @@ namespace rocket {
         }
     }
 
+    /**
+     * Called when server connection did connected or not.
+     * @param request
+     * @param status
+     */
     void tcp_service::on_connect(uv_connect_t *request, int status) noexcept
     {
         auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
@@ -222,6 +236,9 @@ namespace rocket {
             if (!start_connection(connection)) {
                 logerror("Cant start read connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
                 shutdown_connection(connection);
+            } else {
+                produce_task_about_connection_status(connection->link(),
+                                                     connection_status_changed_task::connection_status::opened);
             }
         } else {
             if (connection != nullptr) {
@@ -299,6 +316,10 @@ namespace rocket {
             auto connection = _connections->get(handle);
             if (connection) {
                 lognotice("Shutting down connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
+
+                produce_task_about_connection_status(connection->link(),
+                                                     connection_status_changed_task::connection_status::closed);
+
                 _connections->release(connection);
             } else {
                 logerror("Failed to shutdown connection: connection not presented.");

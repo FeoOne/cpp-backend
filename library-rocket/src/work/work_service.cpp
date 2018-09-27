@@ -16,14 +16,23 @@ namespace rocket {
                                const work_service_delegate *delegate) noexcept :
             _config { config },
             _router { router },
-            _delegate { delegate }
+            _delegate { delegate },
+            _handlers {}
     {
-        _handlers.fill(nullptr);
     }
 
     void work_service::handle_task(basic_task *task) const noexcept
     {
+#ifdef NDEBUG
         _handlers[task->get_key()](task);
+#else
+        auto& handler { _handlers[task->get_key()] };
+        if (handler) {
+            handler(task);
+        } else {
+            logerror("Task handler for key %lu not presented.", task->get_key());
+        }
+#endif
     }
 
     void work_service::assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept

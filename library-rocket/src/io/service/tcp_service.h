@@ -11,6 +11,7 @@
 #include "work/work_service.h"
 #include "io/connection/tcp_connection.h"
 #include "io/connection/connection_manager.h"
+#include "io/task/connection_status_changed_task.h"
 
 namespace rocket {
 
@@ -40,6 +41,9 @@ namespace rocket {
 
         void setup_servers() noexcept;
         void setup_clients() noexcept;
+
+        void produce_task_about_connection_status(const connection_link &link,
+                                                  connection_status_changed_task::connection_status status) noexcept;
 
         void on_connection(groot::network_handle *handle, int status) noexcept;
         void on_connect(uv_connect_t *request, int status) noexcept;

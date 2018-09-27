@@ -47,10 +47,10 @@ namespace rocket {
         void assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept;
 
     private:
-        const groot::setting                    _config;
-        task_router *                           _router;
-        const work_service_delegate *           _delegate;
-        std::array<task_handler, basic_task::MAX_KEY>      _handlers;
+        const groot::setting                            _config;
+        task_router *                                   _router;
+        const work_service_delegate *                   _delegate;
+        std::array<task_handler, basic_task::MAX_KEY>   _handlers;
 
     };
 
