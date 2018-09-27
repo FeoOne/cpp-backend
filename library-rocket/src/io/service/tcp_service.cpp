@@ -17,6 +17,9 @@
 #define shutdown_connection(connection) \
     connection->shutdown(&tcp_service::shutdown_routine)
 
+#define close_connection(connection)    \
+    connection->close(&tcp_service::close_routine)
+
 namespace rocket {
 
     tcp_service::tcp_service(const groot::setting& config,
@@ -211,6 +214,7 @@ namespace rocket {
                 logerror("Failed to start read connection with id: %lu, ptr: 0x%llx.",
                          client_connection->id(),
                          client_connection);
+                // connection already accepted, so we must shutdown it before close
                 shutdown_connection(client_connection);
             } else {
                 produce_task_about_connection_status(client_connection->link(),
@@ -218,7 +222,8 @@ namespace rocket {
             }
         } else {
             logerror("Failed to accept connection.");
-            _connections->release(client_connection);
+            // connection did not accepted, so direct close it
+            close_connection(client_connection);
         }
     }
 
@@ -229,6 +234,7 @@ namespace rocket {
      */
     void tcp_service::on_connect(uv_connect_t *request, int status) noexcept
     {
+        // todo: rework this method to satisfy fact that local connections must reconnect on fail
         auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
         auto connection { _connections->get(handle) };
         if (status == 0 && connection != nullptr) {
@@ -245,7 +251,8 @@ namespace rocket {
                 logerror("Failed to connect. Shutting down connection with id: %lu, ptr: 0x%llx.",
                          connection->id(),
                          connection);
-                shutdown_connection(connection);
+                // connection not established, so we can direct close it
+                close_connection(connection);
             }
         }
     }
@@ -312,20 +319,30 @@ namespace rocket {
     void tcp_service::on_shutdown(uv_shutdown_t *request, int status) noexcept
     {
         if (status == 0) {
-            auto handle = reinterpret_cast<groot::network_handle *>(request->handle);
-            auto connection = _connections->get(handle);
+            auto handle { reinterpret_cast<groot::network_handle *>(request->handle) };
+            auto connection { _connections->get(handle) };
             if (connection) {
                 lognotice("Shutting down connection with id: %lu, ptr: 0x%llx.", connection->id(), connection);
 
                 produce_task_about_connection_status(connection->link(),
                                                      connection_status_changed_task::connection_status::closed);
 
-                _connections->release(connection);
+                close_connection(connection);
             } else {
                 logerror("Failed to shutdown connection: connection not presented.");
             }
         } else {
             logerror("Failed to shutdown connection: %s (%s).", uv_strerror(status), uv_err_name(status));
+        }
+    }
+
+    void tcp_service::on_close(groot::network_handle *handle) noexcept
+    {
+        auto connection { _connections->get(handle) };
+        if (connection != nullptr) {
+            _connections->release(connection);
+        } else {
+            logerror("Failed to close connection: not presented.");
         }
     }
 
@@ -392,7 +409,18 @@ namespace rocket {
         }
     }
 
+    // static
+    void tcp_service::close_routine(uv_handle_t *handle) noexcept
+    {
+        if (handle != nullptr && handle->data != nullptr) {
+            static_cast<tcp_service *>(handle->data)->on_close(reinterpret_cast<groot::network_handle *>(handle));
+        } else {
+            logerror("Failed to process close routine.");
+        }
+    }
+
 }
 
+#undef close_connection
 #undef shutdown_connection
 #undef start_connection

@@ -19,7 +19,7 @@
 #include "db/task/db_request_task.h"
 #include "db/task/db_response_task.h"
 #include "job/job_context.h"
-#include "web/webserver_context.h"
+#include "web/web_context.h"
 #include "web/task/http_request_task.h"
 #include "web/task/http_response_task.h"
 #include "web/task/ws_incoming_message_task.h"
@@ -48,7 +48,7 @@ namespace rocket {
     {
         RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_IO, io_context);
         RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_DB, db_context);
-        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_WEB, webserver_context);
+        RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_WEB, web_context);
         RC_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_SYSTEM, system_context);
     }
 
@@ -87,7 +87,7 @@ namespace rocket {
             RC_ADD_QUEUE(db_context, quiet_task_queue);
         }
         if (_need_web_worker) {
-            RC_ADD_QUEUE(webserver_context, quiet_task_queue);
+            RC_ADD_QUEUE(web_context, quiet_task_queue);
         }
     }
 
@@ -109,9 +109,9 @@ namespace rocket {
         // web routes
         if (_need_web_worker) {
             RC_ASSIGN_ROUTE(http_request_task, job_context);
-            RC_ASSIGN_ROUTE(http_response_task, webserver_context);
+            RC_ASSIGN_ROUTE(http_response_task, web_context);
             RC_ASSIGN_ROUTE(ws_incoming_message_task, job_context);
-            RC_ASSIGN_ROUTE(ws_outgoing_message_task, webserver_context);
+            RC_ASSIGN_ROUTE(ws_outgoing_message_task, web_context);
         }
     }
 

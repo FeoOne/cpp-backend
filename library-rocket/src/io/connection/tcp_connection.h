@@ -27,8 +27,10 @@ namespace rocket {
         bool listen(u16 backlog, uv_connection_cb cb) noexcept;
         bool accept(tcp_connection *client_connection) noexcept;
         bool start(uv_alloc_cb alloc_cb, uv_read_cb read_cb) noexcept;
+        void stop() noexcept;
         uv_connect_t *connect(groot::socket_address *addr, uv_connect_cb cb) noexcept;
         uv_shutdown_t *shutdown(uv_shutdown_cb cb) noexcept;
+        void close(uv_close_cb cb) noexcept;
 
         void set_nodelay(bool enable) noexcept;
         void set_nonblock(bool enable) noexcept;

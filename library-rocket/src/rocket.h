@@ -17,8 +17,8 @@
 #include "system/system_loop.h"
 #include "system/system_context.h"
 
-#include "web/webserver_loop.h"
-#include "web/webserver_context.h"
+#include "web/web_loop.h"
+#include "web/web_context.h"
 #include "web/service/http_service.h"
 #include "web/service/websocket_service.h"
 #include "web/task/http_request_task.h"

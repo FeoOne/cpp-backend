@@ -53,7 +53,7 @@ namespace groot {
 
         std::snprintf(buffer,
                       consts::LOGGER_MAX_MESSAGE_LENGTH,
-                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s\n",
+                      "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s",
                       timeinfo->tm_year + 1900,
                       timeinfo->tm_mon + 1,
                       timeinfo->tm_mday,
@@ -74,7 +74,7 @@ namespace groot {
 
         std::ostream& stream = fatal ? std::cerr : std::cout;
 
-        stream << buffer;
+        stream << buffer << std::endl;
     }
 
 }

@@ -51,6 +51,7 @@ namespace rocket {
         void on_read(groot::network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept;
         void on_write(uv_write_t *request, int status) noexcept;
         void on_shutdown(uv_shutdown_t *request, int status) noexcept;
+        void on_close(groot::network_handle *handle) noexcept;
 
         static void connection_routine(uv_stream_t *stream, int status) noexcept;
         static void connect_routine(uv_connect_t *request, int status) noexcept;
@@ -58,6 +59,7 @@ namespace rocket {
         static void read_routine(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) noexcept;
         static void write_routine(uv_write_t *request, int status) noexcept;
         static void shutdown_routine(uv_shutdown_t *request, int status) noexcept;
+        static void close_routine(uv_handle_t *handle) noexcept;
 
     };
 
