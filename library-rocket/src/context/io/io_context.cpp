@@ -6,7 +6,7 @@
  */
 
 #include "context/io/io_loop.h"
-#include "context/io/service/connection_service.h"
+#include "context/io/service/io_connection_service.h"
 #include "context/io/service/tcp_service.h"
 #include "context/io/service/udp_service.h"
 #include "context/io/service/request_processing_service.h"
@@ -20,7 +20,7 @@ namespace rocket {
     io_context::io_context(const groot::setting& config, task_router *router) noexcept :
             crucial(config, router, io_loop::make_unique(router->get_queue<io_context>(), this))
     {
-        add_service(connection_service::make_unique(config, router, this));
+        add_service(io_connection_service::make_unique(config, router, this));
         add_service(tcp_service::make_unique(config, router, this));
         add_service(udp_service::make_unique(config, router, this));
         add_service(request_processing_service::make_unique(config, router, this));

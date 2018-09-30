@@ -96,8 +96,8 @@ namespace rocket {
         // io routes
         if (_need_io_worker) {
             RC_ASSIGN_ROUTE(connection_status_changed_task, job_context);
-            RC_ASSIGN_ROUTE(message_request_task, job_context);
-            RC_ASSIGN_ROUTE(message_response_task, io_context);
+            RC_ASSIGN_ROUTE(io_request_task, job_context);
+            RC_ASSIGN_ROUTE(io_response_task, io_context);
         }
 
         // db routes

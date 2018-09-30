@@ -14,7 +14,7 @@ namespace quill {
                            const rocket::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate)
     {
-        RC_ASSIGN_TASK_HANDLER(rocket::message_request_task, io_service, handle_message_request_task);
+        RC_ASSIGN_TASK_HANDLER(rocket::io_request_task, io_service, handle_io_request_task);
         RC_ASSIGN_TASK_HANDLER(rocket::connection_status_changed_task,
                                io_service,
                                handle_connection_status_changed_task);
@@ -46,7 +46,7 @@ namespace quill {
         rocket::basic_task::destroy(task); // todo: get rid
     }
 
-    void io_service::handle_message_request_task(rocket::basic_task *base_task) noexcept
+    void io_service::handle_io_request_task(rocket::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<rocket::io_request_task *>(base_task) };
         logdebug("New io_request_task. Connection id: %llu, opcode: %lu, length: %lu.",

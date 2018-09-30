@@ -29,7 +29,8 @@ namespace rocket {
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void register_local_connection(tcp_connection *connection) noexcept;
+        void add_local_connection(tcp_connection *connection) noexcept;
+        void shutdown_connection(tcp_connection *connection) noexcept;
 
     private:
         std::vector<tcp_connection *>                   _local_connections;

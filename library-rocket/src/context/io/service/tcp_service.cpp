@@ -7,7 +7,7 @@
 
 #include "context/io/io_loop.h"
 #include "context/io/connection/tcp_connection.h"
-#include "context/io/service/connection_service.h"
+#include "context/io/service/io_connection_service.h"
 #include "context/io/service/request_processing_service.h"
 
 #include "context/io/service/tcp_service.h"
@@ -49,9 +49,16 @@ namespace rocket {
         // todo: release resources
     }
 
-    void tcp_service::register_local_connection(tcp_connection *connection) noexcept
+    void tcp_service::add_local_connection(tcp_connection *connection) noexcept
     {
         _local_connections.push_back(connection);
+    }
+
+    void tcp_service::shutdown_connection(tcp_connection *connection) noexcept
+    {
+        // [status] disconnecting
+        change_connection_status(connection, connection_status::disconnecting);
+        connection->shutdown(&tcp_service::shutdown_callback);
     }
 
     void tcp_service::start_local_connections() noexcept
@@ -148,7 +155,7 @@ namespace rocket {
 
     void tcp_service::on_connection(network_handle *handle, int status) noexcept
     {
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto server_connection { manager->get(handle) };
 
         if (server_connection == nullptr) {
@@ -181,10 +188,8 @@ namespace rocket {
 
             if (!client_connection->start(&tcp_service::alloc_callback, &tcp_service::read_callback)) {
                 logerror("Failed to start read connection with id: %llu.", client_connection->id());
-                // [status] disconnecting remote slave
-                change_connection_status(client_connection, connection_status::disconnecting);
                 // connection already accepted, so we must shutdown
-                client_connection->shutdown(&tcp_service::shutdown_callback);
+                shutdown_connection(client_connection);
             } else {
                 // [status] remote slave connected
                 change_connection_status(client_connection, connection_status::connected);
@@ -199,7 +204,7 @@ namespace rocket {
     void tcp_service::on_connect(uv_request *request, int status) noexcept
     {
         auto handle { reinterpret_cast<network_handle *>(request->connect.handle) };
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {
@@ -222,9 +227,7 @@ namespace rocket {
 
         if (!connection->start(&tcp_service::alloc_callback, &tcp_service::read_callback)) {
             logerror("Cant start connection cid: %llu.", connection->id());
-            // [status] disconnecting local slave
-            change_connection_status(connection, connection_status::disconnecting);
-            connection->shutdown(&tcp_service::shutdown_callback);
+            shutdown_connection(connection);
             return;
         }
 
@@ -236,7 +239,7 @@ namespace rocket {
 
     void tcp_service::on_alloc(network_handle *handle, size_t, uv_buf_t *buffer) noexcept
     {
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {
@@ -255,7 +258,7 @@ namespace rocket {
 
     void tcp_service::on_read(network_handle *handle, ssize_t nread, const uv_buf_t *) noexcept
     {
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {
@@ -268,9 +271,7 @@ namespace rocket {
             // socket fatal error
             auto status { static_cast<int>(nread) };
             logerror("Read error: %s (%s).", uv_strerror(status), uv_err_name(status));
-            // [status] disconnecting
-            change_connection_status(connection, connection_status::disconnecting);
-            connection->shutdown(&tcp_service::shutdown_callback);
+            shutdown_connection(connection);
             return;
         }
 
@@ -284,7 +285,7 @@ namespace rocket {
     void tcp_service::on_write(uv_request *request, int status) noexcept
     {
         auto handle { reinterpret_cast<network_handle *>(request->connect.handle) };
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {
@@ -298,9 +299,7 @@ namespace rocket {
                      connection->id(),
                      uv_strerror(status),
                      uv_err_name(status));
-            // [status] disconnecting
-            change_connection_status(connection, connection_status::disconnecting);
-            connection->shutdown(&tcp_service::shutdown_callback);
+            shutdown_connection(connection);
             return;
         }
 
@@ -311,7 +310,7 @@ namespace rocket {
     void tcp_service::on_shutdown(uv_request *request, int status) noexcept
     {
         auto handle { reinterpret_cast<network_handle *>(request->connect.handle) };
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {
@@ -326,7 +325,7 @@ namespace rocket {
                      uv_strerror(status),
                      uv_err_name(status));
             // try one more time
-            // todo: maybe better to re-shutdown after some delay by timer
+            // todo: maybe better to re-shutdown after some delay by timer, like reconnection mechanism
             connection->shutdown(&tcp_service::shutdown_callback);
             return;
         }
@@ -342,7 +341,7 @@ namespace rocket {
 
     void tcp_service::on_close(network_handle *handle) noexcept
     {
-        auto manager { delegate()->service<connection_service>()->manager<tcp_connection>() };
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 
         if (connection == nullptr) {

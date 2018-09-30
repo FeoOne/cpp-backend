@@ -17,7 +17,7 @@ namespace strange {
         add_service(io_service::make_unique(config, router, this));
 
         RC_BIND_TASK_ROUTE(rocket::connection_status_changed_task, io_service);
-        RC_BIND_TASK_ROUTE(rocket::message_request_task, io_service);
+        RC_BIND_TASK_ROUTE(rocket::io_request_task, io_service);
     }
 
 }

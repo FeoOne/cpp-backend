@@ -16,16 +16,16 @@ namespace rocket {
     /**
      * Configurator.
      */
-    class connection_service final : public groot::crucial<work_service, connection_service> {
+    class io_connection_service final : public groot::crucial<work_service, io_connection_service> {
     public:
-        GR_DECLARE_SMARTPOINTERS(connection_service)
-        GR_DELETE_ALL_DEFAULT(connection_service)
+        GR_DECLARE_SMARTPOINTERS(io_connection_service)
+        GR_DELETE_ALL_DEFAULT(io_connection_service)
 
-        explicit connection_service(const groot::setting& config,
+        explicit io_connection_service(const groot::setting& config,
                                     task_router *router,
                                     const work_service_delegate *delegate) noexcept;
 
-        virtual ~connection_service() = default;
+        virtual ~io_connection_service() = default;
 
         void setup() noexcept final;
         void reset() noexcept final;
@@ -43,14 +43,10 @@ namespace rocket {
     };
 
     template<>
-    tcp_connection_manager *connection_service::manager<tcp_connection>() noexcept {
-        return _tcp_connections.get();
-    }
+    tcp_connection_manager *io_connection_service::manager<tcp_connection>() noexcept;
 
     template<>
-    udp_connection_manager *connection_service::manager<udp_connection>() noexcept {
-        return _udp_connections.get();
-    }
+    udp_connection_manager *io_connection_service::manager<udp_connection>() noexcept;
 
 }
 

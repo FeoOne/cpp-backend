@@ -27,7 +27,7 @@ namespace strange {
 
     private:
 
-        void handle_message_request_task(rocket::basic_task *base_task) noexcept;
+        void handle_io_request_task(rocket::basic_task *base_task) noexcept;
         void handle_connection_status_changed_task(rocket::basic_task *base_task) noexcept;
 
     };

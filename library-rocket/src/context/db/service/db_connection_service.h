@@ -10,15 +10,15 @@
 
 namespace rocket {
 
-    class connection_service final : public groot::crucial<work_service, connection_service> {
+    class db_connection_service final : public groot::crucial<work_service, db_connection_service> {
     public:
-        GR_DECLARE_SMARTPOINTERS(connection_service)
-        GR_DELETE_ALL_DEFAULT(connection_service)
+        GR_DECLARE_SMARTPOINTERS(db_connection_service)
+        GR_DELETE_ALL_DEFAULT(db_connection_service)
 
-        explicit connection_service(const groot::setting& config,
+        explicit db_connection_service(const groot::setting& config,
                                     task_router *router,
                                     const work_service_delegate *delegate) noexcept;
-        virtual ~connection_service();
+        virtual ~db_connection_service();
 
         void setup() noexcept final;
         void reset() noexcept final;

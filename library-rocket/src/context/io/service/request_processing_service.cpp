@@ -47,7 +47,7 @@ namespace rocket {
         message_header header { read_stream->head() };
         if (!header.is_magic_correct()) {
             logerror("Magic number mismatch (0x%x) for connection 0x%llx.", header.magic(), connection);
-            delegate()->service<tcp_service>()->shutdown(connection);
+            delegate()->service<tcp_service>()->shutdown_connection(connection);
             return;
         }
 
@@ -61,7 +61,7 @@ namespace rocket {
         // validate checksum
         if (header.crc32() != groot::checksum::crc32(read_stream->head(), header.length())) {
             logerror("CRC32 checksum mismatch for connection 0x%llx.", connection);
-            delegate()->service<tcp_service>()->shutdown(connection);
+            delegate()->service<tcp_service>()->shutdown_connection(connection);
             return;
         }
 
