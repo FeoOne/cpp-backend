@@ -42,19 +42,15 @@ namespace quill {
     {
         auto task { reinterpret_cast<rocket::connection_status_changed_task *>(base_task) };
         logdebug("New 'connection_status_changed_task'. Connection id: %llu.", task->link().connection_id());
-
-        rocket::basic_task::destroy(task); // todo: get rid
     }
 
     void io_service::handle_io_request_task(rocket::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<rocket::io_request_task *>(base_task) };
-        logdebug("New io_request_task. Connection id: %llu, opcode: %lu, length: %lu.",
+        logdebug("New 'io_request_task'. Connection id: %llu, opcode: %lu, length: %lu.",
                  task->link().connection_id(),
                  task->opcode(),
                  task->length());
-
-        rocket::basic_task::destroy(task); // todo: get rid
     }
 
 }

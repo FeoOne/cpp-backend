@@ -12,7 +12,7 @@
 
 #include "context/io/service/tcp_service.h"
 
-#define RECONNECT_TIMER_DELAY    3000
+#define RECONNECT_TIMER_DELAY    10000
 
 namespace rocket {
 
@@ -97,7 +97,6 @@ namespace rocket {
         auto request { connection->connect(&tcp_service::connect_callback) };
         if (request != nullptr) {
             lognotice("Try to connect cid: %llu.", connection->id());
-
             connection->set_nodelay(true);
             connection->set_nonblock(true);
         } else {

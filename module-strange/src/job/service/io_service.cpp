@@ -42,8 +42,6 @@ namespace strange {
     {
         auto task { reinterpret_cast<rocket::connection_status_changed_task *>(base_task) };
         logdebug("New 'connection_status_changed_task'. Connection id: %llu.", task->link().connection_id());
-
-        rocket::basic_task::destroy(task);
     }
 
     void io_service::handle_io_request_task(rocket::basic_task *base_task) noexcept
@@ -53,8 +51,6 @@ namespace strange {
                  task->link().connection_id(),
                  task->opcode(),
                  task->length());
-
-        rocket::basic_task::destroy(task);
     }
 
 }

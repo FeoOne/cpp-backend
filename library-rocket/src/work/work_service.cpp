@@ -33,6 +33,8 @@ namespace rocket {
             logerror("Task handler for key %lu not presented.", task->get_key());
         }
 #endif
+
+        rocket::basic_task::destroy(task);
     }
 
     void work_service::assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept

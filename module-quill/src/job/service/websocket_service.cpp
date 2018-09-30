@@ -61,8 +61,6 @@ namespace quill {
             gconstpointer ptr = g_bytes_get_data(task->get_bytes(), &sz);
             lognotice("Text message from ws: %s", ptr);
         }
-
-        rocket::basic_task::destroy(task);
     }
 
     rocket::ws_outgoing_message_task *
