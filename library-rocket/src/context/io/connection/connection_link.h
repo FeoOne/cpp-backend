@@ -10,10 +10,11 @@
 
 #include <groot.h>
 
+#include "context/io/net/network.h"
+
 namespace rocket {
 
-    class tcp_connection;
-    class udp_connection;
+    class connection;
 
     /**
      *
@@ -21,24 +22,23 @@ namespace rocket {
     class connection_link final {
     public:
         GR_DELETE_DEFAULT_CTOR(connection_link)
-        GR_DELETE_DEFAULT_COPY_ASSIGN(connection_link)
-        GR_DELETE_DEFAULT_MOVE_CTOR(connection_link)
-        GR_DELETE_DEFAULT_MOVE_ASSIGN(connection_link)
 
         connection_link(const connection_link& other) = default;
+        connection_link(connection_link&& other) = default;
 
-        groot::network_protocol protocol() const noexcept { return _protocol; }
+        connection_link& operator=(const connection_link&) = default;
+        connection_link& operator=(connection_link&&) = default;
+
+        transport_protocol protocol() const noexcept { return _protocol; }
         u64 connection_id() const noexcept { return _connection_id; }
 
     private:
-        friend class tcp_connection;
-        friend class udp_connection;
+        friend class connection;
 
-        groot::network_protocol     _protocol;
+        transport_protocol          _protocol;
         u64                         _connection_id;
 
-        explicit connection_link(tcp_connection *connection) noexcept;
-        explicit connection_link(udp_connection *connection) noexcept;
+        explicit connection_link(connection *connection) noexcept;
 
     };
 

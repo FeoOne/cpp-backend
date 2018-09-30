@@ -31,7 +31,7 @@ namespace rocket {
         logassert(status == 0, "Can't init pthread.");
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
         logassert(status == 0, "Can't set detach state.");
-        status = pthread_create(&_thread, &attributes, &worker::exec_routine, this);
+        status = pthread_create(&_thread, &attributes, &worker::exec_callback, this);
         logassert(status == 0, "Can't create pthread.");
     }
 
@@ -53,7 +53,7 @@ namespace rocket {
         logassert(status == 0, "Can't join pthread.");
     }
 
-    void worker::exec_routine() noexcept
+    void worker::exec_callback() noexcept
     {
         do {
             _context->setup_services();
@@ -63,9 +63,9 @@ namespace rocket {
     }
 
     // static
-    void *worker::exec_routine(void *ptr) noexcept
+    void *worker::exec_callback(void *ptr) noexcept
     {
-        (reinterpret_cast<worker *>(ptr))->exec_routine();
+        (reinterpret_cast<worker *>(ptr))->exec_callback();
         pthread_exit(nullptr);
     }
 

@@ -11,8 +11,8 @@ namespace rocket {
 
     connection_service::connection_service(const groot::setting& config,
                                            task_router *router,
-                                           const work_service_delegate *service_delegate) noexcept:
-            crucial(config, router, service_delegate),
+                                           const work_service_delegate *delegate) noexcept:
+            crucial(config, router, delegate),
             _connections {},
             _available_connections {},
             _conninfo { nullptr },
@@ -76,7 +76,7 @@ namespace rocket {
     {
         for (size_t i = 0; i < _max_connection_count; ++i) {
             auto connection { db_connection::make_unique() };
-            connection->start(delegate()->get_loop<db_loop>(), _conninfo);
+            connection->start(delegate()->loop<db_loop>(), _conninfo);
             //_connections.push_back(connection);
         }
     }
@@ -88,7 +88,7 @@ namespace rocket {
 
     void connection_service::setup_connect_timer() noexcept
     {
-        int status = uv_timer_init(delegate()->get_loop<db_loop>()->get_loop(), &_connect_timer);
+        int status = uv_timer_init(delegate()->loop<db_loop>()->get_loop(), &_connect_timer);
         if (status != 0) {
             logerror("Failed to set up connect timer (%s).", uv_strerror(status));
             return;
@@ -97,7 +97,7 @@ namespace rocket {
         _connect_timer.data = this;
 
         status = uv_timer_start(&_connect_timer,
-                                &connection_service::connect_timer_routine,
+                                &connection_service::connect_timer_callback,
                                 _connect_interval,
                                 _connect_interval);
         if (status != 0) {
@@ -119,7 +119,7 @@ namespace rocket {
     }
 
     // static
-    void connection_service::connect_timer_routine(uv_timer_t *timer) noexcept
+    void connection_service::connect_timer_callback(uv_timer_t *timer) noexcept
     {
         if (timer != nullptr && timer->data != nullptr) {
             static_cast<connection_service *>(timer->data)->on_connect_timer();

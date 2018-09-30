@@ -5,4 +5,15 @@
  * @brief
  */
 
-#include "udp_connection.h"
+#include "context/io/connection/udp_connection.h"
+
+namespace rocket {
+
+    udp_connection::udp_connection(u64 id) noexcept :
+            connection(id, transport_protocol::udp)
+    {
+    }
+
+
+
+}

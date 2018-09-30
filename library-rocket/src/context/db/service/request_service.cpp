@@ -13,8 +13,8 @@ namespace rocket {
 
     request_service::request_service(const groot::setting& config,
                                      task_router *router,
-                                     const work_service_delegate *service_delegate) noexcept:
-            crucial(config, router, service_delegate)
+                                     const work_service_delegate *delegate) noexcept:
+            crucial(config, router, delegate)
     {
         RC_ASSIGN_TASK_HANDLER(db_request_task, request_service, handle_db_request_task);
     }

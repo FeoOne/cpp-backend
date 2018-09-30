@@ -5,14 +5,14 @@
  * @brief
  */
 
-#include "context/io/task/message_request_task.h"
+#include "context/io/task/io_request_task.h"
 
 namespace rocket {
 
-    message_request_task::message_request_task(const connection_link& link,
-                                               message::opcode_type opcode,
-                                               u8 *memory,
-                                               size_t length) noexcept :
+    io_request_task::io_request_task(const connection_link& link,
+                                     message::opcode_type opcode,
+                                     u8 *memory,
+                                     size_t length) noexcept :
             _link { link },
             _opcode { opcode },
             _memory { nullptr },
@@ -27,7 +27,7 @@ namespace rocket {
     }
 
     // virtual
-    message_request_task::~message_request_task()
+    io_request_task::~io_request_task()
     {
         if (_memory != nullptr) {
             groot::memory::free(_memory);

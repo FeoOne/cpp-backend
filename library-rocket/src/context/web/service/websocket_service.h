@@ -21,7 +21,7 @@ namespace rocket {
 
         explicit websocket_service(const groot::setting& config,
                                    task_router *router,
-                                   const work_service_delegate *service_delegate) noexcept;
+                                   const work_service_delegate *delegate) noexcept;
         virtual ~websocket_service();
 
         void setup() noexcept final;
@@ -40,17 +40,17 @@ namespace rocket {
         void on_error(SoupWebsocketConnection *connection, GError *error) noexcept;
         void on_closed(SoupWebsocketConnection *connection) noexcept;
 
-        static void handler_routine(SoupServer *server,
+        static void handler_callback(SoupServer *server,
                                     SoupWebsocketConnection *connection,
                                     const char *path,
                                     SoupClientContext *client,
                                     gpointer context) noexcept;
-        static void message_routine(SoupWebsocketConnection *connection,
+        static void message_callback(SoupWebsocketConnection *connection,
                                     SoupWebsocketDataType data_type,
                                     GBytes *data,
                                     gpointer context) noexcept;
-        static void error_routine(SoupWebsocketConnection *connection, GError *error, gpointer context) noexcept;
-        static void closed_routine(SoupWebsocketConnection *connection, gpointer context) noexcept;
+        static void error_callback(SoupWebsocketConnection *connection, GError *error, gpointer context) noexcept;
+        static void closed_callback(SoupWebsocketConnection *connection, gpointer context) noexcept;
 
     };
 

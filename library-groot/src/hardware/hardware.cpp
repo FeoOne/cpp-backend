@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include <uv.h>
+
 #include "logger/log_manager.h"
 #include "memory/memory.h"
 
@@ -15,7 +17,8 @@ namespace groot {
     // static
     void hardware::print_info() noexcept
     {
-        lognotice("HW stats: memory page size: %u.", memory::page_size());
+        lognotice("[HW] Memory page size: %u.", memory::page_size());
+        lognotice("[HW] Total memory: %llu.", uv_get_total_memory());
     }
 
 }

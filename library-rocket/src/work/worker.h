@@ -51,9 +51,9 @@ namespace rocket {
         work_context::uptr              _context;
         bool                            _should_restart;
 
-        void exec_routine() noexcept;
+        void exec_callback() noexcept;
 
-        static void *exec_routine(void *ptr) noexcept;
+        static void *exec_callback(void *ptr) noexcept;
 
     };
 

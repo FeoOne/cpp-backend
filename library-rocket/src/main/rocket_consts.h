@@ -40,8 +40,8 @@ namespace rocket {
                 static constexpr std::string_view CONNINFO { "conninfo" };
                 static constexpr std::string_view MAX_CONNECTION_COUNT { "max_connection_count" };
                 static constexpr std::string_view CONNECT_INTERVAL { "connect_interval" };
-                static constexpr std::string_view SERVERS { "servers" };
-                static constexpr std::string_view CLIENTS { "clients" };
+                static constexpr std::string_view MASTER { "master" };
+                static constexpr std::string_view SLAVE { "slave" };
                 static constexpr std::string_view HOST { "host" };
                 static constexpr std::string_view PORT { "port" };
                 static constexpr std::string_view BACKLOG { "backlog" };

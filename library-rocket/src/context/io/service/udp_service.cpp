@@ -11,8 +11,8 @@ namespace rocket {
 
     udp_service::udp_service(const groot::setting& config,
                              task_router *router,
-                             const work_service_delegate *service_delegate) noexcept :
-            crucial(config, router, service_delegate)
+                             const work_service_delegate *delegate) noexcept :
+            crucial(config, router, delegate)
     {
     }
 

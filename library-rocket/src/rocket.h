@@ -29,8 +29,8 @@
 #include "context/web/page/web_view_manager.h"
 
 #include "context/io/task/connection_status_changed_task.h"
-#include "context/io/task/message_request_task.h"
-#include "context/io/task/message_response_task.h"
+#include "context/io/task/io_request_task.h"
+#include "context/io/task/io_response_task.h"
 
 #include "protocol/protocol_machine.h"
 

@@ -19,7 +19,7 @@ namespace rocket {
 
         explicit request_service(const groot::setting& config,
                                  task_router *router,
-                                 const work_service_delegate *service_delegate) noexcept;
+                                 const work_service_delegate *delegate) noexcept;
         virtual ~request_service();
 
         void setup() noexcept final;

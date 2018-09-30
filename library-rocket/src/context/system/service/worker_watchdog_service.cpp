@@ -13,8 +13,8 @@ namespace rocket {
 
     worker_watchdog_service::worker_watchdog_service(const groot::setting& config,
                                                      task_router *router,
-                                                     const work_service_delegate *service_delegate) noexcept:
-            crucial(config, router, service_delegate)
+                                                     const work_service_delegate *delegate) noexcept:
+            crucial(config, router, delegate)
     {
         RC_ASSIGN_TASK_HANDLER(worker_broken_task, worker_watchdog_service, handle_worker_broken_task);
     }

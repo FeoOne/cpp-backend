@@ -30,7 +30,7 @@ namespace rocket {
 
         gboolean on_idle() noexcept;
 
-        static gboolean idle_routine(gpointer pointer) noexcept;
+        static gboolean idle_callback(gpointer pointer) noexcept;
 
     };
 

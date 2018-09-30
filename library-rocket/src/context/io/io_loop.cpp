@@ -24,7 +24,7 @@ namespace rocket {
     // virtual
     void io_loop::start() noexcept
     {
-        int status = uv_async_init(&_loop, &_async_handle, &io_loop::async_routine);
+        int status = uv_async_init(&_loop, &_async_handle, &io_loop::async_callback);
         logassert(status == 0, "Invalid status.");
         _async_handle.data = this;
 
@@ -47,7 +47,7 @@ namespace rocket {
     }
 
     // static
-    void io_loop::async_routine(uv_async_t *handle) noexcept
+    void io_loop::async_callback(uv_async_t *handle) noexcept
     {
         logassert(handle != nullptr, "Invalid handle.");
         logassert(handle->data != nullptr, "Invalid data.");

@@ -54,14 +54,10 @@
 #include "config/config.h"
 #include "config/command_line_argument_parser.h"
 
-#include "network/network.h"
-#include "network/endpoint.h"
-
 #include "hardware/hardware.h"
 
 #include "crypto/checksum.h"
 
-#include "external/uv_ex.h"
 #include "external/glib_ex.h"
 
 #endif /* GROOT_FRAMEWORK_H */

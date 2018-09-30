@@ -15,8 +15,8 @@ namespace rocket {
 
     http_service::http_service(const groot::setting& config,
                                task_router *router,
-                               const work_service_delegate *service_delegate) noexcept :
-            crucial(config, router, service_delegate)
+                               const work_service_delegate *delegate) noexcept :
+            crucial(config, router, delegate)
     {
         RC_ASSIGN_TASK_HANDLER(http_response_task, http_service, handle_http_response_task);
     }
@@ -29,14 +29,14 @@ namespace rocket {
     // virtual
     void http_service::setup() noexcept
     {
-        auto server { delegate()->get_service<webserver_service>()->get_server() };
+        auto server { delegate()->service<webserver_service>()->get_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
 
         soup_server_add_handler(server,
                                 consts::WEB_DEFAULT_HTTP_ROUTE.data(),
-                                &http_service::handler_routine,
+                                &http_service::handler_callback,
                                 this,
                                 nullptr);
     }
@@ -44,7 +44,7 @@ namespace rocket {
     // virtual
     void http_service::reset() noexcept
     {
-        soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
+        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(),
                                    consts::WEB_DEFAULT_HTTP_ROUTE.data());
     }
 
@@ -54,7 +54,7 @@ namespace rocket {
         auto response { task->get_response() };
         auto request { response->get_request() };
 
-        soup_server_unpause_message(delegate()->get_service<webserver_service>()->get_server(),
+        soup_server_unpause_message(delegate()->service<webserver_service>()->get_server(),
                                     request->get_message());
 
         basic_task::destroy(task);
@@ -69,7 +69,7 @@ namespace rocket {
         logdebug("HTTP handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
-        logassert(delegate()->get_service<webserver_service>()->get_server() == server,
+        logassert(delegate()->service<webserver_service>()->get_server() == server,
                   "Can't process http request from different server.");
 
         std::string_view p { path };
@@ -77,11 +77,11 @@ namespace rocket {
         auto task { basic_task::create<http_request_task>(request) };
         router()->enqueue(task);
 
-        soup_server_pause_message(delegate()->get_service<webserver_service>()->get_server(), message);
+        soup_server_pause_message(delegate()->service<webserver_service>()->get_server(), message);
     }
 
     // static
-    void http_service::handler_routine(SoupServer *server,
+    void http_service::handler_callback(SoupServer *server,
                                        SoupMessage *message,
                                        const char *path,
                                        GHashTable *query,

@@ -9,8 +9,8 @@
 #define ROCKET_TCP_SERVICE_H
 
 #include "work/work_service.h"
+#include "context/io/net/timer.h"
 #include "context/io/connection/tcp_connection.h"
-#include "context/io/connection/connection_manager.h"
 #include "context/io/task/connection_status_changed_task.h"
 
 namespace rocket {
@@ -22,44 +22,46 @@ namespace rocket {
 
         explicit tcp_service(const groot::setting& config,
                              task_router *router,
-                             const work_service_delegate *service_delegate) noexcept;
-        virtual ~tcp_service();
+                             const work_service_delegate *delegate) noexcept;
+
+        virtual ~tcp_service() = default;
 
         void setup() noexcept final;
         void reset() noexcept final;
 
-        void shutdown(tcp_connection *connection) noexcept;
+        void register_local_connection(tcp_connection *connection) noexcept;
 
     private:
-        uv_loop_t *                             _loop;
-        tcp_connection_manager::uptr            _connections;
+        std::vector<tcp_connection *>                   _local_connections;
+        std::list<tcp_connection *>                     _disconnected_connections;
+        timer::uptr                                     _reconnect_timer;
+        const std::unordered_map<connection_kind,
+                std::function<void(tcp_connection *)>>  _start_callbacks;
 
-        void listen(const groot::endpoint::sptr& endpoint, u16 backlog, u32 keepalive) noexcept;
-        void connect(const groot::endpoint::sptr& endpoint) noexcept;
+        void start_local_connections() noexcept;
+        void start_local_master(tcp_connection *connection) noexcept;
+        void start_local_slave(tcp_connection *connection) noexcept;
 
-        void setup_sockaddr(const groot::endpoint::sptr& endpoint, groot::socket_address *addr) noexcept;
+        void change_connection_status(tcp_connection *connection, connection_status status) noexcept;
+        void reconnection_cleanup(tcp_connection *connection) noexcept;
 
-        void setup_servers() noexcept;
-        void setup_clients() noexcept;
+        void on_reconnect_timer() noexcept;
 
-        void produce_task_about_connection_status(const connection_link &link,
-                                                  connection_status_changed_task::connection_status status) noexcept;
+        void on_connection(network_handle *handle, int status) noexcept;
+        void on_connect(uv_request *request, int status) noexcept;
+        void on_alloc(network_handle *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
+        void on_read(network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept;
+        void on_write(uv_request *request, int status) noexcept;
+        void on_shutdown(uv_request *request, int status) noexcept;
+        void on_close(network_handle *handle) noexcept;
 
-        void on_connection(groot::network_handle *handle, int status) noexcept;
-        void on_connect(uv_connect_t *request, int status) noexcept;
-        void on_alloc(groot::network_handle *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
-        void on_read(groot::network_handle *handle, ssize_t nread, const uv_buf_t *buffer) noexcept;
-        void on_write(uv_write_t *request, int status) noexcept;
-        void on_shutdown(uv_shutdown_t *request, int status) noexcept;
-        void on_close(groot::network_handle *handle) noexcept;
-
-        static void connection_routine(uv_stream_t *stream, int status) noexcept;
-        static void connect_routine(uv_connect_t *request, int status) noexcept;
-        static void alloc_routine(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
-        static void read_routine(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) noexcept;
-        static void write_routine(uv_write_t *request, int status) noexcept;
-        static void shutdown_routine(uv_shutdown_t *request, int status) noexcept;
-        static void close_routine(uv_handle_t *handle) noexcept;
+        static void connection_callback(uv_stream_t *stream, int status) noexcept;
+        static void connect_callback(uv_connect_t *req, int status) noexcept;
+        static void alloc_callback(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buffer) noexcept;
+        static void read_callback(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buffer) noexcept;
+        static void write_callback(uv_write_t *req, int status) noexcept;
+        static void shutdown_callback(uv_shutdown_t *req, int status) noexcept;
+        static void close_callback(uv_handle_t *handle) noexcept;
 
     };
 

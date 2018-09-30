@@ -5,19 +5,32 @@
  * @brief
  */
 
-#ifndef PROJECT_UDP_CONNECTION_H
-#define PROJECT_UDP_CONNECTION_H
+#ifndef ROCKET_UDP_CONNECTION_H
+#define ROCKET_UDP_CONNECTION_H
 
+#include "context/io/connection/connection.h"
 
-class udp_connection {
-public:
-    udp_connection();
+namespace rocket {
 
-    ~udp_connection();
+    class udp_connection final : public connection {
+    public:
+        GR_DELETE_ALL_DEFAULT(udp_connection)
 
-private:
+        virtual ~udp_connection() = default;
 
-};
+        bool open(uv_loop_t *loop, void *data) noexcept final {}
 
+        bool start(uv_alloc_cb alloc_cb, uv_read_cb read_cb) noexcept final {}
+        void stop() noexcept final {}
 
-#endif /* PROJECT_UDP_CONNECTION_H */
+    private:
+        template<typename>
+        friend class connection_manager;
+
+        explicit udp_connection(u64 id) noexcept;
+
+    };
+
+}
+
+#endif /* ROCKET_UDP_CONNECTION_H */

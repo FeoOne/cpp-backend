@@ -19,7 +19,7 @@ namespace rocket {
 
         explicit response_processing_service(const groot::setting& config,
                                              task_router *router,
-                                             const work_service_delegate *service_delegate) noexcept;
+                                             const work_service_delegate *delegate) noexcept;
         virtual ~response_processing_service();
 
         void setup() noexcept final;

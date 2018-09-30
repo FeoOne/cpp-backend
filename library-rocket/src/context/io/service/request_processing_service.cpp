@@ -7,7 +7,7 @@
 
 #include "message/message.h"
 #include "context/io/service/tcp_service.h"
-#include "context/io/task/message_request_task.h"
+#include "context/io/task/io_request_task.h"
 
 #include "context/io/service/request_processing_service.h"
 
@@ -15,8 +15,8 @@ namespace rocket {
 
     request_processing_service::request_processing_service(const groot::setting &config,
                                                      task_router *router,
-                                                     const work_service_delegate *service_delegate) noexcept :
-            crucial(config, router, service_delegate)
+                                                     const work_service_delegate *delegate) noexcept :
+            crucial(config, router, delegate)
     {
     }
 
@@ -47,7 +47,7 @@ namespace rocket {
         message_header header { read_stream->head() };
         if (!header.is_magic_correct()) {
             logerror("Magic number mismatch (0x%x) for connection 0x%llx.", header.magic(), connection);
-            delegate()->get_service<tcp_service>()->shutdown(connection);
+            delegate()->service<tcp_service>()->shutdown(connection);
             return;
         }
 
@@ -61,12 +61,12 @@ namespace rocket {
         // validate checksum
         if (header.crc32() != groot::checksum::crc32(read_stream->head(), header.length())) {
             logerror("CRC32 checksum mismatch for connection 0x%llx.", connection);
-            delegate()->get_service<tcp_service>()->shutdown(connection);
+            delegate()->service<tcp_service>()->shutdown(connection);
             return;
         }
 
         auto task {
-            basic_task::create<message_request_task>(connection->link(),
+            basic_task::create<io_request_task>(connection->link(),
                                                      header.opcode(),
                                                      read_stream->head(),
                                                      header.length())

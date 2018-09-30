@@ -24,7 +24,7 @@ namespace rocket {
     // virtual
     void web_loop::start() noexcept
     {
-        g_idle_add(&web_loop::idle_routine, this);
+        g_idle_add(&web_loop::idle_callback, this);
         g_main_loop_run(_loop);
     }
 
@@ -44,7 +44,7 @@ namespace rocket {
     }
 
     // static
-    gboolean web_loop::idle_routine(gpointer pointer) noexcept
+    gboolean web_loop::idle_callback(gpointer pointer) noexcept
     {
         return reinterpret_cast<web_loop *>(pointer)->on_idle(); // @todo Error handling.
     }

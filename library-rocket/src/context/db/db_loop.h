@@ -33,7 +33,7 @@ namespace rocket {
 
         void on_async() noexcept;
 
-        static void async_routine(uv_async_t *handle) noexcept;
+        static void async_callback(uv_async_t *handle) noexcept;
 
     };
 

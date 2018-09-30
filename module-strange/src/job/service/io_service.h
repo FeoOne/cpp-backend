@@ -19,7 +19,7 @@ namespace strange {
 
         explicit io_service(const groot::setting& config,
                             rocket::task_router *router,
-                            const rocket::work_service_delegate *service_delegate) noexcept;
+                            const rocket::work_service_delegate *delegate) noexcept;
         virtual ~io_service();
 
         void setup() noexcept final;

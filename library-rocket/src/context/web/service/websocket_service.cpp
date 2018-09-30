@@ -15,8 +15,8 @@ namespace rocket {
 
     websocket_service::websocket_service(const groot::setting& config,
                                          task_router *router,
-                                         const work_service_delegate *service_delegate) noexcept :
-            crucial(config, router, service_delegate)
+                                         const work_service_delegate *delegate) noexcept :
+            crucial(config, router, delegate)
     {
         RC_ASSIGN_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
     }
@@ -28,7 +28,7 @@ namespace rocket {
 
     void websocket_service::setup() noexcept
     {
-        auto server { delegate()->get_service<webserver_service>()->get_server() };
+        auto server { delegate()->service<webserver_service>()->get_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
@@ -40,7 +40,7 @@ namespace rocket {
                                           path.data(),
                                           nullptr,
                                           nullptr,
-                                          &websocket_service::handler_routine,
+                                          &websocket_service::handler_callback,
                                           this,
                                           nullptr);
     }
@@ -50,7 +50,7 @@ namespace rocket {
         auto websocket_config { config()[consts::config::key::WEBSOCKET] };
         auto path { websocket_config[consts::config::key::PATH].to_string() };
 
-        soup_server_remove_handler(delegate()->get_service<webserver_service>()->get_server(),
+        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(),
                                    path.data());
     }
 
@@ -75,9 +75,9 @@ namespace rocket {
 
         GR_GOBJECT_RETAIN(connection);
 
-        g_signal_connect(connection, "message", G_CALLBACK(&websocket_service::message_routine), this);
-        g_signal_connect(connection, "error", G_CALLBACK(&websocket_service::error_routine), this);
-        g_signal_connect(connection, "closed", G_CALLBACK(&websocket_service::closed_routine), this);
+        g_signal_connect(connection, "message", G_CALLBACK(&websocket_service::message_callback), this);
+        g_signal_connect(connection, "error", G_CALLBACK(&websocket_service::error_callback), this);
+        g_signal_connect(connection, "closed", G_CALLBACK(&websocket_service::closed_callback), this);
     }
 
     void websocket_service::on_message(SoupWebsocketConnection *connection,
@@ -100,7 +100,7 @@ namespace rocket {
     }
 
     // static
-    void websocket_service::handler_routine(SoupServer *server,
+    void websocket_service::handler_callback(SoupServer *server,
                                             SoupWebsocketConnection *connection,
                                             const char *path,
                                             SoupClientContext *client,
@@ -110,7 +110,7 @@ namespace rocket {
     }
 
     // static
-    void websocket_service::message_routine(SoupWebsocketConnection *connection,
+    void websocket_service::message_callback(SoupWebsocketConnection *connection,
                                             SoupWebsocketDataType data_type,
                                             GBytes *data,
                                             gpointer context) noexcept
@@ -119,7 +119,7 @@ namespace rocket {
     }
 
     // static
-    void websocket_service::error_routine(SoupWebsocketConnection *connection,
+    void websocket_service::error_callback(SoupWebsocketConnection *connection,
                                           GError *error,
                                           gpointer context) noexcept
     {
@@ -127,7 +127,7 @@ namespace rocket {
     }
 
     // static
-    void websocket_service::closed_routine(SoupWebsocketConnection *connection, gpointer context) noexcept
+    void websocket_service::closed_callback(SoupWebsocketConnection *connection, gpointer context) noexcept
     {
         static_cast<websocket_service *>(context)->on_closed(connection);
     }

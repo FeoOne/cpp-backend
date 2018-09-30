@@ -21,7 +21,7 @@ namespace rocket {
 
         explicit http_service(const groot::setting& config,
                               task_router *router,
-                              const work_service_delegate *service_delegate) noexcept;
+                              const work_service_delegate *delegate) noexcept;
         virtual ~http_service();
 
         void setup() noexcept final;
@@ -36,7 +36,7 @@ namespace rocket {
                      GHashTable *query,
                      SoupClientContext *client) noexcept;
 
-        static void handler_routine(SoupServer *server,
+        static void handler_callback(SoupServer *server,
                                     SoupMessage *message,
                                     const char *path,
                                     GHashTable *query,

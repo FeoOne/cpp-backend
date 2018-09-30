@@ -17,7 +17,7 @@ namespace rocket {
 
         explicit connection_service(const groot::setting& config,
                                     task_router *router,
-                                    const work_service_delegate *service_delegate) noexcept;
+                                    const work_service_delegate *delegate) noexcept;
         virtual ~connection_service();
 
         void setup() noexcept final;
@@ -44,7 +44,7 @@ namespace rocket {
 
         void on_connect_timer() noexcept;
 
-        static void connect_timer_routine(uv_timer_t *timer) noexcept;
+        static void connect_timer_callback(uv_timer_t *timer) noexcept;
 
     };
 

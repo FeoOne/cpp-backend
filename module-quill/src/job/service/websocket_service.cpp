@@ -13,8 +13,8 @@ namespace quill {
 
     websocket_service::websocket_service(const groot::setting& config,
                                          rocket::task_router *router,
-                                         const rocket::work_service_delegate *service_delegate) noexcept :
-            crucial(config, router, service_delegate),
+                                         const rocket::work_service_delegate *delegate) noexcept :
+            crucial(config, router, delegate),
             _processors {}
     {
         RC_ASSIGN_TASK_HANDLER(rocket::ws_incoming_message_task, websocket_service, handle_ws_incoming_message_task);

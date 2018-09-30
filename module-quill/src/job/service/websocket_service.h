@@ -19,7 +19,7 @@ namespace quill {
 
         explicit websocket_service(const groot::setting& config,
                                    rocket::task_router *router,
-                                   const rocket::work_service_delegate *service_delegate) noexcept;
+                                   const rocket::work_service_delegate *delegate) noexcept;
         virtual ~websocket_service();
 
         void setup() noexcept final;

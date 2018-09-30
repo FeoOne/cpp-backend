@@ -18,11 +18,6 @@ namespace rocket {
         GR_DECLARE_SMARTPOINTERS(connection_status_changed_task)
         GR_DELETE_ALL_DEFAULT(connection_status_changed_task)
 
-        enum class connection_status {
-            opened,
-            closed,
-        };
-
         explicit connection_status_changed_task(const connection_link& link, connection_status status) noexcept :
                 _link { link },
                 _status { status }

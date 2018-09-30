@@ -25,7 +25,7 @@ namespace rocket {
         void start() noexcept final;
         void stop() noexcept final;
 
-        uv_loop_t *get_loop() noexcept { return &_loop; }
+        uv_loop_t *loop() noexcept { return &_loop; }
 
     private:
         uv_loop_t       _loop;
@@ -33,7 +33,7 @@ namespace rocket {
 
         void on_async() noexcept;
 
-        static void async_routine(uv_async_t *handle) noexcept;
+        static void async_callback(uv_async_t *handle) noexcept;
 
     };
 

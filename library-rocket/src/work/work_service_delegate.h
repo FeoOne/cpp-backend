@@ -22,12 +22,12 @@ namespace rocket {
         virtual ~work_service_delegate() = default;
 
         template<typename T>
-        T *get_loop() const noexcept {
+        T *loop() const noexcept {
             return static_cast<T *>(get_loop_impl());
         }
 
         template<typename T>
-        T *get_service() const noexcept {
+        T *service() const noexcept {
             return static_cast<T *>(get_service_impl(T::key()));
         }
 

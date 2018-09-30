@@ -17,16 +17,17 @@ namespace rocket {
     /**
      * Incoming message task.
      */
-    class message_request_task final : public groot::crucial<basic_task, message_request_task> {
+    class io_request_task final : public groot::crucial<basic_task, io_request_task> {
     public:
-        GR_DECLARE_SMARTPOINTERS(message_request_task)
-        GR_DELETE_ALL_DEFAULT(message_request_task)
+        GR_DECLARE_SMARTPOINTERS(io_request_task)
+        GR_DELETE_ALL_DEFAULT(io_request_task)
 
-        explicit message_request_task(const connection_link& link,
-                                      message::opcode_type opcode,
-                                      u8 *memory,
-                                      size_t length) noexcept;
-        virtual ~message_request_task();
+        explicit io_request_task(const connection_link& link,
+                                 message::opcode_type opcode,
+                                 u8 *memory,
+                                 size_t length) noexcept;
+
+        virtual ~io_request_task();
 
         const connection_link& link() const noexcept { return _link; }
         message::opcode_type opcode() const noexcept { return _opcode; }
