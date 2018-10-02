@@ -1,0 +1,8 @@
+class %CLASSNAME% final : public pmp::message {
+public:
+    %PUBLIC%
+
+private:
+    %PRIVATE%
+
+};

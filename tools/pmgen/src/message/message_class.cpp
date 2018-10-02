@@ -16,7 +16,7 @@ message_class::~message_class()
 {
 }
 
-void message_class::add_field(class_field *field) noexcept
+void message_class::commit_field(const class_field *field) noexcept
 {
     _fields.push_back(field);
 }

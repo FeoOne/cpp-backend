@@ -19,7 +19,7 @@ class_field::~class_field()
 
 }
 
-void class_field::add_attribute(field_attribute *attribute) noexcept
+void class_field::commit_attribute(field_attribute *attribute) noexcept
 {
     _attributes.push_back(attribute);
 }

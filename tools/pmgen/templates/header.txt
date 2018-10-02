@@ -1,0 +1,14 @@
+// This code is auto-generated. Do not modify.
+
+#ifndef %HEADERGUARD%
+#define %HEADERGUARD%
+
+#include <pmp.h>
+
+namespace pmp::%NAMESPACE% {
+
+    %BODY%
+
+}
+
+#endif /* %HEADERGUARD% */

@@ -14,11 +14,11 @@ include(${CMAKE_SOURCE_DIR}/CMakeTools/Version.cmake)
 setup_version()
 
 add_subdirectory(libraries/stl)
+add_subdirectory(libraries/pmp)
 add_subdirectory(libraries/engine)
-add_subdirectory(libraries/protocol)
 
 add_subdirectory(modules/backend)
 add_subdirectory(modules/database)
 add_subdirectory(modules/manager-btc)
 
-add_subdirectory(tools/messagen)
+add_subdirectory(tools/pmgen)

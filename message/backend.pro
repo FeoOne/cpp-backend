@@ -1,3 +1,5 @@
+namespace backend_messaging;
+
 message handshake_request {
     message: string[16];
 }
