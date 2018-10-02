@@ -11,7 +11,7 @@
 #include <iostream>
 #include <streambuf>
 
-#include "main/lexertk.h"
+#include "parse/parser.h"
 
 int main(int argc, char **argv)
 {
@@ -31,10 +31,23 @@ int main(int argc, char **argv)
     bc.process(generator);
     if (!bc.result()) {
         std::cout << "Failed Bracket Checker!" << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    lexertk::helper::dump(generator);
+    parser p;
+    p.parse(generator);
+
+//    for (std::size_t i = 0; i < generator.size(); ++i)
+//    {
+//        lexertk::token t = generator[i];
+//        printf("Token[%02d] @ %03d  %6s  -->  '%s'\n",
+//               static_cast<unsigned int>(i),
+//               static_cast<unsigned int>(t.position),
+//               t.to_str(t.type).c_str(),
+//               t.value.c_str());
+//    }
+
+//    lexertk::helper::dump(generator);
 
     return EXIT_SUCCESS;
 }
