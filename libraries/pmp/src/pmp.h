@@ -8,6 +8,6 @@
 #ifndef PMP_PMP_H
 #define PMP_PMP_H
 
-
+#include "message/message.h"
 
 #endif /* PMP_PMP_H */

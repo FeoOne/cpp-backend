@@ -30,7 +30,7 @@ public:
 
     void parse(lexertk::generator& generator) noexcept;
 
-    parse_contex& contex() noexcept { return _contex; }
+    parse_contex& contex() noexcept { return _context; }
 
 private:
     parse_state                                                             _state;

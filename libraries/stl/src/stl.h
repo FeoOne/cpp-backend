@@ -1,12 +1,12 @@
 /**
- * @file framework.h
+ * @file stl.h
  * @author Feo
  * @date 09/08/2018
  * @brief
  */
 
-#ifndef STL_FRAMEWORK_H
-#define STL_FRAMEWORK_H
+#ifndef STL_STL_H
+#define STL_STL_H
 
 #include <set>
 #include <list>
@@ -56,8 +56,9 @@
 
 #include "hardware/hardware.h"
 
+#include "crypto/hash.h"
 #include "crypto/checksum.h"
 
 #include "external/glib_ex.h"
 
-#endif /* STL_FRAMEWORK_H */
+#endif /* STL_STL_H */

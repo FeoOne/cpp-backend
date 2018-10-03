@@ -255,7 +255,7 @@ namespace lexertk
          type = tt;
          value.assign(begin,end);
          if (base_begin)
-            position = std::distance(base_begin,begin);
+            position = static_cast<size_t>(std::distance(base_begin,begin));
          return *this;
       }
 
@@ -265,7 +265,7 @@ namespace lexertk
          type = e_symbol;
          value.assign(begin,end);
          if (base_begin)
-            position = std::distance(base_begin,begin);
+            position = static_cast<size_t>(std::distance(base_begin,begin));
          return *this;
       }
 
@@ -275,7 +275,7 @@ namespace lexertk
          type = e_number;
          value.assign(begin,end);
          if (base_begin)
-            position = std::distance(base_begin,begin);
+            position = static_cast<size_t>(std::distance(base_begin,begin));
          return *this;
       }
 
@@ -285,7 +285,7 @@ namespace lexertk
          type = e_string;
          value.assign(begin,end);
          if (base_begin)
-            position = std::distance(base_begin,begin);
+            position = static_cast<size_t>(std::distance(base_begin,begin));
          return *this;
       }
 
@@ -315,7 +315,7 @@ namespace lexertk
          value.assign(begin,end);
 
          if (base_begin)
-            position = std::distance(base_begin,begin);
+            position = static_cast<size_t>(std::distance(base_begin,begin));
 
          return *this;
       }
@@ -803,7 +803,7 @@ namespace lexertk
          {
             std::string parsed_string(begin,s_itr_);
             details::cleanup_escapes(parsed_string);
-            t.set_string(parsed_string, std::distance(base_itr_,begin));
+            t.set_string(parsed_string, static_cast<size_t>(std::distance(base_itr_,begin)));
          }
 
          token_list_.push_back(t);
@@ -993,7 +993,7 @@ namespace lexertk
 
             if ((insert_index >= 0) && (insert_index <= (static_cast<int>(stride_) + 1)))
             {
-               g.token_list_.insert(g.token_list_.begin() + (i + insert_index),t);
+               g.token_list_.insert(g.token_list_.begin() + (static_cast<ssize_t>(i) + insert_index), t);
                changes++;
             }
          }
@@ -1049,7 +1049,7 @@ namespace lexertk
             if (join(g.token_list_[i],g.token_list_[i + 1],t))
             {
                g.token_list_[i] = t;
-               g.token_list_.erase(g.token_list_.begin() + (i + 1));
+               g.token_list_.erase(g.token_list_.begin() + static_cast<ssize_t>(i + 1));
                ++changes;
             }
          }

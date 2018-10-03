@@ -15,7 +15,14 @@
 
 namespace stl {
 
-    u64 quickhash64(const char *str, u64 mix = 0);
+    class string {
+    public:
+        static void make_uppercase(std::string& str) noexcept;
+
+        static void replace(std::string& str, const std::string& pattern, const std::string& text) noexcept;
+        static void replace_all(std::string& str, const std::string& pattern, const std::string& text) noexcept;
+
+    };
 
 }
 

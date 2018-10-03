@@ -9,18 +9,36 @@
 
 namespace stl {
 
-    u64 quickhash64(const char *str, u64 mix)
+    // static
+    void string::make_uppercase(std::string& str) noexcept
     {
-        static constexpr u64 MULP { 2654435789 };
+        std::transform(str.begin(), str.end(), str.begin(), toupper);
+    }
 
-        mix ^= 104395301;
-
-        while(*str) {
-            mix += (static_cast<u64>(*str) * MULP) ^ (mix >> 23);
-            ++str;
+    // static
+    void string::replace(std::string &str, const std::string& pattern, const std::string& text) noexcept
+    {
+        size_t index { str.find(pattern) };
+        if (index == std::string::npos) {
+            return;
         }
 
-        return mix ^ (mix << 37);
+        str.replace(index, pattern.length(), text);
+    }
+
+    // static
+    void string::replace_all(std::string &str, const std::string& pattern, const std::string& text) noexcept
+    {
+        size_t index { 0 };
+        while (true) {
+            index = str.find(pattern, index);
+            if (index == std::string::npos) {
+                break;
+            }
+
+            str.replace(index, pattern.length(), text);
+            index += text.length();
+        }
     }
 
 }
