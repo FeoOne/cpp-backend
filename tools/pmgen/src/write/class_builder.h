@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "message/message_class.h"
+#include "data/class_presenter.h"
 #include "write/field_builder.h"
 
 class class_builder {
@@ -19,6 +19,7 @@ public:
     ~class_builder() = default;
 
     void set_name(const std::string& name) noexcept;
+    void set_opcode(u32 opcode) noexcept;
 
     const std::string& build() noexcept;
 

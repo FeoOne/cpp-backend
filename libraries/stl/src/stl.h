@@ -59,6 +59,8 @@
 #include "crypto/hash.h"
 #include "crypto/checksum.h"
 
+#include "filesystem/filesystem.h"
+
 #include "external/glib_ex.h"
 
 #endif /* STL_STL_H */

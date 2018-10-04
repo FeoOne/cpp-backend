@@ -16,6 +16,7 @@ public:
     ~header_builder() = default;
 
     void set_namespace(const std::string& name) noexcept;
+    void set_opcode_offset(u32 offset) noexcept;
 
     void add_class(class_builder *cls) noexcept { _classes.push_back(cls); }
 

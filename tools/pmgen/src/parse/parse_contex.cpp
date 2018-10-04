@@ -7,12 +7,13 @@
 
 #include "parse/parse_contex.h"
 
-parse_contex::parse_contex()
+parse_contex::parse_contex() :
+        _namespace { "" },
+        _messages {},
+        _opcode_offset { 0 }
 {
-
 }
 
 parse_contex::~parse_contex()
 {
-
 }

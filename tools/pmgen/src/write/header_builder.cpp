@@ -12,6 +12,7 @@
 #define TPL_HEADERGUARD     "%HEADERGUARD%"
 #define TPL_NAMESPACE       "%NAMESPACE%"
 #define TPL_BODY            "%BODY%"
+#define TPL_OPCODEOFFSET    "%OPCODEOFFSET%"
 
 static const char *header_template {
     "// This code is auto-generated. Do not modify.\n\n"
@@ -20,6 +21,7 @@ static const char *header_template {
     "#include <pmp.h>\n\n"
     "namespace pmp::" TPL_NAMESPACE " {\n\n"
     TPL_BODY
+    "\tinline size_t opcode_to_index(u32 opcode) noexcept { return opcode - %OPCODEOFFSET%; }\n\n"
     "}\n\n"
     "#endif /* " TPL_HEADERGUARD " */\n"
 };
@@ -39,6 +41,11 @@ void header_builder::set_namespace(const std::string& name) noexcept
     stl::string::make_uppercase(guard);
     guard = "PMP_" + guard + "_H";
     stl::string::replace_all(_content, TPL_HEADERGUARD, guard);
+}
+
+void header_builder::set_opcode_offset(u32 offset) noexcept
+{
+    stl::string::replace(_content, TPL_OPCODEOFFSET, std::to_string(offset));
 }
 
 const std::string& header_builder::build() noexcept

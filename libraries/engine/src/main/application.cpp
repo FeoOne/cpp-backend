@@ -186,7 +186,7 @@ namespace engine {
 #endif
 
         // Create and start application
-        auto app = application::make_unique(argc, argv, description);
+        auto app { application::make_unique(argc, argv, description) };
         // Add user-defined job context creator
         app->_context_creators.insert({ consts::WORKER_NAME_JOB, std::move(job_context_creator) });
         return app->start();

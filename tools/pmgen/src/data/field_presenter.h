@@ -2,20 +2,20 @@
 // Created by Feo on 01/10/2018.
 //
 
-#ifndef PMGEN_FIELD_H
-#define PMGEN_FIELD_H
+#ifndef PMGEN_FIELD_PRESENTER_H
+#define PMGEN_FIELD_PRESENTER_H
 
-#include <vector>
-#include <string>
+#include "data/attribute_presenter.h"
 
-#include "message/field_attribute.h"
-
-class class_field {
+class field_presenter {
 public:
-    using attribute_vector_type = std::vector<const field_attribute *>;
+    STL_DECLARE_SMARTPOINTERS(field_presenter)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(field_presenter)
 
-    class_field();
-    ~class_field();
+    using attribute_vector_type = std::vector<const attribute_presenter *>;
+
+    field_presenter();
+    ~field_presenter() = default;
 
     const std::string& name() const noexcept { return _name; }
     void name(const std::string& name) noexcept { _name = name; }
@@ -29,7 +29,7 @@ public:
     bool is_array() const noexcept { return _is_array; }
     void is_array(bool is_array) noexcept { _is_array = is_array; }
 
-    void commit_attribute(field_attribute *attribute) noexcept;
+    void add_attribute(attribute_presenter *attribute) noexcept;
     const attribute_vector_type& attributes() const noexcept { return _attributes; }
 
 private:
@@ -41,4 +41,4 @@ private:
 
 };
 
-#endif /* PMGEN_FIELD_H */
+#endif /* PMGEN_FIELD_PRESENTER_H */
