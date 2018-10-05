@@ -7,12 +7,13 @@
 
 #include <stl.h>
 
-#include "write/header_builder.h"
+#include "codegen/cpp/header_builder.h"
 
 #define TPL_HEADERGUARD     "%HEADERGUARD%"
 #define TPL_NAMESPACE       "%NAMESPACE%"
 #define TPL_BODY            "%BODY%"
 #define TPL_OPCODEOFFSET    "%OPCODEOFFSET%"
+#define TPL_MESSAGECOUNT    "%MESSAGECOUNT%"
 
 static const char *header_template {
     "// This code is auto-generated. Do not modify.\n\n"
@@ -22,6 +23,7 @@ static const char *header_template {
     "namespace pmp::" TPL_NAMESPACE " {\n\n"
     TPL_BODY
     "\tinline size_t opcode_to_index(u32 opcode) noexcept { return opcode - %OPCODEOFFSET%; }\n\n"
+    "\tinline size_t message_count() noexcept { return %MESSAGECOUNT%; }\n\n"
     "}\n\n"
     "#endif /* " TPL_HEADERGUARD " */\n"
 };
@@ -46,6 +48,11 @@ void header_builder::set_namespace(const std::string& name) noexcept
 void header_builder::set_opcode_offset(u32 offset) noexcept
 {
     stl::string::replace(_content, TPL_OPCODEOFFSET, std::to_string(offset));
+}
+
+void header_builder::set_message_count(size_t count) noexcept
+{
+    stl::string::replace(_content, TPL_MESSAGECOUNT, std::to_string(count));
 }
 
 const std::string& header_builder::build() noexcept

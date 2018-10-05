@@ -29,7 +29,7 @@ parse_processor::parse_processor() :
 {
 }
 
-void parse_processor::parse(lexer *lex) noexcept
+bool parse_processor::parse(lexer *lex) noexcept
 {
     size_t index { 0 };
     auto& generator { *lex->generator() };
@@ -37,8 +37,12 @@ void parse_processor::parse(lexer *lex) noexcept
         auto token { generator[index] };
         ++index;
 
-        _processor[_state](token);
+        if (!_processor[_state](token)) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 void parse_processor::set_state(parsing_state state) noexcept
@@ -152,7 +156,7 @@ bool parse_processor::process_field_scope_state(lexertk::token& token) noexcept
     }
 
     // ]
-    if (token.type == lexertk::token::token_type::e_lsqrbracket) {
+    if (token.type == lexertk::token::token_type::e_rsqrbracket) {
         assert(_current_field->is_array());
 
         return true;

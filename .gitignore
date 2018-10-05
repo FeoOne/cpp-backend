@@ -16,6 +16,7 @@ CMakeCache.txt
 # auto generated code
 *_gen.h
 *_generated.*
+message/generated/*
 
 # local files
 config/*

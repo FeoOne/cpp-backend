@@ -12,10 +12,20 @@
 namespace stl {
 
     // static
-    std::string filesystem::read_whole_file(const std::string_view& path) noexcept
+    std::string filesystem::read_text_file(const std::string_view& path) noexcept
     {
         std::ifstream file { path.data() };
-        return  { (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
+        std::string text { (std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>() };
+        file.close();
+        return text;
+    }
+
+    // static
+    void filesystem::write_text_file(const std::string_view& path, const std::string& text) noexcept
+    {
+        std::ofstream file { path.data() };
+        file << text;
+        file.close();
     }
 
 }

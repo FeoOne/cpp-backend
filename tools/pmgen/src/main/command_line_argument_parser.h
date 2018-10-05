@@ -20,8 +20,8 @@ public:
                                           const std::string_view& app_description) noexcept;
     virtual ~command_line_argument_parser() = default;
 
-    const char *input_file() const { return _input; }
-    const char *output_file() const { return _output; }
+    inline const char *input_file() const noexcept { return _input; }
+    inline const char *output_dir() const noexcept { return _output; }
 
 private:
     gchar *         _input;

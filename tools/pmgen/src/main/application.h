@@ -11,13 +11,14 @@
 #include <stl.h>
 
 #include "main/command_line_argument_parser.h"
-#include "parse/parse_processor.h"
-#include "write/writer.h"
 
 class application {
 public:
+    STL_DECLARE_SMARTPOINTERS(application)
+    STL_DELETE_ALL_DEFAULT(application)
+
     explicit application(int argc, char **argv) noexcept;
-    ~application();
+    ~application() = default;
 
     static int start(int argc, char **argv) noexcept;
 

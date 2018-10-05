@@ -18,17 +18,18 @@ command_line_argument_parser::command_line_argument_parser(int argc,
 
     add_option(stl::command_line_option_type::STRING,
                &_input,
-               "input",
+               "input file",
                'i',
                "File with message schema.",
                "PATH",
                false,
                false);
+
     add_option(stl::command_line_option_type::STRING,
                &_output,
-               "output",
+               "output directory",
                'o',
-               "File to output generated code.",
+               "Directory to store generated code.",
                "PATH",
                false,
                false);

@@ -8,10 +8,6 @@
 #ifndef PMGEN_PARSER_H
 #define PMGEN_PARSER_H
 
-#include <vector>
-#include <functional>
-#include <unordered_map>
-
 #include "parse/lexer.h"
 #include "parse/parse_contex.h"
 
@@ -32,7 +28,7 @@ public:
     parse_processor();
     ~parse_processor() = default;
 
-    void parse(lexer *lex) noexcept;
+    bool parse(lexer *lex) noexcept;
 
     parse_contex& contex() noexcept { return _context; }
 

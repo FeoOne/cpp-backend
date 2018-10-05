@@ -10,11 +10,12 @@
 
 #include <stl.h>
 
-#include <string>
-
 class field_builder {
 public:
-    explicit field_builder(field_builder *prev) noexcept;
+    STL_DECLARE_SMARTPOINTERS(field_builder)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(field_builder)
+
+    explicit field_builder(const field_builder::sptr& prev) noexcept;
     ~field_builder() = default;
 
     const std::string& name() const noexcept { return _name; }
@@ -25,9 +26,9 @@ public:
     std::string build() noexcept;
 
 private:
-    field_builder *     _prev;
-    std::string         _content;
-    std::string         _name;
+    field_builder::sptr     _prev;
+    std::string             _content;
+    std::string             _name;
 
 };
 

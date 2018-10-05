@@ -1,5 +1,5 @@
 /**
- * @file writer.h
+ * @file codegen.h
  * @author Feo
  * @date 02/10/2018
  * @brief
@@ -10,12 +10,12 @@
 
 #include "parse/parse_processor.h"
 
-class writer {
+class codegen {
 public:
-    writer();
-    ~writer();
+    codegen();
+    virtual ~codegen() = default;
 
-    void write(const std::string& path, parse_processor& p) noexcept;
+    virtual std::string generate(parse_processor *parser) noexcept = 0;
 
 private:
 

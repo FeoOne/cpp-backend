@@ -7,7 +7,7 @@
 
 #include <stl.h>
 
-#include "write/class_builder.h"
+#include "codegen/cpp/class_builder.h"
 
 #define TPL_CLASSNAME       "%CLASSNAME%"
 #define TPL_PUBLICSCOPE     "%PUBLICSCOPE%"

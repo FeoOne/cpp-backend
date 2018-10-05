@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "backend_database_gen.h"
+
 #include "job/service/io_service.h"
 
 namespace backend {

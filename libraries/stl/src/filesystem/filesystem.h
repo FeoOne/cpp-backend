@@ -19,7 +19,8 @@ namespace stl {
     public:
         STL_DELETE_ALL_DEFAULT(filesystem)
 
-        static std::string read_whole_file(const std::string_view& path) noexcept;
+        static std::string read_text_file(const std::string_view& path) noexcept;
+        static void write_text_file(const std::string_view& path, const std::string& text) noexcept;
 
     private:
 
