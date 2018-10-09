@@ -17,6 +17,7 @@ namespace stl {
 
     class string {
     public:
+        static std::string to_uppercase(const std::string& str) noexcept;
         static void make_uppercase(std::string& str) noexcept;
 
         static void replace(std::string& str, const std::string& pattern, const std::string& text) noexcept;

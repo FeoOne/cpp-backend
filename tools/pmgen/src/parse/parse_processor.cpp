@@ -9,7 +9,7 @@
 
 parse_processor::parse_processor() :
         _state { parsing_state::global_scope },
-        _context {},
+        _context { parsing_context::make_unique() },
         _current_message { nullptr },
         _current_field { nullptr },
         _current_attribute { nullptr },
@@ -110,7 +110,7 @@ bool parse_processor::process_message_scope_state(lexertk::token& token) noexcep
 
     // }
     if (token.type == lexertk::token::token_type::e_rcrlbracket) {
-        _context.commit_message(_current_message);
+        _context->add_message(_current_message);
         _current_message = nullptr;
 
         set_state(parsing_state::global_scope);
@@ -183,14 +183,14 @@ bool parse_processor::process_namespace_declaration_state(lexertk::token& token)
         assert(token.value.length() > 2);
         assert(token.value.length() < 32);
 
-        _context.ns(token.value);
+        _context->ns(token.value);
 
         return true;
     }
 
     // ;
     if (token.type == lexertk::token::token_type::e_eof) {
-        assert(_context.ns().length() > 0);
+        assert(_context->ns().length() > 0);
 
         set_state(parsing_state::global_scope);
 
@@ -210,13 +210,13 @@ bool parse_processor::process_opcode_offset_state(lexertk::token& token) noexcep
 
     // value
     if (token.type == lexertk::token::token_type::e_number) {
-        _context.opcode_offset(static_cast<u32>(std::stoul(token.value)));
+        _context->opcode_offset(static_cast<u32>(std::stoul(token.value)));
         return true;
     }
 
     // ;
     if (token.type == lexertk::token::token_type::e_eof) {
-        assert(_context.opcode_offset() > 0);
+        assert(_context->opcode_offset() > 0);
         set_state(parsing_state::global_scope);
         return true;
     }
@@ -227,7 +227,7 @@ bool parse_processor::process_opcode_offset_state(lexertk::token& token) noexcep
 // global_scope message
 bool parse_processor::process_global_scope_message(lexertk::token& token) noexcept
 {
-    _current_message = new class_presenter;
+    _current_message = new message_presenter;
     set_state(parsing_state::message_declaration);
     return true;
 }

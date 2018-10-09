@@ -34,8 +34,13 @@ int application::start() noexcept
     auto gen { cpp_codegen::make_unique() };
     auto output { gen->generate(parser.get()) };
 
-    auto output_file_path { std::string { _argument_parser->output_dir() } + parser->contex().ns() + "_gen.h" };
-    stl::filesystem::write_text_file(output_file_path, output);
+    std::string output_dir { _argument_parser->output_dir() };
+    if (output_dir[output_dir.size() - 1] != '/') {
+        output_dir.append("/");
+    }
+    for (auto pair: output) {
+        stl::filesystem::write_text_file(output_dir + pair.first, pair.second);
+    }
 
     return EXIT_SUCCESS;
 }

@@ -15,10 +15,15 @@ public:
     STL_DECLARE_SMARTPOINTERS(cpp_codegen)
     STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(cpp_codegen)
 
-    cpp_codegen();
+    cpp_codegen() = default;
     virtual ~cpp_codegen() = default;
 
-    std::string generate(parse_processor *parser) noexcept final;
+    /**
+     *
+     * @param parser
+     * @return Pair where first element is file name and second is content.
+     */
+    std::map<std::string, std::string> generate(parse_processor *parser) noexcept final;
 
 private:
 

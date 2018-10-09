@@ -10,14 +10,17 @@
 
 #include <stl.h>
 
-#include "data/class_presenter.h"
+#include "data/message_presenter.h"
 
-class parse_contex {
+class parsing_context {
 public:
-    using message_vector_type = std::vector<const class_presenter *>;
+    STL_DECLARE_SMARTPOINTERS(parsing_context)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(parsing_context)
 
-    parse_contex();
-    ~parse_contex();
+    using message_vector_type = std::vector<const message_presenter *>;
+
+    parsing_context();
+    ~parsing_context() = default;
 
     const std::string& ns() const noexcept { return  _namespace; }
     void ns(const std::string& ns) noexcept { _namespace = ns; }
@@ -25,15 +28,15 @@ public:
     u32 opcode_offset() const noexcept { return _opcode_offset; }
     void opcode_offset(u32 offset) noexcept { _opcode_offset = offset; }
 
-    void commit_message(const class_presenter *message) noexcept { _messages.push_back(message); }
     const message_vector_type& messages() const noexcept { return _messages; }
+    void add_message(const message_presenter *message) noexcept { _messages.push_back(message); }
 
 private:
     std::string                         _namespace;
+    u32                                 _opcode_offset;
 
     message_vector_type                 _messages;
 
-    u32                                 _opcode_offset;
 
 };
 

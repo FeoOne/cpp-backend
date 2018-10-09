@@ -5,45 +5,34 @@
  * @brief
  */
 
-#include "codegen/cpp/field_builder.h"
-#include "codegen/cpp/header_builder.h"
+#include "main/pmgen_consts.h"
+#include "codegen/cpp/building_context.h"
+#include "codegen/cpp/message_declaration_builder.h"
+#include "codegen/cpp/handler_declaration_builder.h"
 
 #include "codegen/cpp/cpp_codegen.h"
 
-cpp_codegen::cpp_codegen()
+std::map<std::string, std::string> cpp_codegen::generate(parse_processor *parser) noexcept
 {
-}
+    static const std::string header_suffix { consts::GENERATED_HEADER_SUFFIX };
 
-std::string cpp_codegen::generate(parse_processor *parser) noexcept
-{
-    auto header { header_builder::make_unique() };
-    header->set_namespace(parser->contex().ns());
-    header->set_opcode_offset(parser->contex().opcode_offset());
+    std::map<std::string, std::string> result {};
 
-    u32 index { 0 };
-    for (auto message: parser->contex().messages()) {
-        auto cls { class_builder::make_shared() };
-        cls->set_name(message->name());
-        cls->set_opcode(parser->contex().opcode_offset() + index);
+    auto parse_context { parser->contex() };
+    auto build_context { building_context::make_unique() };
+    build_context->opcode_offset(parse_context->opcode_offset());
 
-        field_builder::sptr prev_field_builder { nullptr };
-        for (auto field: message->fields()) {
-            auto property { field_builder::make_shared(prev_field_builder) };
-            property->set_name(field->name());
-            property->set_type(field->type());
-
-            cls->add_field(property);
-
-            prev_field_builder = property;
-        }
-
-        header->add_class(cls);
-
-        ++index;
+    {
+        // message declaration
+        auto builder { message_declaration_builder::make_unique(build_context.get(), parse_context) };
+        result.emplace(std::make_pair(parser->contex()->ns() + "_message" + header_suffix, builder->build()));
     }
 
-    header->set_message_count(index);
+    {
+        // message handler declaration and definition
+        auto builder { handler_declaration_builder::make_unique(build_context.get(), parse_context) };
+        result.emplace(std::make_pair(parser->contex()->ns() + "_handler" + header_suffix, builder->build()));
+    }
 
-    return header->build();
+    return result;
 }
-

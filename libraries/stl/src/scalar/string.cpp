@@ -10,6 +10,14 @@
 namespace stl {
 
     // static
+    std::string string::to_uppercase(const std::string& str) noexcept
+    {
+        auto result { str };
+        make_uppercase(result);
+        return result;
+    }
+
+    // static
     void string::make_uppercase(std::string& str) noexcept
     {
         std::transform(str.begin(), str.end(), str.begin(), toupper);

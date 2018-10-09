@@ -12,10 +12,13 @@
 
 class codegen {
 public:
-    codegen();
+    STL_DECLARE_SMARTPOINTERS(codegen)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(codegen)
+
+    codegen() = default;
     virtual ~codegen() = default;
 
-    virtual std::string generate(parse_processor *parser) noexcept = 0;
+    virtual std::map<std::string, std::string> generate(parse_processor *parser) noexcept = 0;
 
 private:
 

@@ -9,7 +9,7 @@
 #define PMGEN_PARSER_H
 
 #include "parse/lexer.h"
-#include "parse/parse_contex.h"
+#include "parse/parsing_context.h"
 
 enum class parsing_state {
     global_scope,
@@ -30,15 +30,15 @@ public:
 
     bool parse(lexer *lex) noexcept;
 
-    parse_contex& contex() noexcept { return _context; }
+    parsing_context *contex() noexcept { return _context.get(); }
 
 private:
     parsing_state                                                           _state;
-    parse_contex                                                            _context;
+    parsing_context::uptr                                                   _context;
 
-    class_presenter *                                                       _current_message;
+    message_presenter *                                                     _current_message;
     field_presenter *                                                       _current_field;
-    attribute_presenter *                                                   _current_attribute;
+    field_attribute_presenter *                                             _current_attribute;
 
     std::unordered_map<parsing_state, std::function<bool(lexertk::token&)>> _processor;
     std::unordered_map<std::string, std::function<bool(lexertk::token&)>>   _global_scope_processor;

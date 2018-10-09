@@ -19,24 +19,24 @@
 #define logassert(cond, format, ...)
 #define logdebug(format, ...)
 #else
-#define logassert(cond, format, ...)                                                                \
+#define logassert(cond, format, ...) \
     do { if (!(cond)) { logdebug("Assertion failed '" STL_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
-#define logdebug(format, ...)                                                       \
+#define logdebug(format, ...)                                                   \
     stl::log_manager::get_logger()->log(stl::logger::level_t::DEBUG,            \
-                                          __FILE__,                                 \
-                                          __LINE__,                                 \
-                                          __FUNCTION__,                             \
-                                          format,                                   \
-                                          ##__VA_ARGS__)
+                                        __FILE__,                               \
+                                        __LINE__,                               \
+                                        __FUNCTION__,                           \
+                                        format,                                 \
+                                        ##__VA_ARGS__)
 #endif
 
-#define loginfo(format, ...)                                                        \
+#define loginfo(format, ...)                                                    \
     stl::log_manager::get_logger()->log(stl::logger::level_t::INFO,             \
-                                          __FILE__,                                 \
-                                          __LINE__,                                 \
-                                          __FUNCTION__,                             \
-                                          format,                                   \
-                                          ##__VA_ARGS__)
+                                        __FILE__,                               \
+                                        __LINE__,                               \
+                                        __FUNCTION__,                           \
+                                        format,                                 \
+                                        ##__VA_ARGS__)
 
 #define lognotice(format, ...)                                                      \
     stl::log_manager::get_logger()->log(stl::logger::level_t::NOTICE,           \

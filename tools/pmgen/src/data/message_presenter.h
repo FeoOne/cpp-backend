@@ -1,5 +1,5 @@
 /**
- * @file class_presenter.h
+ * @file message_presenter.h
  * @author Feo
  * @date 01/10/2018
  * @brief
@@ -10,15 +10,15 @@
 
 #include "data/field_presenter.h"
 
-class class_presenter final {
+class message_presenter final {
 public:
-    STL_DECLARE_SMARTPOINTERS(class_presenter)
-    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(class_presenter)
+    STL_DECLARE_SMARTPOINTERS(message_presenter)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(message_presenter)
 
     using field_vector_type = std::vector<const field_presenter *>;
 
-    class_presenter();
-    ~class_presenter() = default;
+    message_presenter();
+    ~message_presenter() = default;
 
     const std::string& name() const noexcept { return _name; }
     void name(const std::string& name) noexcept { _name = name; }

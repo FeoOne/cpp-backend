@@ -5,8 +5,6 @@
  * @brief
  */
 
-#include "backend_database_gen.h"
-
 #include "job/service/io_service.h"
 
 namespace backend {
@@ -20,12 +18,6 @@ namespace backend {
         EX_ASSIGN_TASK_HANDLER(engine::connection_status_changed_task,
                                io_service,
                                handle_connection_status_changed_task);
-    }
-
-    // virtual
-    io_service::~io_service()
-    {
-
     }
 
     // virtual
@@ -49,10 +41,25 @@ namespace backend {
     void io_service::handle_io_request_task(engine::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<engine::io_request_task *>(base_task) };
-        logdebug("New 'io_request_task'. Connection id: %llu, opcode: %lu, length: %lu.",
+        logdebug("New 'io_request_task'. Connection id: %llu, opcode: %lu, size: %lu.",
                  task->link().connection_id(),
                  task->opcode(),
-                 task->length());
+                 task->memory_size());
+
+        handle_message(task->opcode(), task->memory(), task->memory_size());
+        // todo: free message memory
+    }
+
+    // virtual
+    void io_service::handle_handshake_request(pmp::backend_database::handshake_request::uptr&& message) noexcept
+    {
+
+    }
+
+    // virtual
+    void io_service::handle_handshake_response(pmp::backend_database::handshake_response::uptr&& message) noexcept
+    {
+
     }
 
 }

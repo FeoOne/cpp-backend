@@ -7,10 +7,10 @@
 
 #include <stl.h>
 
-class attribute_presenter {
+class field_attribute_presenter {
 public:
-    STL_DECLARE_SMARTPOINTERS(attribute_presenter)
-    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(attribute_presenter)
+    STL_DECLARE_SMARTPOINTERS(field_attribute_presenter)
+    STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(field_attribute_presenter)
 
 private:
 

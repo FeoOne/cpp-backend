@@ -13,7 +13,7 @@ field_presenter::field_presenter() :
 {
 }
 
-void field_presenter::add_attribute(attribute_presenter *attribute) noexcept
+void field_presenter::add_attribute(field_attribute_presenter *attribute) noexcept
 {
     _attributes.push_back(attribute);
 }

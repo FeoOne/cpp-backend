@@ -50,7 +50,7 @@ namespace database {
         logdebug("New io_request_task. Connection id: %llu, opcode: %lu, length: %lu.",
                  task->link().connection_id(),
                  task->opcode(),
-                 task->length());
+                 task->memory_size());
     }
 
 }
