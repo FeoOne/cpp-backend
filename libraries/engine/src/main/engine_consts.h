@@ -17,20 +17,15 @@
 namespace engine {
 
     struct consts {
-        STL_DELETE_ALL_DEFAULT(consts)
 
         /**
          * config
          */
         struct config {
-            STL_DELETE_ALL_DEFAULT(config)
-
             /**
              * config::key
              */
             struct key {
-                STL_DELETE_ALL_DEFAULT(key)
-
                 static constexpr std::string_view NAME { "name" };
                 static constexpr std::string_view PATH { "path" };
                 static constexpr std::string_view COUNT { "count" };
@@ -47,16 +42,12 @@ namespace engine {
                 static constexpr std::string_view BACKLOG { "backlog" };
                 static constexpr std::string_view KEEPALIVE { "keepalive" };
                 static constexpr std::string_view TYPE { "type" };
-//                static constexpr std::string_view INPUT_BUFFER_SIZE { "input_buffer_size" };
-//                static constexpr std::string_view OUTPUT_BUFFER_SIZE { "output_buffer_size" };
             };
 
             /**
              * config::io
              */
             struct io {
-                STL_DELETE_ALL_DEFAULT(io)
-
                 static constexpr std::string_view TCP { "tcp" };
                 static constexpr std::string_view UDP { "udp" };
             };
@@ -65,12 +56,17 @@ namespace engine {
              * config::web
              */
              struct web {
-                 STL_DELETE_ALL_DEFAULT(web)
-
                  static constexpr std::string_view ALL { "all" };
                  static constexpr std::string_view LOCAL { "local" };
              };
 
+        };
+
+        /**
+         * network
+         */
+        struct net {
+            static constexpr size_t read_stream_size { 16384 };
         };
 
 

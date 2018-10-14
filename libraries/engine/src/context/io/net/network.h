@@ -15,6 +15,7 @@
 namespace engine {
 
     enum class transport_protocol {
+        undefined,
         tcp,
         udp,
     };

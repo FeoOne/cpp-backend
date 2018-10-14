@@ -9,10 +9,10 @@
 
 namespace engine {
 
-    connection::connection(u64 id, transport_protocol protocol) noexcept :
-            _id { id },
+    connection::connection() :
+            _id { 0 },
             _handle {},
-            _protocol { protocol },
+            _protocol { transport_protocol::undefined },
             _version { internet_protocol_version::undefined },
             _status { connection_status::disconnected },
             _side { connection_side::undefined },
@@ -28,8 +28,13 @@ namespace engine {
         std::memset(&_addr, 0, sizeof(socket_address));
     }
 
-    // virtual
-    connection::~connection()
+    void connection::construct(u64 id, transport_protocol protocol) noexcept
+    {
+        _id = id;
+        _protocol = protocol;
+    }
+
+    void connection::destroy() noexcept
     {
         _id = 0;
     }

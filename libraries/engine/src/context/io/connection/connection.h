@@ -18,9 +18,11 @@ namespace engine {
 
     class connection {
     public:
-        STL_DELETE_ALL_DEFAULT(connection)
+        STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(connection)
 
-        virtual ~connection();
+        virtual ~connection() = default;
+
+        void destroy() noexcept;
 
         void setup(const std::string_view& name,
                    const std::string_view& listen,
@@ -53,8 +55,12 @@ namespace engine {
         inline connection_status status() const noexcept { return _status; }
         inline void status(connection_status status) noexcept { _status = status; }
 
+        inline const std::string_view& name() const noexcept { return _name; }
+
     protected:
-        explicit connection(u64 id, transport_protocol protocol) noexcept;
+        connection();
+
+        void construct(u64 id, transport_protocol protocol) noexcept;
 
         inline u16 backlog() const noexcept { return _backlog; }
         inline u16 keepalive() const noexcept { return _keepalive; }

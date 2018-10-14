@@ -57,17 +57,13 @@ namespace engine {
             } while (_id_counter == 0); // 0 id = invalid connection
 
             // create connection
-            auto memory { _connection_pool->alloc() };
-            if (memory == nullptr) {
-                logerror("Failed to allocate memory.");
-                return nullptr;
-            }
-
-            auto connection { new (memory) connection_type(_id_counter) };
-            _connections_by_id.insert({ connection->id(), connection });
-            _connections_by_handle.insert({ connection->handle(), connection });
+            auto connection { _connection_pool->acquire() };
+            connection->construct(_id_counter);
 
             logdebug("Acquired connection with id: %lu.", connection->id());
+
+            _connections_by_id.insert({ connection->id(), connection });
+            _connections_by_handle.insert({ connection->handle(), connection });
 
             return connection;
         }
@@ -101,7 +97,8 @@ namespace engine {
 
             logdebug("Released connection with id %lu.", connection->id());
 
-            _connection_pool->free(connection);
+            connection->destruct();
+            _connection_pool->release(connection);
         }
 
         /**
@@ -157,7 +154,7 @@ namespace engine {
         u64                                                         _id_counter;
         std::unordered_map<u64, connection_pointer>                 _connections_by_id;
         std::unordered_map<network_handle *, connection_pointer>    _connections_by_handle;
-        stl::fixed_memory_pool::uptr                              _connection_pool;
+        stl::object_pool<connection_type>::uptr                     _connection_pool;
 
     };
 

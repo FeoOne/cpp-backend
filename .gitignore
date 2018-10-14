@@ -9,6 +9,7 @@ cmake/*
 cmake-build-*
 CMakeFiles
 CMakeCache.txt
+build/*
 
 # macos
 .DS_Store

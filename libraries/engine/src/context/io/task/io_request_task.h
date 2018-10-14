@@ -24,10 +24,10 @@ namespace engine {
 
         explicit io_request_task(const connection_link& link,
                                  message::opcode_type opcode,
-                                 u8 *memory,
+                                 const u8 *memory,
                                  size_t length) noexcept;
 
-        virtual ~io_request_task();
+        virtual ~io_request_task() = default;
 
         const connection_link& link() const noexcept { return _link; }
         message::opcode_type opcode() const noexcept { return _opcode; }
@@ -37,7 +37,7 @@ namespace engine {
     private:
         connection_link         _link;
         message::opcode_type    _opcode;
-        u8 *                    _memory;
+        const u8 *              _memory;
         size_t                  _length;
 
     };

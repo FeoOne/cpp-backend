@@ -12,6 +12,8 @@
 #define TPL_METHODS         "%METHODS%"
 #define TPL_MESSAGENAME     "%MESSAGENAME%"
 #define TPL_SWITCH          "%SWITCH%"
+#define TPL_OPCODEOFFSET    "%OPCODEOFFSET%"
+#define TPL_OPCODECOUNT     "%OPCODECOUNT%"
 
 static const char *header_template {
     "// This code is auto-generated. Do not modify.\n\n"
@@ -22,8 +24,6 @@ static const char *header_template {
     "\tclass message_handler {\n"
     "\tpublic:\n"
     "\t\tvirtual ~message_handler() = default;\n\n"
-    "\tprotected:\n"
-    "\t\tmessage_handler() = default;\n\n"
     "\t\tbool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept {\n"
     "\t\t\tauto result { true };\n"
     "\t\t\tswitch (opcode) {\n"
@@ -32,6 +32,9 @@ static const char *header_template {
     "\t\t\t}\n"
     "\t\t\treturn result;\n"
     "\t\t}\n\n"
+//    "\t\tstatic bool own_opcode(u32 opcode) noexcept { return opcode - " TPL_OPCODEOFFSET " < " TPL_OPCODECOUNT "; }\n\n"
+    "\tprotected:\n"
+    "\t\tmessage_handler() = default;\n\n"
     TPL_METHODS "\n"
     "\t};\n\n"
     "}\n\n"
@@ -79,6 +82,9 @@ std::string handler_declaration_builder::build() const noexcept
     stl::string::replace_all(content, TPL_NAMESPACE, _parse_context->ns());
     stl::string::replace_all(content, TPL_METHODS, methods);
     stl::string::replace_all(content, TPL_SWITCH, switches);
+
+    stl::string::replace(content, TPL_OPCODEOFFSET, std::to_string(_parse_context->opcode_offset()));
+    stl::string::replace(content, TPL_OPCODECOUNT, std::to_string(_build_context->opcode_count()));
 
     return content;
 }

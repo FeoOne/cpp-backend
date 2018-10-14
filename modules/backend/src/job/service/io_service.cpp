@@ -12,7 +12,8 @@ namespace backend {
     io_service::io_service(const stl::setting& config,
                            engine::task_router *router,
                            const engine::work_service_delegate *delegate) noexcept :
-            crucial(config, router, delegate)
+            crucial(config, router, delegate),
+            _database_message_handler { database_message_handler::make_unique() }
     {
         EX_ASSIGN_TASK_HANDLER(engine::io_request_task, io_service, handle_io_request_task);
         EX_ASSIGN_TASK_HANDLER(engine::connection_status_changed_task,
@@ -46,20 +47,9 @@ namespace backend {
                  task->opcode(),
                  task->memory_size());
 
-        handle_message(task->opcode(), task->memory(), task->memory_size());
-        // todo: free message memory
-    }
-
-    // virtual
-    void io_service::handle_handshake_request(pmp::backend_database::handshake_request::uptr&& message) noexcept
-    {
-
-    }
-
-    // virtual
-    void io_service::handle_handshake_response(pmp::backend_database::handshake_response::uptr&& message) noexcept
-    {
-
+        if (_database_message_handler->handle_message(task->opcode(), task->memory(), task->memory_size())) {
+            return;
+        }
     }
 
 }

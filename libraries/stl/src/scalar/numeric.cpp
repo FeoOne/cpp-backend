@@ -9,6 +9,16 @@
 
 namespace stl {
 
+    //static
+    bool numeric::belong_to_range(u32 lo, u32 hi, u32 val) noexcept
+    {
+        return (val - lo) <= (hi - val);
+    }
 
+    //static
+    bool numeric::belong_to_range(s32 lo, s32 hi, s32 val) noexcept
+    {
+        return (val - hi) * (val - lo) <= 0;
+    }
 
 }

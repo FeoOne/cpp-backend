@@ -5,9 +5,9 @@
  * @brief
  */
 
-#include "context/io/connection/tcp_connection.h"
+#include "main/engine_consts.h"
 
-#define EX_READ_STREAM_INITIAL_SIZE 4096
+#include "context/io/connection/tcp_connection.h"
 
 #define check_status(status) \
         logassert(status == 0, "Invalid status: %s (%s).", uv_strerror(status), uv_err_name(status))
@@ -15,12 +15,16 @@
 namespace engine {
 
     tcp_connection::tcp_connection(u64 id) noexcept :
-            connection(id, transport_protocol::tcp),
-            _read_stream { EX_READ_STREAM_INITIAL_SIZE },
+            _read_stream { consts::net::read_stream_size },
             _write_request {},
             _connect_request {},
             _shutdown_request {}
     {
+    }
+
+    void tcp_connection::construct(u64 id) noexcept
+    {
+        connection::construct(id, transport_protocol::tcp);
     }
 
     // virtual

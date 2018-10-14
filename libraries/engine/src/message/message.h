@@ -19,7 +19,7 @@ namespace engine {
     public:
         STL_DELETE_ALL_DEFAULT(message_header)
 
-        static constexpr size_t SIZE { 20 };
+        static constexpr size_t size { 20 };
 
         explicit message_header(u8 *memory) noexcept : _memory { memory } {}
         ~message_header() = default;

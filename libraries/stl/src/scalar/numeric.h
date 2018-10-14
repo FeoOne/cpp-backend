@@ -22,7 +22,12 @@ using u64 = uint64_t;
 
 namespace stl {
 
+    class numeric {
+    public:
+        static bool belong_to_range(u32 lo, u32 hi, u32 val) noexcept;
+        static bool belong_to_range(s32 lo, s32 hi, s32 val) noexcept;
 
+    };
 
 }
 

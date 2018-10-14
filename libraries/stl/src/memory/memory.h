@@ -52,14 +52,21 @@ namespace stl {
         }
 
         template<typename T>
+        static inline T *realloc(void *memory, size_t size) noexcept {
+            return reinterpret_cast<T *>(realloc_impl(memory, size));
+        }
+
+        template<typename T>
         static inline T *aligned_alloc(size_t size) noexcept {
             return reinterpret_cast<T *>(aligned_alloc_impl(size));
         }
+
 
         static void free(void *mem) noexcept;
 
     private:
         static void *malloc_impl(size_t size) noexcept;
+        static void *realloc_impl(void *memory, size_t size) noexcept;
         static void *aligned_alloc_impl(size_t size) noexcept;
 
     };

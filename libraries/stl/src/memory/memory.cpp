@@ -28,6 +28,12 @@ namespace stl {
     }
 
     // static
+    void *memory::realloc_impl(void *memory, size_t size) noexcept
+    {
+        return je_realloc(memory, size);
+    }
+
+    // static
     void *memory::aligned_alloc_impl(size_t size) noexcept
     {
         return je_aligned_alloc(page_size(), size);

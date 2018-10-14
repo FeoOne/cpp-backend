@@ -8,7 +8,7 @@
 #ifndef ENGINE_TCP_CONNECTION_H
 #define ENGINE_TCP_CONNECTION_H
 
-#include "context/io/connection/io_stream.h"
+#include "context/io/stream/tcp_read_stream.h"
 #include "context/io/connection/connection.h"
 
 namespace engine {
@@ -18,6 +18,8 @@ namespace engine {
         STL_DELETE_ALL_DEFAULT(tcp_connection)
 
         virtual ~tcp_connection() = default;
+
+        void construct(u64 id) noexcept;
 
         bool open(uv_loop_t *loop, void *data) noexcept final;
 
@@ -38,13 +40,14 @@ namespace engine {
         void set_nonblock(bool enable) noexcept;
         void set_keepalive(bool enable) noexcept;
 
-        inline io_stream *read_stream() noexcept { return &_read_stream; }
+        inline tcp_read_stream *read_stream() noexcept { return &_read_stream; }
 
     private:
         template<typename>
         friend class connection_manager;
 
-        io_stream                   _read_stream;
+        tcp_read_stream             _read_stream;
+
         uv_write_t                  _write_request;
         uv_connect_t                _connect_request;
         uv_shutdown_t               _shutdown_request;

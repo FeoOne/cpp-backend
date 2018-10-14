@@ -38,8 +38,14 @@ namespace engine {
     void request_processing_service::process_input(tcp_connection *connection) noexcept
     {
         auto read_stream { connection->read_stream() };
-        if (read_stream->used_size() < message_header::SIZE) {
+        if (read_stream->raw_data_size() < message_header::size) {
             // data size insufficient to read header
+
+            // also need to check for available size in stream
+            if (read_stream->left_to_end_size() < message_header::size) {
+                read_stream->start_over();
+            }
+
             return;
         }
 
@@ -51,12 +57,18 @@ namespace engine {
             return;
         }
 
-        if (read_stream->used_size() < message_header::SIZE + header.length()) {
+        if (header.length() != 0 && read_stream->raw_data_size() < message_header::size + header.length()) {
             // data size insufficient to read message
+
+            // also need to check for available size in stream
+            if (read_stream->left_to_end_size() < message_header::size + header.length()) {
+                read_stream->start_over();
+            }
+
             return;
         }
 
-        read_stream->increase_head(message_header::SIZE);
+        read_stream->increase_head(message_header::size);
 
         // validate checksum
         if (header.crc32() != stl::checksum::crc32(read_stream->head(), header.length())) {
@@ -65,16 +77,19 @@ namespace engine {
             return;
         }
 
-        auto task {
-            basic_task::create<io_request_task>(connection->link(),
-                                                     header.opcode(),
-                                                     read_stream->head(),
-                                                     header.length())
-        };
-        router()->enqueue(task);
+        u8 *memory {  nullptr };
+        size_t size { 0 };
 
-        read_stream->increase_head(header.length());
-        read_stream->flush_if_needed();
+        // grab message body if presented
+        if (header.length() != 0) {
+            memory = read_stream->head();
+            size = header.length();
+
+            read_stream->increase_head(header.length());
+        }
+
+        auto task { basic_task::create<io_request_task>(connection->link(), header.opcode(), memory, size) };
+        router()->enqueue(task);
     }
 
 }

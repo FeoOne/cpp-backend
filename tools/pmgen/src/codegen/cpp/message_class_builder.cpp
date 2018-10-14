@@ -18,7 +18,7 @@ static const char *class_template {
     "\tpublic:\n"
     "\t\tSTL_DECLARE_SMARTPOINTERS(" TPL_CLASSNAME ")\n"
     "\t\tSTL_DELETE_ALL_DEFAULT(" TPL_CLASSNAME ")\n\n"
-    "\t\tstatic constexpr u32 opcode { %OPCODE% };\n\n"
+    "\t\tstatic constexpr u32 opcode { " TPL_OPCODE " };\n\n"
     "\t\texplicit " TPL_CLASSNAME "(const u8 *memory, size_t size) noexcept : pmp::message(memory, size) {}\n"
     "\t\tvirtual ~" TPL_CLASSNAME "() = default;\n\n"
     TPL_PUBLICSCOPE
@@ -40,7 +40,7 @@ std::string message_class_builder::build() const noexcept
     stl::string::replace_all(content, TPL_CLASSNAME, _message->name());
     stl::string::replace(content, TPL_OPCODE, std::to_string(_build_context->acquire_opcode()));
 
-    std::string public_scope { "" };
+    std::string public_scope;
     const field_presenter *previous_field { nullptr };
     for (const auto& field: _message->fields()) {
         auto builder { message_field_builder::make_unique(field, previous_field) };

@@ -249,10 +249,8 @@ namespace engine {
 
         auto read_stream { connection->read_stream() };
 
-        read_stream->grow_if_needed(); // todo: security issue. add size check to prevent unexpected growing
-
         buffer->base = reinterpret_cast<char *>(read_stream->tail());
-        buffer->len = read_stream->free_size();
+        buffer->len = read_stream->left_to_end_size();
     }
 
     void tcp_service::on_read(network_handle *handle, ssize_t nread, const uv_buf_t *) noexcept
