@@ -22,7 +22,8 @@ namespace engine {
 
         virtual ~connection() = default;
 
-        void destroy() noexcept;
+        void construct(u64 id) noexcept;
+        void destruct() noexcept;
 
         void setup(const std::string_view& name,
                    const std::string_view& listen,
@@ -58,9 +59,7 @@ namespace engine {
         inline const std::string_view& name() const noexcept { return _name; }
 
     protected:
-        connection();
-
-        void construct(u64 id, transport_protocol protocol) noexcept;
+        explicit connection(transport_protocol protocol) noexcept;
 
         inline u16 backlog() const noexcept { return _backlog; }
         inline u16 keepalive() const noexcept { return _keepalive; }

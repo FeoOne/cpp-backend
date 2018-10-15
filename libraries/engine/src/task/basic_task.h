@@ -23,7 +23,7 @@ namespace engine {
 
         template<typename T, typename... Args>
         static T *create(Args&&... args) noexcept {
-            return new (stl::memory::malloc<void>(sizeof(T))) T(std::forward<Args>(args)...);
+            return new (stl::memory::aligned_alloc<void>(sizeof(T))) T(std::forward<Args>(args)...);
         }
 
         static void destroy(basic_task *any_task) noexcept {

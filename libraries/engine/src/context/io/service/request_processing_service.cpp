@@ -38,14 +38,8 @@ namespace engine {
     void request_processing_service::process_input(tcp_connection *connection) noexcept
     {
         auto read_stream { connection->read_stream() };
-        if (read_stream->raw_data_size() < message_header::size) {
+        if (read_stream->useful_size() < message_header::size) {
             // data size insufficient to read header
-
-            // also need to check for available size in stream
-            if (read_stream->left_to_end_size() < message_header::size) {
-                read_stream->start_over();
-            }
-
             return;
         }
 
@@ -57,14 +51,8 @@ namespace engine {
             return;
         }
 
-        if (header.length() != 0 && read_stream->raw_data_size() < message_header::size + header.length()) {
+        if (header.length() != 0 && read_stream->useful_size() < message_header::size + header.length()) {
             // data size insufficient to read message
-
-            // also need to check for available size in stream
-            if (read_stream->left_to_end_size() < message_header::size + header.length()) {
-                read_stream->start_over();
-            }
-
             return;
         }
 
@@ -87,6 +75,8 @@ namespace engine {
 
             read_stream->increase_head(header.length());
         }
+
+        read_stream->flush_if_needed();
 
         auto task { basic_task::create<io_request_task>(connection->link(), header.opcode(), memory, size) };
         router()->enqueue(task);

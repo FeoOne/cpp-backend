@@ -15,11 +15,10 @@ namespace engine {
 
     class tcp_connection final : public connection {
     public:
-        STL_DELETE_ALL_DEFAULT(tcp_connection)
+        STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(tcp_connection)
 
+        tcp_connection();
         virtual ~tcp_connection() = default;
-
-        void construct(u64 id) noexcept;
 
         bool open(uv_loop_t *loop, void *data) noexcept final;
 
@@ -43,16 +42,11 @@ namespace engine {
         inline tcp_read_stream *read_stream() noexcept { return &_read_stream; }
 
     private:
-        template<typename>
-        friend class connection_manager;
-
         tcp_read_stream             _read_stream;
 
         uv_write_t                  _write_request;
         uv_connect_t                _connect_request;
         uv_shutdown_t               _shutdown_request;
-
-        explicit tcp_connection(u64 id) noexcept;
 
     };
 

@@ -29,8 +29,11 @@ namespace engine {
         size_t available_size() const noexcept { return _size - _tail; }
         size_t useful_size() const noexcept { return _tail - _head; }
 
+        void grow_if_needed() noexcept;
+        void flush_if_needed() noexcept;
+
     private:
-        u8                      _memory;
+        u8 *                    _memory;
         size_t                  _head;
         size_t                  _tail;
         size_t                  _size;

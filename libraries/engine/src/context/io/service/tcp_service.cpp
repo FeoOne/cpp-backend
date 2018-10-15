@@ -249,8 +249,10 @@ namespace engine {
 
         auto read_stream { connection->read_stream() };
 
+        read_stream->grow_if_needed();
+
         buffer->base = reinterpret_cast<char *>(read_stream->tail());
-        buffer->len = read_stream->left_to_end_size();
+        buffer->len = read_stream->available_size();
     }
 
     void tcp_service::on_read(network_handle *handle, ssize_t nread, const uv_buf_t *) noexcept

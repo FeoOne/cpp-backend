@@ -12,8 +12,6 @@
 #include "context/io/connection/tcp_connection.h"
 #include "context/io/connection/udp_connection.h"
 
-#define EX_CONNECTION_POOL_PAGE_SIZE    std::numeric_limits<u16>::max()
-
 namespace engine {
 
     template<typename T>
@@ -33,9 +31,7 @@ namespace engine {
         connection_manager() :
                 _id_counter { 0 },
                 _connections_by_id {},
-                _connection_pool {
-                    stl::fixed_memory_pool::make_unique(sizeof(connection_type), EX_CONNECTION_POOL_PAGE_SIZE)
-                }
+                _connection_pool { connection_pool::make_unique() }
         {
             _connections_by_id.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
             _connections_by_handle.reserve(consts::IO_CONNECTION_RESERVE_COUNT);
@@ -151,10 +147,12 @@ namespace engine {
         }
 
     private:
+        using connection_pool = stl::object_pool<connection_type>;
+
         u64                                                         _id_counter;
         std::unordered_map<u64, connection_pointer>                 _connections_by_id;
         std::unordered_map<network_handle *, connection_pointer>    _connections_by_handle;
-        stl::object_pool<connection_type>::uptr                     _connection_pool;
+        typename connection_pool::uptr                              _connection_pool;
 
     };
 

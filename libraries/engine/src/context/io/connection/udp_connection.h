@@ -14,8 +14,9 @@ namespace engine {
 
     class udp_connection final : public connection {
     public:
-        STL_DELETE_ALL_DEFAULT(udp_connection)
+        STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(udp_connection)
 
+        udp_connection();
         virtual ~udp_connection() = default;
 
         bool open(uv_loop_t *loop, void *data) noexcept final {}
@@ -24,10 +25,6 @@ namespace engine {
         void stop() noexcept final {}
 
     private:
-        template<typename>
-        friend class connection_manager;
-
-        explicit udp_connection(u64 id) noexcept;
 
     };
 

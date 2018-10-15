@@ -14,17 +14,13 @@
 
 namespace engine {
 
-    tcp_connection::tcp_connection(u64 id) noexcept :
+    tcp_connection::tcp_connection() :
+            connection(transport_protocol::tcp),
             _read_stream { consts::net::read_stream_size },
             _write_request {},
             _connect_request {},
             _shutdown_request {}
     {
-    }
-
-    void tcp_connection::construct(u64 id) noexcept
-    {
-        connection::construct(id, transport_protocol::tcp);
     }
 
     // virtual

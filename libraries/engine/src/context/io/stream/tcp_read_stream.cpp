@@ -10,7 +10,7 @@
 namespace engine {
 
     tcp_read_stream::tcp_read_stream(size_t initial_size) noexcept :
-            _memory {},
+            _memory { stl::memory::aligned_alloc<u8>(initial_size) },
             _head { 0 },
             _tail { 0 },
             _size { initial_size }
@@ -19,20 +19,23 @@ namespace engine {
 
     tcp_read_stream::~tcp_read_stream()
     {
+        stl::memory::free(_memory);
     }
 
-    void tcp_read_stream::start_over() noexcept
+    void tcp_read_stream::grow_if_needed() noexcept
     {
-        auto data_size { raw_data_size() };
-
-        if (data_size != 0) {
-            // todo: handle overlapping
-            logassert(data_size <= _head, "fixme");
-            std::memcpy(_memory, head(), data_size);
+        if (available_size() < _size / 4) {
+            _size *= 2; // todo: handle unexpected grow, add limit check
+            _memory = stl::memory::realloc<u8>(_memory, _size);
         }
+    }
 
-        _head = 0;
-        _tail = data_size;
+    void tcp_read_stream::flush_if_needed() noexcept
+    {
+        if (_head == _tail) {
+            _head = 0;
+            _tail = 0;
+        }
     }
 
 }

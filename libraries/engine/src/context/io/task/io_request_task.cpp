@@ -15,9 +15,20 @@ namespace engine {
                                      size_t length) noexcept :
             _link { link },
             _opcode { opcode },
-            _memory { memory },
+            _memory { nullptr },
             _length { length }
     {
+        if (memory != nullptr) {
+            _memory = stl::memory::aligned_alloc<u8>(length);
+            std::memcpy(_memory, memory, length);
+        }
+    }
+
+    io_request_task::~io_request_task()
+    {
+        if (_memory != nullptr) {
+            stl::memory::free(_memory);
+        }
     }
 
 }

@@ -9,11 +9,9 @@
 
 namespace engine {
 
-    udp_connection::udp_connection(u64 id) noexcept :
-            connection(id, transport_protocol::udp)
+    udp_connection::udp_connection() :
+            connection(transport_protocol::udp)
     {
     }
-
-
 
 }
