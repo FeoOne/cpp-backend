@@ -14,6 +14,8 @@ namespace pmp {
 
     class message {
     public:
+        STL_DELETE_ALL_DEFAULT(message)
+
         explicit message(const u8 *memory, size_t size) noexcept : _memory { memory }, _size { size } {}
         virtual ~message() = default;
 
@@ -24,6 +26,19 @@ namespace pmp {
     private:
         const u8 *      _memory;
         size_t          _size;
+
+    };
+
+    class basic_message_handler {
+    public:
+        STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(basic_message_handler)
+
+        virtual ~basic_message_handler() = default;
+
+        virtual bool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept = 0;
+
+    protected:
+        basic_message_handler() = default;
 
     };
 

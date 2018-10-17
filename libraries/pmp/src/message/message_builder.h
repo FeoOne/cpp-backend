@@ -21,15 +21,21 @@ namespace pmp {
     protected:
         message_builder() = default;
 
-        static void copy(u8 *memory, const char *string) noexcept;
-        static void copy(u8 *memory, u8 value) noexcept;
-        static void copy(u8 *memory, s8 value) noexcept;
-        static void copy(u8 *memory, u16 value) noexcept;
-        static void copy(u8 *memory, s16 value) noexcept;
-        static void copy(u8 *memory, u32 value) noexcept;
-        static void copy(u8 *memory, s32 value) noexcept;
-        static void copy(u8 *memory, u64 value) noexcept;
-        static void copy(u8 *memory, s64 value) noexcept;
+        static void copy(u8 *dst, const void *src, size_t size) noexcept;
+
+        template<typename T, typename = typename std::enable_if<std::is_integral_v<T>>::type>
+        static void copy(u8 *memory, T value) noexcept {
+            copy(memory, &value, sizeof(T));
+        }
+
+        template<typename T, typename = typename std::enable_if<std::is_integral_v<T>>::type>
+        static void copy(u8 *memory, const T *values, size_t count) noexcept {
+            copy(memory, values, sizeof(T) * count);
+        }
+
+        static void copy(u8 *memory, const char *string) noexcept {
+            copy(memory, string, std::strlen(string) + 1);
+        }
 
     };
 

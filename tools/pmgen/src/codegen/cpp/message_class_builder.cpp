@@ -56,6 +56,10 @@ static const char *copy_template {
     "\t\t\tcopy(&memory[counter], _" TPL_FIELDNAME ");\n"
     "\t\t\tcounter += " TPL_FIELDNAME "_length();\n"
 };
+static const char *copy_array_template {
+        "\t\t\tcopy(&memory[counter], _" TPL_FIELDNAME ", _" TPL_FIELDNAME "_count);\n"
+        "\t\t\tcounter += " TPL_FIELDNAME "_length();\n"
+};
 
 message_class_builder::message_class_builder(building_context *build_context,
                                              const message_presenter *message) noexcept :
@@ -92,7 +96,11 @@ std::string message_class_builder::build() const noexcept
             size_calculate += std::string { size_template };
             stl::string::replace(size_calculate, TPL_FIELDNAME, field->name());
 
-            copy_memory += std::string { copy_template };
+            if (field->is_array()) {
+                copy_memory += std::string{copy_array_template};
+            } else {
+                copy_memory += std::string{copy_template};
+            }
             stl::string::replace_all(copy_memory, TPL_FIELDNAME, field->name());
         }
 

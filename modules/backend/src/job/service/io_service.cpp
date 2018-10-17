@@ -5,6 +5,9 @@
  * @brief
  */
 
+#include "job/service/message/database_messaging_service.h"
+#include "job/service/message/manbtc_messaging_service.h"
+
 #include "job/service/io_service.h"
 
 namespace backend {
@@ -13,7 +16,7 @@ namespace backend {
                            engine::task_router *router,
                            const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
-            _database_message_handler { database_message_handler::make_unique() }
+            _message_handlers {}
     {
         EX_ASSIGN_TASK_HANDLER(engine::io_request_task, io_service, handle_io_request_task);
         EX_ASSIGN_TASK_HANDLER(engine::connection_status_changed_task,
@@ -24,13 +27,14 @@ namespace backend {
     // virtual
     void io_service::setup() noexcept
     {
-
+        _message_handlers.push_back(delegate()->service<database_messaging_service>());
+        _message_handlers.push_back(delegate()->service<manbtc_messaging_service>());
     }
 
     // virtual
     void io_service::reset() noexcept
     {
-
+        _message_handlers.clear();
     }
 
     void io_service::handle_connection_status_changed_task(engine::basic_task *base_task) noexcept
@@ -47,8 +51,10 @@ namespace backend {
                  task->opcode(),
                  task->memory_size());
 
-        if (_database_message_handler->handle_message(task->opcode(), task->memory(), task->memory_size())) {
-            return;
+        for (auto handler: _message_handlers) {
+            if (handler->handle_message(task->opcode(), task->memory(), task->memory_size())) {
+                break;
+            }
         }
     }
 

@@ -21,10 +21,10 @@ static const char *header_template {
     "#define " TPL_HEADERGUARD "\n\n"
     "#include <pmp.h>\n\n"
     "namespace pmp::" TPL_NAMESPACE " {\n\n"
-    "\tclass message_handler {\n"
+    "\tclass message_handler : public basic_message_handler {\n"
     "\tpublic:\n"
     "\t\tvirtual ~message_handler() = default;\n\n"
-    "\t\tbool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept {\n"
+    "\t\tbool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept final {\n"
     "\t\t\tauto result { true };\n"
     "\t\t\tswitch (opcode) {\n"
     TPL_SWITCH

@@ -12,26 +12,38 @@
 #define TPL_OFFSET      "%OFFSET%"
 #define TPL_COUNT       "%COUNT%"
 
+#define INDEX_SIZE      "sizeof(u16)"
+
 static const char *string_field_template {
-    "\t\t" TPL_TYPE "get_" TPL_NAME "() const noexcept { return reinterpret_cast<" TPL_TYPE
+    "\t\tinline " TPL_TYPE "get_" TPL_NAME "() const noexcept { return reinterpret_cast<" TPL_TYPE
         ">(&memory()[" TPL_NAME "_offset()]); }\n"
-    "\t\tsize_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
-    "\t\tsize_t " TPL_NAME "_length() const noexcept { return std::strlen(get_" TPL_NAME "()) + 1; }\n\n"
+    "\t\tinline size_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
+    "\t\tinline size_t " TPL_NAME "_length() const noexcept { return std::strlen(get_" TPL_NAME "()) + 1; }\n\n"
 };
 
 static const char *integral_field_template {
-    "\t\t" TPL_TYPE " get_" TPL_NAME "() const noexcept { return *reinterpret_cast<const " TPL_TYPE
+    "\t\tinline " TPL_TYPE " get_" TPL_NAME "() const noexcept { return *reinterpret_cast<const " TPL_TYPE
         " *>(&memory()[" TPL_NAME "_offset()]); }\n"
-    "\t\tsize_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
-    "\t\tsize_t " TPL_NAME "_length() const noexcept { return sizeof(" TPL_TYPE "); }\n\n"
+    "\t\tinline size_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
+    "\t\tconstexpr inline size_t " TPL_NAME "_length() const noexcept { return sizeof(" TPL_TYPE "); }\n\n"
 };
 
-static const char *integral_fixed_array_template {
-    "\t\tconst " TPL_TYPE " *get_" TPL_NAME "() const noexcept { return reinterpret_cast<const " TPL_TYPE
+static const char *integral_array_template {
+    "\t\tinline const " TPL_TYPE " *get_" TPL_NAME "() const noexcept { return reinterpret_cast<const " TPL_TYPE
     " *>(&memory()[" TPL_NAME "_offset()]); }\n"
-    "\t\tsize_t " TPL_NAME "_count() const noexcept { return " TPL_COUNT "; }\n"
-    "\t\tsize_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
-    "\t\tsize_t " TPL_NAME "_length() const noexcept { return sizeof(" TPL_TYPE ") * " TPL_COUNT "; }\n\n"
+    "\t\tconstexpr inline size_t " TPL_NAME "_count() const noexcept { return " TPL_COUNT "; }\n"
+    "\t\tinline size_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
+    "\t\tconstexpr inline size_t " TPL_NAME "_length() const noexcept { return sizeof(" TPL_TYPE ") * " TPL_NAME "_count(); }\n\n"
+};
+
+static const char *integral_vector_template {
+    "\t\tinline const " TPL_TYPE " *get_" TPL_NAME "() const noexcept { return reinterpret_cast<const " TPL_TYPE
+    " *>(&memory()[" TPL_NAME "_offset() + " INDEX_SIZE "]); }\n"
+    "\t\tinline size_t " TPL_NAME "_count() const noexcept { return *reinterpret_cast<const u16 *>(&memory()["
+    TPL_NAME "_offset()]); }\n"
+    "\t\tinline size_t " TPL_NAME "_offset() const noexcept { return " TPL_OFFSET "; }\n"
+    "\t\tinline size_t " TPL_NAME "_length() const noexcept { return sizeof(" TPL_TYPE ") * " TPL_NAME
+    "_count() + " INDEX_SIZE "; }\n\n"
 };
 
 message_field_builder::message_field_builder(const field_presenter *field,
@@ -67,29 +79,47 @@ std::string message_field_builder::build() const noexcept
             { "s64", integral_field_template },
     };
 
-    static const std::unordered_map<std::string, const char *> fixed_array_templates {
-            { "u8", integral_fixed_array_template },
-            { "s8", integral_fixed_array_template },
-            { "u16", integral_fixed_array_template },
-            { "s16", integral_fixed_array_template },
-            { "u32", integral_fixed_array_template },
-            { "s32", integral_fixed_array_template },
-            { "u64", integral_fixed_array_template },
-            { "s64", integral_fixed_array_template },
+    static const std::unordered_map<std::string, const char *> array_templates {
+            { "u8", integral_array_template },
+            { "s8", integral_array_template },
+            { "u16", integral_array_template },
+            { "s16", integral_array_template },
+            { "u32", integral_array_template },
+            { "s32", integral_array_template },
+            { "u64", integral_array_template },
+            { "s64", integral_array_template },
+    };
+
+    static const std::unordered_map<std::string, const char *> vector_templates {
+            { "u8", integral_vector_template },
+            { "s8", integral_vector_template },
+            { "u16", integral_vector_template },
+            { "s16", integral_vector_template },
+            { "u32", integral_vector_template },
+            { "s32", integral_vector_template },
+            { "u64", integral_vector_template },
+            { "s64", integral_vector_template },
     };
 
     std::string content;
 
     if (_field->is_array()) {
         if (_field->length() != -1) {
-            auto it { fixed_array_templates.find(_field->type()) };
-            if (it == fixed_array_templates.end()) {
+            auto it { array_templates.find(_field->type()) };
+            if (it == array_templates.end()) {
                 logcrit("Unknown type: %s.", _field->type().data());
             }
 
             content.assign(it->second);
 
             stl::string::replace_all(content, TPL_COUNT, std::to_string(_field->length()));
+        } else {
+            auto it { vector_templates.find(_field->type()) };
+            if (it == vector_templates.end()) {
+                logcrit("Unknown type: %s.", _field->type().data());
+            }
+
+            content.assign(it->second);
         }
     } else {
         auto it { templates.find(_field->type()) };

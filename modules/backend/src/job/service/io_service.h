@@ -8,9 +8,8 @@
 #ifndef BACKEND_IO_SERVICE_H
 #define BACKEND_IO_SERVICE_H
 
+#include <pmp.h>
 #include <engine.h>
-
-#include "job/message/database_message_handler.h"
 
 namespace backend {
 
@@ -29,7 +28,7 @@ namespace backend {
         void reset() noexcept final;
 
     private:
-        database_message_handler::uptr      _database_message_handler;
+        std::vector<pmp::basic_message_handler *>   _message_handlers;
 
         void handle_io_request_task(engine::basic_task *base_task) noexcept;
         void handle_connection_status_changed_task(engine::basic_task *base_task) noexcept;
