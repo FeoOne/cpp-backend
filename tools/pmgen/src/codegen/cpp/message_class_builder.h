@@ -11,6 +11,7 @@
 #include "data/message_presenter.h"
 #include "codegen/cpp/building_context.h"
 #include "codegen/cpp/message_field_builder.h"
+#include "codegen/cpp/message_builder_field_builder.h"
 
 class message_class_builder final : public component_builder {
 public:

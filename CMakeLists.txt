@@ -19,6 +19,6 @@ add_subdirectory(libraries/engine)
 
 add_subdirectory(modules/backend)
 add_subdirectory(modules/database)
-add_subdirectory(modules/manager-btc)
+add_subdirectory(modules/manbtc)
 
 add_subdirectory(tools/pmgen)

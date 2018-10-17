@@ -1,4 +1,4 @@
-set(PROJECT_NAME manager-btc)
+set(PROJECT_NAME manbtc)
 
 message(STATUS "Configure ${PROJECT_NAME}...")
 

@@ -9,5 +9,6 @@
 #define PMP_PMP_H
 
 #include "message/message.h"
+#include "message/message_builder.h"
 
 #endif /* PMP_PMP_H */
