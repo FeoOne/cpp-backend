@@ -1,6 +1,9 @@
-//
-// Created by Feo on 12/10/2018.
-//
+/**
+ * @file database_messaging_service.cpp
+ * @author Feo
+ * @date 12/10/2018
+ * @brief
+ */
 
 #include "job/service/message/database_messaging_service.h"
 

@@ -25,13 +25,15 @@ namespace engine {
         void construct(u64 id) noexcept;
         void destruct() noexcept;
 
-        void setup(const std::string_view& name,
+        void setup(size_t session_id,
+                   const std::string_view& name,
                    const std::string_view& listen,
                    u16 port,
                    u16 backlog,
                    u16 keepalive) noexcept;
 
-        void setup(const std::string_view& name,
+        void setup(size_t session_id,
+                   const std::string_view& name,
                    const std::string_view& host,
                    u16 port) noexcept;
 
@@ -56,6 +58,7 @@ namespace engine {
         inline connection_status status() const noexcept { return _status; }
         inline void status(connection_status status) noexcept { _status = status; }
 
+        inline size_t session_id() const noexcept { return _session_id; }
         inline const std::string_view& name() const noexcept { return _name; }
 
     protected:
@@ -77,6 +80,7 @@ namespace engine {
         socket_address              _addr;
         connection *                _master_connection;
 
+        size_t                      _session_id;
         std::string_view            _name;
         std::string_view            _host;
         u16                         _port;

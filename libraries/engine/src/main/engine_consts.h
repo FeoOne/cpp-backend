@@ -26,6 +26,7 @@ namespace engine {
              * config::key
              */
             struct key {
+                static constexpr std::string_view session_id { "session_id" };
                 static constexpr std::string_view NAME { "name" };
                 static constexpr std::string_view PATH { "path" };
                 static constexpr std::string_view COUNT { "count" };

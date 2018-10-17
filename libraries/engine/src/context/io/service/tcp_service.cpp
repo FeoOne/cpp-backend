@@ -155,9 +155,9 @@ namespace engine {
     void tcp_service::on_connection(network_handle *handle, int status) noexcept
     {
         auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
-        auto server_connection { manager->get(handle) };
+        auto master_connection { manager->get(handle) };
 
-        if (server_connection == nullptr) {
+        if (master_connection == nullptr) {
             logerror("Can't accept connection from unmanaged connection.");
             // component error
             return;
@@ -165,38 +165,38 @@ namespace engine {
 
         if (status != 0) {
             logerror("Failed to accept new connection on cid: %llu, %s (%s).",
-                     server_connection->id(),
+                     master_connection->id(),
                      uv_strerror(status),
                      uv_err_name(status));
             return;
         }
 
         // [manager] produce remote connection
-        auto client_connection { manager->produce() };
-        client_connection->setup(server_connection);
-        client_connection->open(delegate()->loop<io_loop>()->loop(), this);
+        auto slave_connection { manager->produce() };
+        slave_connection->setup(master_connection);
+        slave_connection->open(delegate()->loop<io_loop>()->loop(), this);
 
         // [status] connecting remote slave
-        change_connection_status(client_connection, connection_status::connecting);
+        change_connection_status(slave_connection, connection_status::connecting);
 
-        if (server_connection->accept(client_connection)) {
-            lognotice("Accepted new connection with id: %llu.", client_connection->id());
+        if (master_connection->accept(slave_connection)) {
+            lognotice("Accepted new connection with id: %llu.", slave_connection->id());
 
-            client_connection->set_nodelay(true);
-            client_connection->set_nonblock(true);
+            slave_connection->set_nodelay(true);
+            slave_connection->set_nonblock(true);
 
-            if (!client_connection->start(&tcp_service::alloc_callback, &tcp_service::read_callback)) {
-                logerror("Failed to start read connection with id: %llu.", client_connection->id());
+            if (!slave_connection->start(&tcp_service::alloc_callback, &tcp_service::read_callback)) {
+                logerror("Failed to start read connection with id: %llu.", slave_connection->id());
                 // connection already accepted, so we must shutdown
-                shutdown_connection(client_connection);
+                shutdown_connection(slave_connection);
             } else {
                 // [status] remote slave connected
-                change_connection_status(client_connection, connection_status::connected);
+                change_connection_status(slave_connection, connection_status::connected);
             }
         } else {
             logerror("Failed to accept connection.");
             // [status] remote slave disconnected
-            change_connection_status(client_connection, connection_status::disconnected);
+            change_connection_status(slave_connection, connection_status::disconnected);
         }
     }
 

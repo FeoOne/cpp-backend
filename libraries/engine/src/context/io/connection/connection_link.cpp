@@ -13,6 +13,7 @@ namespace engine {
 
     connection_link::connection_link(connection *connection) noexcept :
             _protocol { connection->protocol() },
+            _session_id { connection->session_id() },
             _connection_id { connection->id() }
     {
     }

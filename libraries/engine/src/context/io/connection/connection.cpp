@@ -45,7 +45,8 @@ namespace engine {
         }
     }
 
-    void connection::setup(const std::string_view& name,
+    void connection::setup(size_t session_id,
+                           const std::string_view& name,
                            const std::string_view& listen,
                            u16 port,
                            u16 backlog,
@@ -54,6 +55,7 @@ namespace engine {
         _side = connection_side::local;
         _kind = connection_kind::master;
 
+        _session_id = session_id;
         _name = name;
         _host = listen;
         _port = port;
@@ -63,13 +65,15 @@ namespace engine {
         setup_sockaddr();
     }
 
-    void connection::setup(const std::string_view& name,
+    void connection::setup(size_t session_id,
+                           const std::string_view& name,
                            const std::string_view& host,
                            u16 port) noexcept
     {
         _side = connection_side::local;
         _kind = connection_kind::slave;
 
+        _session_id = session_id;
         _name = name;
         _host = host;
         _port = port;
@@ -82,6 +86,7 @@ namespace engine {
         _side = connection_side::remote;
         _kind = connection_kind::slave;
 
+        _session_id = master_connection->session_id();
         _master_connection = master_connection;
     }
 

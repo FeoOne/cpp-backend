@@ -46,6 +46,7 @@ namespace engine {
         const std::unordered_map<std::string_view, std::function<void(const stl::setting&)>> setup {
             // setup tcp master connection
             { consts::config::io::TCP, [this](const stl::setting& config) {
+                auto session_id { config[consts::config::key::session_id].to_int32<size_t>() };
                 auto name { config[consts::config::key::NAME].to_string() };
                 auto listen { config[consts::config::key::LISTEN].to_string() };
                 auto port { config[consts::config::key::PORT].to_int32<u16>() };
@@ -53,7 +54,7 @@ namespace engine {
                 auto keepalive { config[consts::config::key::KEEPALIVE].to_int32<u16>() };
 
                 auto connection { _tcp_connections->produce() };
-                connection->setup(name, listen, port, backlog, keepalive);
+                connection->setup(session_id, name, listen, port, backlog, keepalive);
 
                 delegate()->service<tcp_service>()->add_local_connection(connection);
             } },
@@ -78,12 +79,13 @@ namespace engine {
         const std::unordered_map<std::string_view, std::function<void(const stl::setting&)>> setup {
             // setup tcp slave connection
             { consts::config::io::TCP, [this](const stl::setting& config) {
+                auto session_id { config[consts::config::key::session_id].to_int32<size_t>() };
                 auto name { config[consts::config::key::NAME].to_string() };
                 auto host { config[consts::config::key::HOST].to_string() };
                 auto port { config[consts::config::key::PORT].to_int32<u16>() };
 
                 auto connection { _tcp_connections->produce() };
-                connection->setup(name, host, port);
+                connection->setup(session_id, name, host, port);
 
                 delegate()->service<tcp_service>()->add_local_connection(connection);
             } },

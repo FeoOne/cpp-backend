@@ -36,6 +36,7 @@ namespace engine {
         friend class connection;
 
         transport_protocol          _protocol;
+        size_t                      _session_id;
         u64                         _connection_id;
 
         explicit connection_link(connection *connection) noexcept;

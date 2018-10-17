@@ -49,57 +49,6 @@ namespace engine {
 
     };
 
-    /**
-     *
-     */
-    class message {
-    public:
-        using opcode_type = u32;
-
-        explicit message(nullptr_t) noexcept {}
-        virtual ~message() {}
-
-    private:
-
-    };
-
-    /**
-     *
-     */
-    class dummy1_message final : public message {
-    public:
-        static constexpr opcode_type OPCODE { 1 };
-
-        dummy1_message() : message(nullptr) {}
-        virtual ~dummy1_message() {}
-
-    };
-
-    class dummy2_message final : public message {
-    public:
-        static constexpr opcode_type OPCODE { 2 };
-
-        dummy2_message() : message(nullptr) {}
-        virtual ~dummy2_message() {}
-
-    };
-
-
-
-    template<size_t T>
-    class message_deserializer {
-        message *deserialize(u8 *, size_t) noexcept { return nullptr; }
-    };
-
-    template<>
-    class message_deserializer<dummy1_message::OPCODE> {
-        message *deserialize(u8 *, size_t) noexcept { return new (std::nothrow) dummy1_message; }
-    };
-
-    template<>
-    class message_deserializer<dummy2_message::OPCODE> {
-        message *deserialize(u8 *, size_t) noexcept { return new (std::nothrow) dummy2_message; }
-    };
 }
 
 #endif /* ENGINE_MESSAGE_H */
