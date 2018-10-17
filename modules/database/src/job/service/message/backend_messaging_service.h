@@ -8,6 +8,7 @@
 #ifndef DATABASE_BACKEND_MESSAGING_SERVICE_H
 #define DATABASE_BACKEND_MESSAGING_SERVICE_H
 
+#include <pmp.h>
 #include <engine.h>
 
 #include "backend_database_message_gen.h"

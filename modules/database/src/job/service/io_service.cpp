@@ -12,8 +12,11 @@ namespace database {
     io_service::io_service(const stl::setting& config,
                            engine::task_router *router,
                            const engine::work_service_delegate *delegate) noexcept :
-            crucial(config, router, delegate)
+            crucial(config, router, delegate),
+            _status_changed_handlers {}
     {
+        _status_changed_handlers.fill(nullptr);
+
         EX_ASSIGN_TASK_HANDLER(engine::io_request_task, io_service, handle_io_request_task);
         EX_ASSIGN_TASK_HANDLER(engine::connection_status_changed_task,
                                io_service,
@@ -29,7 +32,8 @@ namespace database {
     // virtual
     void io_service::setup() noexcept
     {
-
+        _status_changed_handlers[pmp::session_id::backend] =
+                std::bind(&io_service::backend_status_changed, this, std::placeholders::_1, std::placeholders::_2);
     }
 
     // virtual
@@ -42,6 +46,8 @@ namespace database {
     {
         auto task { reinterpret_cast<engine::connection_status_changed_task *>(base_task) };
         logdebug("New 'connection_status_changed_task'. Connection id: %llu.", task->link().connection_id());
+
+        _status_changed_handlers[task->link().session_id()](task->link(), task->status());
     }
 
     void io_service::handle_io_request_task(engine::basic_task *base_task) noexcept
@@ -51,6 +57,12 @@ namespace database {
                  task->link().connection_id(),
                  task->opcode(),
                  task->memory_size());
+    }
+
+    void io_service::backend_status_changed(const engine::connection_link& link,
+                                            engine::connection_status status) noexcept
+    {
+
     }
 
 }

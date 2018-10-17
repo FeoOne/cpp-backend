@@ -13,9 +13,11 @@
 
 namespace pmp {
 
-    struct consts {
-        static constexpr size_t backend_id { 1 };
-        static constexpr size_t database_id { 2 };
+    struct session_id {
+        static constexpr size_t backend { 1 };
+        static constexpr size_t database { 2 };
+
+        static constexpr size_t max_count { 32 };
 
     };
 

@@ -29,8 +29,9 @@ namespace engine {
         connection_link& operator=(const connection_link&) = default;
         connection_link& operator=(connection_link&&) = default;
 
-        transport_protocol protocol() const noexcept { return _protocol; }
-        u64 connection_id() const noexcept { return _connection_id; }
+        inline transport_protocol protocol() const noexcept { return _protocol; }
+        inline size_t session_id() const noexcept { return _session_id; }
+        inline u64 connection_id() const noexcept { return _connection_id; }
 
     private:
         friend class connection;
