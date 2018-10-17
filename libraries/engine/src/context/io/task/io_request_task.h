@@ -23,20 +23,20 @@ namespace engine {
         STL_DELETE_ALL_DEFAULT(io_request_task)
 
         explicit io_request_task(const connection_link& link,
-                                 message::opcode_type opcode,
+                                 u32 opcode,
                                  const u8 *memory,
                                  size_t length) noexcept;
 
         virtual ~io_request_task();
 
         const connection_link& link() const noexcept { return _link; }
-        message::opcode_type opcode() const noexcept { return _opcode; }
+        u32 opcode() const noexcept { return _opcode; }
         const u8 *memory() const noexcept { return _memory; }
         size_t memory_size() const noexcept { return _length; }
 
     private:
         connection_link         _link;
-        message::opcode_type    _opcode;
+        u32                     _opcode;
         u8 *                    _memory;
         size_t                  _length;
 

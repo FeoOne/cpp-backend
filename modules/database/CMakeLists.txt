@@ -20,7 +20,6 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         engine
         pmp
-        ${CMAKE_SOURCE_DIR}/message/src
         ${CMAKE_SOURCE_DIR}/message/generated
         )
 

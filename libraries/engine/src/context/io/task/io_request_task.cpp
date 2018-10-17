@@ -10,7 +10,7 @@
 namespace engine {
 
     io_request_task::io_request_task(const connection_link& link,
-                                     message::opcode_type opcode,
+                                     u32 opcode,
                                      const u8 *memory,
                                      size_t length) noexcept :
             _link { link },
