@@ -3,9 +3,10 @@ namespace backend_database;
 opcode_offset: 10000;
 
 message handshake_request {
-    message: string;
+    phrase: string;
+    version: u32;
 }
 
 message handshake_response {
-    data: u8[16];
+    cipher: u8[16];
 }
