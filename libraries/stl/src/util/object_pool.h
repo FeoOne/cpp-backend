@@ -29,7 +29,7 @@ namespace stl {
         pointer_type acquire() noexcept {
             pointer_type object { nullptr };
             if (_objects.empty()) {
-                auto mem { memory::malloc<void>(sizeof(value_type)) };
+                auto mem { memory::aligned_alloc<void>(sizeof(value_type)) };
                 if (mem != nullptr) {
                     object = new (mem) value_type;
                 }

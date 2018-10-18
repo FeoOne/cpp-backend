@@ -61,6 +61,7 @@ namespace engine {
     union uv_request {
         uv_req_t        req;
         uv_connect_t    connect;
+        uv_shutdown_t   shutdown;
     };
 
     union timer_handle {

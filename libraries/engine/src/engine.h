@@ -32,6 +32,8 @@
 #include "context/io/task/io_request_task.h"
 #include "context/io/task/io_response_task.h"
 
+#include "session/session_manager.h"
+
 #include "protocol/protocol_machine.h"
 
 #endif /* ENGINE_ENGINE_H */

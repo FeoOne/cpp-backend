@@ -308,7 +308,7 @@ namespace engine {
 
     void tcp_service::on_shutdown(uv_request *request, int status) noexcept
     {
-        auto handle { reinterpret_cast<network_handle *>(request->connect.handle) };
+        auto handle { reinterpret_cast<network_handle *>(request->shutdown.handle) };
         auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
         auto connection { manager->get(handle) };
 

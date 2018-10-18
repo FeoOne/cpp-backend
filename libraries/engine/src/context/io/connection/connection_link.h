@@ -32,6 +32,22 @@ namespace engine {
         inline transport_protocol protocol() const noexcept { return _protocol; }
         inline size_t session_id() const noexcept { return _session_id; }
         inline u64 connection_id() const noexcept { return _connection_id; }
+        inline connection_side side() const noexcept { return _side; }
+        inline connection_kind kind() const noexcept { return _kind; }
+
+        size_t hash() const noexcept;
+
+        bool operator==(const connection_link& other) const noexcept {
+            return _protocol == other._protocol &&
+                    _session_id == other._session_id &&
+                    _connection_id == other._connection_id &&
+                    _side == other._side &&
+                    _kind == other._kind;
+        }
+
+        bool operator!=(const connection_link& other) const noexcept {
+            return !(*this == other);
+        }
 
     private:
         friend class connection;
@@ -39,9 +55,22 @@ namespace engine {
         transport_protocol          _protocol;
         size_t                      _session_id;
         u64                         _connection_id;
+        connection_side             _side;
+        connection_kind             _kind;
 
         explicit connection_link(connection *connection) noexcept;
 
+    };
+
+}
+
+namespace std {
+
+    template<>
+    struct hash<engine::connection_link> {
+        size_t operator()(const engine::connection_link& link) const noexcept {
+            return link.hash();
+        }
     };
 
 }

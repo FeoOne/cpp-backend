@@ -29,7 +29,7 @@
     STL_DELETE_DEFAULT_CTOR(c)                   \
     STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(c)
 
-#define STL_DECLARE_SMARTPOINTERS(T)                                                 \
+#define STL_DECLARE_SMARTPOINTERS(T)                                                \
     using sptr = std::shared_ptr<T>;                                                \
     using uptr = std::unique_ptr<T>;                                                \
     using wptr = std::weak_ptr<T>;                                                  \

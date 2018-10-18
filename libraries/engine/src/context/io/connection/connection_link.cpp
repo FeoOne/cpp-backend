@@ -14,8 +14,15 @@ namespace engine {
     connection_link::connection_link(connection *connection) noexcept :
             _protocol { connection->protocol() },
             _session_id { connection->session_id() },
-            _connection_id { connection->id() }
+            _connection_id { connection->id() },
+            _side { connection->side() },
+            _kind { connection->kind() }
     {
+    }
+
+    size_t connection_link::hash() const noexcept
+    {
+        return static_cast<size_t>(_connection_id);
     }
 
 }

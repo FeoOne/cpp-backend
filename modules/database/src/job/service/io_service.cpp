@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "job/service/session_service.h"
+
 #include "job/service/io_service.h"
 
 namespace database {
@@ -21,12 +23,6 @@ namespace database {
         EX_ASSIGN_TASK_HANDLER(engine::connection_status_changed_task,
                                io_service,
                                handle_connection_status_changed_task);
-    }
-
-    // virtual
-    io_service::~io_service()
-    {
-
     }
 
     // virtual
@@ -62,7 +58,24 @@ namespace database {
     void io_service::backend_status_changed(const engine::connection_link& link,
                                             engine::connection_status status) noexcept
     {
+        if (link.side() == engine::connection_side::remote &&
+            link.kind() == engine::connection_kind::slave) {
+            auto service { delegate()->service<session_service>() };
 
+            switch (status) {
+                case engine::connection_status::connected: {
+                    service->backend_sessions()->create(link);
+                    break;
+                }
+                case engine::connection_status::disconnected: {
+                    service->backend_sessions()->destroy(link);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
     }
 
 }

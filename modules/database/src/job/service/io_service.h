@@ -21,7 +21,7 @@ namespace database {
         explicit io_service(const stl::setting& config,
                             engine::task_router *router,
                             const engine::work_service_delegate *delegate) noexcept;
-        virtual ~io_service();
+        virtual ~io_service() = default;
 
         void setup() noexcept final;
         void reset() noexcept final;

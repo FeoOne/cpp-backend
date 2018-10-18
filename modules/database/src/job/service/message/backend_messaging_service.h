@@ -19,6 +19,9 @@ namespace database {
     class backend_messaging_service : public stl::crucial<engine::work_service, backend_messaging_service>,
                                       public pmp::backend_database::message_handler {
     public:
+        STL_DECLARE_SMARTPOINTERS(backend_messaging_service)
+        STL_DELETE_ALL_DEFAULT(backend_messaging_service)
+
         explicit backend_messaging_service(const stl::setting& config,
                                            engine::task_router *router,
                                            const engine::work_service_delegate *delegate) noexcept;
