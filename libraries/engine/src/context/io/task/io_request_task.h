@@ -9,7 +9,6 @@
 #define ENGINE_MESSAGE_REQUEST_TASK_H
 
 #include "task/basic_task.h"
-#include "message/message.h"
 #include "context/io/connection/connection_link.h"
 
 namespace engine {
@@ -29,10 +28,10 @@ namespace engine {
 
         virtual ~io_request_task();
 
-        const connection_link& link() const noexcept { return _link; }
-        u32 opcode() const noexcept { return _opcode; }
-        const u8 *memory() const noexcept { return _memory; }
-        size_t memory_size() const noexcept { return _length; }
+        inline const connection_link& link() const noexcept { return _link; }
+        inline u32 opcode() const noexcept { return _opcode; }
+        inline const u8 *memory() const noexcept { return _memory; }
+        inline size_t memory_size() const noexcept { return _length; }
 
     private:
         connection_link         _link;

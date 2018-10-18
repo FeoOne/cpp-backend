@@ -27,6 +27,8 @@ namespace engine {
 
     private:
 
+        void handle_io_response_task(engine::basic_task *base_task) noexcept;
+
     };
 
 }

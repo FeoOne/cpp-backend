@@ -8,6 +8,7 @@
 #ifndef STL_STRING_H
 #define STL_STRING_H
 
+#include <random>
 #include <string>
 #include <string_view>
 
@@ -19,6 +20,8 @@ namespace stl {
     public:
         static std::string to_uppercase(const std::string& str) noexcept;
         static void make_uppercase(std::string& str) noexcept;
+
+        static void fill_with_random_symbols(char *string, size_t length) noexcept;
 
         static void replace(std::string& str, const std::string& pattern, const std::string& text) noexcept;
         static void replace_all(std::string& str, const std::string& pattern, const std::string& text) noexcept;

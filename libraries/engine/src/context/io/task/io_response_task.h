@@ -9,6 +9,7 @@
 #define ENGINE_MESSAGE_RESPONSE_TASK_H
 
 #include "task/basic_task.h"
+#include "context/io/connection/connection_link.h"
 
 namespace engine {
 
@@ -20,13 +21,26 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(io_response_task)
         STL_DELETE_ALL_DEFAULT(io_response_task)
 
-        explicit io_response_task(bool is_urgent) noexcept : _is_urgent { is_urgent } {}
-        virtual ~io_response_task() = default;
+        explicit io_response_task(const connection_link& link,
+                                  u32 opcode,
+                                  u8 *memory,
+                                  size_t length,
+                                  bool is_urgent) noexcept;
 
-        bool priority() const noexcept { return _is_urgent; }
+        virtual ~io_response_task();
+
+        inline const connection_link& link() const noexcept { return _link; }
+        inline u32 opcode() const noexcept { return _opcode; }
+        inline const u8 *memory() const noexcept { return _memory; }
+        inline size_t memory_size() const noexcept { return _length; }
+        inline bool is_urgent() const noexcept { return _is_urgent; }
 
     private:
-        bool       _is_urgent;
+        connection_link         _link;
+        u32                     _opcode;
+        u8 *                    _memory;
+        size_t                  _length;
+        bool                    _is_urgent;
 
     };
 

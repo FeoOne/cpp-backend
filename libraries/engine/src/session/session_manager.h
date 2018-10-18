@@ -28,20 +28,26 @@ namespace engine {
         ~session_manager() {}
 
         T *create(const connection_link& link) noexcept {
-            auto session { _pool->acquire() };
-            auto l { link };
+            STL_UNIQUE_LOCK(lock, _mutex);
 
-            _sessions.insert({ l, session });
+            auto session { _pool->acquire() };
+            session->reset(link);
+
+            _sessions.insert({ { link }, session });
 
             return session;
         }
 
         void destroy(const connection_link& link) noexcept {
+            STL_UNIQUE_LOCK(lock, _mutex);
+
             _pool->release(_sessions[link]);
             _sessions.erase(link);
         }
 
         T *get(const connection_link& link) noexcept {
+            STL_UNIQUE_LOCK(lock, _mutex);
+
             pointer_type session { nullptr };
 
             auto it { _sessions.find(link) };
@@ -57,6 +63,8 @@ namespace engine {
 
         std::unordered_map<connection_link, pointer_type>   _sessions;
         typename session_pool::uptr                         _pool;
+
+        std::timed_mutex                                    _mutex;
 
     };
 

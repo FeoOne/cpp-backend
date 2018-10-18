@@ -8,11 +8,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/stl_consts_gen.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main/stl_consts_gen.h
         )
 
-find_package(Config REQUIRED)
-find_package(zlib REQUIRED)
-find_package(GLib REQUIRED)
+find_package(CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(GLIB REQUIRED)
 find_package(UUID REQUIRED)
 find_package(UV REQUIRED)
+find_package(OPENSSL REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -39,6 +40,7 @@ target_include_directories(${PROJECT_NAME}
         ${UUID_INCLUDE_DIR}
         ${GLib_INCLUDE_DIRS}
         ${UV_INCLUDE_DIRS}
+        ${OPENSSL_INCLUDE_DIR}
         )
 
 # libraries
@@ -51,4 +53,5 @@ target_link_libraries(${PROJECT_NAME}
         ${UUID_LIBRARIES}
         ${GLib_LIBRARY}
         ${UV_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
         )

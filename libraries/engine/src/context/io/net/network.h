@@ -71,6 +71,7 @@ namespace engine {
 
     const char *transport_protocol_to_str(transport_protocol protocol) noexcept;
     const char *internet_protocol_version_to_str(internet_protocol_version version) noexcept;
+    const char *connection_status_to_str(connection_status status) noexcept;
 
 }
 

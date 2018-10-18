@@ -18,6 +18,7 @@
 #include <mutex>
 #include <atomic>
 #include <thread>
+#include <random>
 #include <limits>
 #include <cassert>
 #include <utility>
@@ -58,6 +59,7 @@
 
 #include "crypto/hash.h"
 #include "crypto/checksum.h"
+#include "crypto/digest_hash.h"
 
 #include "filesystem/filesystem.h"
 

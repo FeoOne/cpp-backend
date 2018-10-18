@@ -31,4 +31,17 @@ namespace engine {
         return values.at(version).data();
     }
 
+    const char *connection_status_to_str(connection_status status) noexcept
+    {
+        static const std::unordered_map<connection_status, std::string_view> values {
+                {
+                        { connection_status::disconnected, { "disconnected" } },
+                        { connection_status::disconnecting, { "disconnecting" } },
+                        { connection_status::connected, { "connected" } },
+                        { connection_status::connecting, { "connecting" } },
+                }
+        };
+        return values.at(status).data();
+    }
+
 }

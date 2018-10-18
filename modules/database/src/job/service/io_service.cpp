@@ -6,6 +6,8 @@
  */
 
 #include "job/service/session_service.h"
+#include "job/service/message/backend_messaging_service.h"
+#include "backend_database_message_gen.h"
 
 #include "job/service/io_service.h"
 
@@ -41,7 +43,9 @@ namespace database {
     void io_service::handle_connection_status_changed_task(engine::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<engine::connection_status_changed_task *>(base_task) };
-        logdebug("New 'connection_status_changed_task'. Connection id: %llu.", task->link().connection_id());
+        logdebug("New 'connection_status_changed_task'. Connection id: %llu, status: '%s'.",
+                 task->link().connection_id(),
+                 engine::connection_status_to_str(task->status()));
 
         _status_changed_handlers[task->link().session_id()](task->link(), task->status());
     }
@@ -64,7 +68,8 @@ namespace database {
 
             switch (status) {
                 case engine::connection_status::connected: {
-                    service->backend_sessions()->create(link);
+                    auto session { service->backend_sessions()->create(link) };
+                    handshake(session);
                     break;
                 }
                 case engine::connection_status::disconnected: {
@@ -76,6 +81,26 @@ namespace database {
                 }
             }
         }
+    }
+
+    void io_service::handshake(backend_session *session) noexcept
+    {
+        pmp::backend_database::handshake_request_builder builder;
+        builder.set_phrase(session->handshake_phrase());
+        builder.set_version(0);
+
+        u8 *memory { nullptr };
+        size_t length { 0 };
+        builder.build(&memory, &length);
+
+        auto task {
+                engine::basic_task::create<engine::io_response_task>(session->link(),
+                                                                     pmp::backend_database::handshake_request::opcode,
+                                                                     memory,
+                                                                     length,
+                                                                     true)
+        };
+        router()->enqueue(task);
     }
 
 }

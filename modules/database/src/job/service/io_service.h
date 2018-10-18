@@ -11,6 +11,8 @@
 #include <pmp.h>
 #include <engine.h>
 
+#include "job/session/backend_session.h"
+
 namespace database {
 
     class io_service : public stl::crucial<engine::work_service, io_service> {
@@ -33,7 +35,9 @@ namespace database {
         void handle_io_request_task(engine::basic_task *base_task) noexcept;
         void handle_connection_status_changed_task(engine::basic_task *base_task) noexcept;
 
-        void backend_status_changed(const engine::connection_link&, engine::connection_status) noexcept;
+        void backend_status_changed(const engine::connection_link& link, engine::connection_status status) noexcept;
+
+        void handshake(backend_session *session) noexcept;
 
     };
 

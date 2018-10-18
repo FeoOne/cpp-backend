@@ -12,7 +12,7 @@
 
 namespace database {
 
-    class backend_session : public engine::session {
+    class backend_session : public engine::master_session {
     public:
         STL_DECLARE_SMARTPOINTERS(backend_session)
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(backend_session)

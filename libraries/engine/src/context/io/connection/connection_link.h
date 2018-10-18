@@ -21,7 +21,13 @@ namespace engine {
      */
     class connection_link final {
     public:
-        STL_DELETE_DEFAULT_CTOR(connection_link)
+        connection_link() :
+                _protocol { transport_protocol::undefined },
+                _session_id { 0 },
+                _connection_id { 0 },
+                _side { connection_side::undefined },
+                _kind { connection_kind::undefined }
+        {}
 
         connection_link(const connection_link& other) = default;
         connection_link(connection_link&& other) = default;
