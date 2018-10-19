@@ -8,8 +8,8 @@
 #ifndef ENGINE_TCP_CONNECTION_H
 #define ENGINE_TCP_CONNECTION_H
 
-#include "context/io/stream/tcp_read_stream.h"
-#include "context/io/stream/tcp_write_stream.h"
+#include "context/io/stream/tcp_stream.h"
+#include "context/io/stream/tcp_stream.h"
 #include "context/io/connection/connection.h"
 
 namespace engine {
@@ -41,12 +41,12 @@ namespace engine {
         void set_nonblock(bool enable) noexcept;
         void set_keepalive(bool enable) noexcept;
 
-        inline tcp_read_stream *read_stream() noexcept { return &_read_stream; }
-        inline tcp_write_stream *write_stream() noexcept { return &_write_stream; }
+        inline tcp_stream *read_stream() noexcept { return &_read_stream; }
+        inline tcp_stream *write_stream() noexcept { return &_write_stream; }
 
     private:
-        tcp_read_stream             _read_stream;
-        tcp_write_stream            _write_stream;
+        tcp_stream             _read_stream;
+        tcp_stream            _write_stream;
 
         uv_connect_t                _connect_request;
         uv_shutdown_t               _shutdown_request;

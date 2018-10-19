@@ -40,6 +40,8 @@ namespace engine {
         void setup_masters() noexcept;
         void setup_slaves() noexcept;
 
+        void handle_disconnect_connection_task(engine::basic_task *base_task) noexcept;
+
     };
 
     template<>

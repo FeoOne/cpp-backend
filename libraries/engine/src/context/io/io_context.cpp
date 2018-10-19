@@ -11,6 +11,7 @@
 #include "context/io/service/udp_service.h"
 #include "context/io/service/request_processing_service.h"
 #include "context/io/service/response_processing_service.h"
+#include "context/io/task/disconnect_connection_task.h"
 #include "context/io/task/io_response_task.h"
 
 #include "context/io/io_context.h"
@@ -27,8 +28,7 @@ namespace engine {
         add_service(response_processing_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(io_response_task, response_processing_service);
-
-
+        EX_BIND_TASK_ROUTE(disconnect_connection_task, io_connection_service);
     }
 
 }

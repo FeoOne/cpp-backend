@@ -13,6 +13,7 @@
 #include "task/queue/condition_task_queue.h"
 #include "context/io/io_context.h"
 #include "context/io/task/connection_status_changed_task.h"
+#include "context/io/task/disconnect_connection_task.h"
 #include "context/io/task/io_request_task.h"
 #include "context/io/task/io_response_task.h"
 #include "context/db/db_context.h"
@@ -96,6 +97,7 @@ namespace engine {
         // io routes
         if (_need_io_worker) {
             EX_ASSIGN_ROUTE(connection_status_changed_task, job_context);
+            EX_ASSIGN_ROUTE(disconnect_connection_task, io_context);
             EX_ASSIGN_ROUTE(io_request_task, job_context);
             EX_ASSIGN_ROUTE(io_response_task, io_context);
         }

@@ -8,6 +8,7 @@
 #include "context/io/io_loop.h"
 #include "context/io/service/tcp_service.h"
 #include "context/io/service/udp_service.h"
+#include "context/io/task/disconnect_connection_task.h"
 
 #include "context/io/service/io_connection_service.h"
 
@@ -20,6 +21,7 @@ namespace engine {
             _tcp_connections { tcp_connection_manager::make_unique() },
             _udp_connections { udp_connection_manager::make_unique() }
     {
+        EX_ASSIGN_TASK_HANDLER(disconnect_connection_task, io_connection_service, handle_disconnect_connection_task);
     }
 
     // virtual
@@ -96,6 +98,29 @@ namespace engine {
         for (size_t i = 0; i < clients_config.size(); ++i) {
             auto client_config { clients_config[i] };
             setup.at(client_config[consts::config::key::TYPE].to_string())(client_config);
+        }
+    }
+
+    void io_connection_service::handle_disconnect_connection_task(engine::basic_task *base_task) noexcept
+    {
+        auto task { reinterpret_cast<disconnect_connection_task *>(base_task) };
+        logdebug("Handle disconnect_connection_task. Connection id: %llu, protocol: %s.",
+                task->link().connection_id(),
+                 transport_protocol_to_str(task->link().protocol()));
+
+        switch (task->link().protocol()) {
+            case transport_protocol::tcp: {
+                auto connection { _tcp_connections->get(task->link()) };
+                delegate()->service<tcp_service>()->shutdown_connection(connection);
+                break;
+            }
+            case transport_protocol::udp: {
+
+                break;
+            }
+            default: {
+                break;
+            }
         }
     }
 

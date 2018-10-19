@@ -29,6 +29,7 @@
 #include "context/web/page/web_view_manager.h"
 
 #include "context/io/task/connection_status_changed_task.h"
+#include "context/io/task/disconnect_connection_task.h"
 #include "context/io/task/io_request_task.h"
 #include "context/io/task/io_response_task.h"
 

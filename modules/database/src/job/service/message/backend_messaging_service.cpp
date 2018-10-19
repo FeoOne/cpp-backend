@@ -45,7 +45,8 @@ namespace database {
         auto session { service->backend_sessions()->get(link) };
 
         if (!session->handshake(message->get_cipher())) {
-            auto task { engine::basic_task::create<engine::task>() };
+            auto task { engine::basic_task::create<engine::disconnect_connection_task>(link) };
+            router()->enqueue(task);
         }
     }
 
