@@ -17,7 +17,7 @@ namespace engine {
     tcp_connection::tcp_connection() :
             connection(transport_protocol::tcp),
             _read_stream { consts::net::read_stream_size },
-            _write_request {},
+            _write_stream { consts::net::write_stream_size },
             _connect_request {},
             _shutdown_request {}
     {
@@ -76,6 +76,18 @@ namespace engine {
             _connect_request.data = handle()->handle.data;
         }
         return &_connect_request;
+    }
+
+    void tcp_connection::write() noexcept
+    {
+        uv_buf_t buf { reinterpret_cast<char *>(_write_stream.head()), _write_stream.useful_size() };
+        auto status { uv_try_write(&handle()->stream, &buf, 1) };
+        if (status > 0) {
+            _write_stream.increase_head(static_cast<size_t>(status));
+            _write_stream.flush_if_needed();
+        }
+
+        logdebug("Writing for cid: %llu, length: %d, buffer size: %lu.", id(), status, buf.len);
     }
 
     uv_shutdown_t *tcp_connection::shutdown(uv_shutdown_cb cb) noexcept

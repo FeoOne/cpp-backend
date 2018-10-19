@@ -26,14 +26,14 @@ namespace backend {
     }
 
     // virtual
-    void manbtc_messaging_service::handle_handshake_request(
+    void manbtc_messaging_service::handle_handshake_request(const engine::connection_link& link,
             pmp::backend_manbtc::handshake_request::uptr&& message) noexcept
     {
 
     }
 
     // virtual
-    void manbtc_messaging_service::handle_handshake_response(
+    void manbtc_messaging_service::handle_handshake_response(const engine::connection_link& link,
             pmp::backend_manbtc::handshake_response::uptr&& message) noexcept
     {
 

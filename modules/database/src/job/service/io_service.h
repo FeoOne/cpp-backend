@@ -29,13 +29,19 @@ namespace database {
         void reset() noexcept final;
 
     private:
-        std::array<std::function<void(const engine::connection_link&, engine::connection_status)>,
-                pmp::session_id::max_count>     _status_changed_handlers;
+        using status_changed_fn = std::function<void(const engine::connection_link&,
+                                                     engine::connection_status,
+                                                     engine::connection_status)>;
+
+        std::array<status_changed_fn, pmp::session_id::max_count>   _status_changed_handlers;
+        std::vector<pmp::basic_message_handler *>                   _message_handlers;
 
         void handle_io_request_task(engine::basic_task *base_task) noexcept;
         void handle_connection_status_changed_task(engine::basic_task *base_task) noexcept;
 
-        void backend_status_changed(const engine::connection_link& link, engine::connection_status status) noexcept;
+        void backend_status_changed(const engine::connection_link& link,
+                                    engine::connection_status status,
+                                    engine::connection_status previous_status) noexcept;
 
         void handshake(backend_session *session) noexcept;
 

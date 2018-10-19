@@ -5,8 +5,9 @@
  * @brief
  */
 
+#include "message/message.h"
 #include "work/work_service.h"
-#include "context/io/task/io_response_task.h"
+#include "context/io/service/io_connection_service.h"
 
 #include "context/io/service/response_processing_service.h"
 
@@ -38,10 +39,55 @@ namespace engine {
     void response_processing_service::handle_io_response_task(engine::basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<io_response_task *>(base_task) };
-        logdebug("Handle io_response_task. Connection id: %llu, opcode: %lu, size: %lu.",
+        logdebug("Handle io_response_task. Connection id: %llu, opcode: %u, size: %u.",
                  task->link().connection_id(),
                  task->opcode(),
-                 task->memory_size());
+                 task->length());
+
+        switch (task->link().protocol()) {
+            case transport_protocol::tcp: {
+                handle_tcp_response(task);
+                break;
+            }
+            case transport_protocol::udp: {
+
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
+
+    void response_processing_service::handle_tcp_response(io_response_task *task) noexcept
+    {
+        auto manager { delegate()->service<io_connection_service>()->manager<tcp_connection>() };
+        auto connection { manager->get(task->link()) };
+        auto stream { connection->write_stream() };
+
+        stream->grow_if_needed();
+
+        message_header header { stream->tail() };
+        header.magic(message_header::magic_number);
+        header.opcode(task->opcode());
+        header.length(static_cast<u32>(task->length()));
+
+        u32 crc { 0 };
+        if (task->length() != 0) {
+            crc = stl::checksum::crc32(task->memory(), task->length());
+        }
+        header.crc32(crc);
+
+        stream->increase_tail(message_header::size);
+
+        if (task->length() != 0) {
+            std::memcpy(stream->tail(), task->memory(), task->length());
+            stream->increase_tail(task->length());
+        }
+
+        if (task->is_urgent()) {
+            connection->write();
+        }
     }
 
 }

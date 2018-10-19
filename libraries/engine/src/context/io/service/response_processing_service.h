@@ -9,6 +9,7 @@
 #define ENGINE_RESPONSE_PROCESSING_SERVICE_H
 
 #include "work/work_service.h"
+#include "context/io/task/io_response_task.h"
 
 namespace engine {
 
@@ -26,8 +27,9 @@ namespace engine {
         void reset() noexcept final;
 
     private:
-
         void handle_io_response_task(engine::basic_task *base_task) noexcept;
+
+        void handle_tcp_response(io_response_task *task) noexcept;
 
     };
 

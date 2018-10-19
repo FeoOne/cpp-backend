@@ -68,6 +68,7 @@ namespace engine {
          */
         struct net {
             static constexpr size_t read_stream_size { 16384 };
+            static constexpr size_t write_stream_size { 16384 };
         };
 
 

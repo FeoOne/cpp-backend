@@ -32,7 +32,7 @@ namespace database {
         inline backend_session_manager *backend_sessions() noexcept { return _backend_sessions.get(); }
 
     private:
-        backend_session_manager::uptr   _backend_sessions;
+        static backend_session_manager::uptr    _backend_sessions;
 
     };
 

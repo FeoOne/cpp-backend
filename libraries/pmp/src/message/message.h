@@ -9,6 +9,7 @@
 #define PMP_MESSAGE_H
 
 #include <stl.h>
+#include <engine.h>
 
 namespace pmp {
 
@@ -35,7 +36,10 @@ namespace pmp {
 
         virtual ~basic_message_handler() = default;
 
-        virtual bool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept = 0;
+        virtual bool handle_message(const engine::connection_link& link,
+                                    u32 opcode,
+                                    const u8 *memory,
+                                    size_t size) noexcept = 0;
 
     protected:
         basic_message_handler() = default;

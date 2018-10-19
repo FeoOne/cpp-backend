@@ -9,11 +9,14 @@
 
 namespace database {
 
+    session_service::backend_session_manager::uptr session_service::_backend_sessions {
+        backend_session_manager::make_unique()
+    };
+
     session_service::session_service(const stl::setting& config,
                                      engine::task_router *router,
                                      const engine::work_service_delegate *delegate) noexcept :
-            crucial(config, router, delegate),
-            _backend_sessions { engine::session_manager<backend_session>::make_unique() }
+            crucial(config, router, delegate)
     {
 
     }

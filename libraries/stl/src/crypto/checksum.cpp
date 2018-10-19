@@ -57,7 +57,7 @@ namespace stl {
     }
 
     // static
-    u32 checksum::crc32(u8 *buffer, size_t size) noexcept
+    u32 checksum::crc32(const u8 *buffer, size_t size) noexcept
     {
         auto crc { ::crc32(0, nullptr, 0) };
         crc = ::crc32(crc, buffer, static_cast<uInt>(size));

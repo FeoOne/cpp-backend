@@ -14,7 +14,7 @@
 
 namespace engine {
 
-    class io_loop : public work_loop {
+    class io_loop final : public work_loop {
     public:
         STL_DECLARE_SMARTPOINTERS(io_loop)
         STL_DELETE_ALL_DEFAULT(io_loop)
@@ -26,6 +26,8 @@ namespace engine {
         void stop() noexcept final;
 
         uv_loop_t *loop() noexcept { return &_loop; }
+
+        void notify() noexcept;
 
     private:
         uv_loop_t       _loop;

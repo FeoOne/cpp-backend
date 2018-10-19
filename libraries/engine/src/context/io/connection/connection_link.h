@@ -44,11 +44,7 @@ namespace engine {
         size_t hash() const noexcept;
 
         bool operator==(const connection_link& other) const noexcept {
-            return _protocol == other._protocol &&
-                    _session_id == other._session_id &&
-                    _connection_id == other._connection_id &&
-                    _side == other._side &&
-                    _kind == other._kind;
+            return _protocol == other._protocol && _connection_id == other._connection_id;
         }
 
         bool operator!=(const connection_link& other) const noexcept {

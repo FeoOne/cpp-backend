@@ -8,7 +8,7 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-add_dependencies(${PROJECT_NAME} stl)
+add_dependencies(${PROJECT_NAME} stl engine)
 
 enable_cxx17(${PROJECT_NAME})
 setup_compiler_flags(${PROJECT_NAME})
@@ -21,6 +21,7 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         stl
+        engine
         )
 
 # libraries
@@ -28,4 +29,5 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
         stl
+        engine
         )

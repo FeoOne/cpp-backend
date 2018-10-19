@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "task/queue/quiet_task_queue.h"
+
 #include "context/io/io_loop.h"
 
 namespace engine {
@@ -24,6 +26,8 @@ namespace engine {
     // virtual
     void io_loop::start() noexcept
     {
+        reinterpret_cast<quiet_task_queue *>(queue())->set_notify_fn(std::bind(&io_loop::notify, this));
+
         int status = uv_async_init(&_loop, &_async_handle, &io_loop::async_callback);
         logassert(status == 0, "Invalid status.");
         _async_handle.data = this;
@@ -36,6 +40,13 @@ namespace engine {
     void io_loop::stop() noexcept
     {
         uv_stop(&_loop);
+
+        reinterpret_cast<quiet_task_queue *>(queue())->set_notify_fn(nullptr);
+    }
+
+    void io_loop::notify() noexcept
+    {
+        uv_async_send(&_async_handle);
     }
 
     void io_loop::on_async() noexcept

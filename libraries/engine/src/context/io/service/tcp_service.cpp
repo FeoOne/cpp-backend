@@ -61,6 +61,15 @@ namespace engine {
         connection->shutdown(&tcp_service::shutdown_callback);
     }
 
+    void tcp_service::write(const connection_link& link,
+                            u32 opcode,
+                            u8 *memory,
+                            size_t length,
+                            bool is_urgent) noexcept
+    {
+
+    }
+
     void tcp_service::start_local_connections() noexcept
     {
         for (auto connection: _local_connections) {
@@ -108,6 +117,7 @@ namespace engine {
 
     void tcp_service::on_reconnect_timer() noexcept
     {
+        logdebug("Reconnect timer.");
         for (auto connection: _disconnected_connections) {
             _start_callbacks.at(connection->kind())(connection);
         }
@@ -115,10 +125,10 @@ namespace engine {
 
     void tcp_service::change_connection_status(tcp_connection *connection, connection_status status) noexcept
     {
-        // change status lol
+        auto previous_status { connection->status() };
         connection->status(status);
         // produce task about changing connection status
-        router()->enqueue(basic_task::create<connection_status_changed_task>(connection->link(), status));
+        router()->enqueue(basic_task::create<connection_status_changed_task>(connection->link(), status, previous_status));
 
         // reconnect if disconnected connection is local
         if (status == connection_status::disconnected && connection->side() == connection_side::local) {
@@ -275,6 +285,7 @@ namespace engine {
         }
 
         if (nread > 0) {
+            logdebug("Reading for cid: %llu, length: %ld.", connection->id(), nread);
             connection->read_stream()->increase_tail(static_cast<size_t>(nread));
             // [io] process input
             delegate()->service<request_processing_service>()->process_input(connection);

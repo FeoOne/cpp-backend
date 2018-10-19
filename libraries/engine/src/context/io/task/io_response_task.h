@@ -32,7 +32,7 @@ namespace engine {
         inline const connection_link& link() const noexcept { return _link; }
         inline u32 opcode() const noexcept { return _opcode; }
         inline const u8 *memory() const noexcept { return _memory; }
-        inline size_t memory_size() const noexcept { return _length; }
+        inline size_t length() const noexcept { return _length; }
         inline bool is_urgent() const noexcept { return _is_urgent; }
 
     private:

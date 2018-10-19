@@ -32,6 +32,12 @@ namespace engine {
         void add_local_connection(tcp_connection *connection) noexcept;
         void shutdown_connection(tcp_connection *connection) noexcept;
 
+        void write(const connection_link& link,
+                   u32 opcode,
+                   u8 *memory,
+                   size_t length,
+                   bool is_urgent) noexcept;
+
     private:
         std::vector<tcp_connection *>                   _local_connections;
         std::list<tcp_connection *>                     _disconnected_connections;

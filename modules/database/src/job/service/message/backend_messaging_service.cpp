@@ -5,6 +5,8 @@
  * @brief
  */
 
+#include "job/service/session_service.h"
+
 #include "job/service/message/backend_messaging_service.h"
 
 namespace database {
@@ -29,17 +31,22 @@ namespace database {
     }
 
     // virtual
-    void backend_messaging_service::handle_handshake_request(
+    void backend_messaging_service::handle_handshake_request(const engine::connection_link& link,
             pmp::backend_database::handshake_request::uptr&& message) noexcept
     {
-
+        // nothing there
     }
 
     // virtual
-    void backend_messaging_service::handle_handshake_response(
+    void backend_messaging_service::handle_handshake_response(const engine::connection_link& link,
             pmp::backend_database::handshake_response::uptr&& message) noexcept
     {
+        auto service { delegate()->service<session_service>() };
+        auto session { service->backend_sessions()->get(link) };
 
+        if (!session->handshake(message->get_cipher())) {
+            auto task { engine::basic_task::create<engine::task>() };
+        }
     }
 
 }

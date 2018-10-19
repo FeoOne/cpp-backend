@@ -15,6 +15,9 @@
 
 #define STL_FORMAT_BOOL(b)               (b ? "true" : "false")
 
+#define STL_CALL_ONCE(fn) \
+        do { static std::once_flag once_flag; std::call_once(once_flag, fn); } while (false)
+
 #define STL_UNIQUE_LOCK(n, m)            std::unique_lock<decltype(m)> n(m)
 
 #define STL_NORETURN                     [[noreturn]]

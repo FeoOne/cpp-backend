@@ -24,7 +24,8 @@ static const char *header_template {
     "\tclass message_handler : public basic_message_handler {\n"
     "\tpublic:\n"
     "\t\tvirtual ~message_handler() = default;\n\n"
-    "\t\tbool handle_message(u32 opcode, const u8 *memory, size_t size) noexcept final {\n"
+    "\t\tbool handle_message(const engine::connection_link& link, u32 opcode, const u8 *memory, size_t size) "
+    "noexcept final {\n"
     "\t\t\tauto result { true };\n"
     "\t\t\tswitch (opcode) {\n"
     TPL_SWITCH
@@ -32,7 +33,6 @@ static const char *header_template {
     "\t\t\t}\n"
     "\t\t\treturn result;\n"
     "\t\t}\n\n"
-//    "\t\tstatic bool own_opcode(u32 opcode) noexcept { return opcode - " TPL_OPCODEOFFSET " < " TPL_OPCODECOUNT "; }\n\n"
     "\tprotected:\n"
     "\t\tmessage_handler() = default;\n\n"
     TPL_METHODS "\n"
@@ -42,12 +42,13 @@ static const char *header_template {
 };
 
 static const char *handler_method_template {
-    "\t\tvirtual void handle_" TPL_MESSAGENAME "(pmp::" TPL_NAMESPACE "::" TPL_MESSAGENAME "::uptr&& message) noexcept = 0;\n"
+    "\t\tvirtual void handle_" TPL_MESSAGENAME "(const engine::connection_link& link, pmp::"
+    TPL_NAMESPACE "::" TPL_MESSAGENAME "::uptr&& message) noexcept = 0;\n"
 };
 
 static const char *handler_switch_template {
     "\t\t\t\tcase (" TPL_MESSAGENAME "::opcode): {\n"
-    "\t\t\t\t\thandle_" TPL_MESSAGENAME "(" TPL_MESSAGENAME "::make_unique(memory, size));\n"
+    "\t\t\t\t\thandle_" TPL_MESSAGENAME "(link, " TPL_MESSAGENAME "::make_unique(memory, size));\n"
     "\t\t\t\t\tbreak;\n"
     "\t\t\t\t}\n"
 };

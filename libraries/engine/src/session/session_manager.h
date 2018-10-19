@@ -33,7 +33,7 @@ namespace engine {
             auto session { _pool->acquire() };
             session->reset(link);
 
-            _sessions.insert({ { link }, session });
+            _sessions[link] = session;
 
             return session;
         }
@@ -41,8 +41,13 @@ namespace engine {
         void destroy(const connection_link& link) noexcept {
             STL_UNIQUE_LOCK(lock, _mutex);
 
-            _pool->release(_sessions[link]);
-            _sessions.erase(link);
+            auto it = _sessions.find(link);
+            if (it != _sessions.end()) {
+                _pool->release(it->second);
+                _sessions.erase(it);
+            } else {
+                logerror("Can not find session for cid: %llu.", link.connection_id());
+            }
         }
 
         T *get(const connection_link& link) noexcept {

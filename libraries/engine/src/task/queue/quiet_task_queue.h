@@ -25,8 +25,11 @@ namespace engine {
 
         bool empty() const noexcept final;
 
+        inline void set_notify_fn(std::function<void()>&& fn) noexcept { _notify_fn = std::move(fn); }
+
     private:
         mutable std::timed_mutex        _mutex;
+        std::function<void()>           _notify_fn;
 
     };
 

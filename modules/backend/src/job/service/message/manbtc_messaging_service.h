@@ -27,8 +27,10 @@ namespace backend {
         void reset() noexcept final;
 
     private:
-        void handle_handshake_request(pmp::backend_manbtc::handshake_request::uptr&& message) noexcept final;
-        void handle_handshake_response(pmp::backend_manbtc::handshake_response::uptr&& message) noexcept final;
+        void handle_handshake_request(const engine::connection_link& link,
+                pmp::backend_manbtc::handshake_request::uptr&& message) noexcept final;
+        void handle_handshake_response(const engine::connection_link& link,
+                pmp::backend_manbtc::handshake_response::uptr&& message) noexcept final;
 
     };
 

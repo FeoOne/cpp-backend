@@ -10,7 +10,8 @@
 namespace engine {
 
     quiet_task_queue::quiet_task_queue() :
-            _mutex {}
+            _mutex {},
+            _notify_fn {}
     {
     }
 
@@ -22,8 +23,14 @@ namespace engine {
     // virtual
     void quiet_task_queue::enqueue(basic_task *task) noexcept
     {
-        STL_UNIQUE_LOCK(lock, _mutex);
-        _queue.push(task);
+        do {
+            STL_UNIQUE_LOCK(lock, _mutex);
+            _queue.push(task);
+        } while (false);
+
+        if (_notify_fn) {
+            _notify_fn();
+        }
     }
 
     // virtual

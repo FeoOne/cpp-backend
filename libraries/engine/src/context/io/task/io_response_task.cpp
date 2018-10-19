@@ -20,12 +20,14 @@ namespace engine {
             _length { length },
             _is_urgent { is_urgent }
     {
-
+        // memory allocated by message builder
     }
 
     io_response_task::~io_response_task()
     {
-
+        if (_memory != nullptr) {
+            stl::memory::free(_memory);
+        }
     }
 
 }

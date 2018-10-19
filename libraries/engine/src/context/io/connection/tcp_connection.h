@@ -9,6 +9,7 @@
 #define ENGINE_TCP_CONNECTION_H
 
 #include "context/io/stream/tcp_read_stream.h"
+#include "context/io/stream/tcp_write_stream.h"
 #include "context/io/connection/connection.h"
 
 namespace engine {
@@ -33,6 +34,7 @@ namespace engine {
         // slave
         uv_connect_t *connect(uv_connect_cb cb) noexcept;
 
+        void write() noexcept;
         uv_shutdown_t *shutdown(uv_shutdown_cb cb) noexcept;
 
         void set_nodelay(bool enable) noexcept;
@@ -40,11 +42,12 @@ namespace engine {
         void set_keepalive(bool enable) noexcept;
 
         inline tcp_read_stream *read_stream() noexcept { return &_read_stream; }
+        inline tcp_write_stream *write_stream() noexcept { return &_write_stream; }
 
     private:
         tcp_read_stream             _read_stream;
+        tcp_write_stream            _write_stream;
 
-        uv_write_t                  _write_request;
         uv_connect_t                _connect_request;
         uv_shutdown_t               _shutdown_request;
 

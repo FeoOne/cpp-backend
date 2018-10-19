@@ -101,7 +101,7 @@ namespace engine {
 
     private:
         work_loop::uptr                                         _loop;
-        const stl::setting&                                   _config;
+        const stl::setting&                                     _config;
         task_router *                                           _router;
         std::array<work_service::uptr, work_service::MAX_KEY>   _services;
 
@@ -109,7 +109,7 @@ namespace engine {
          * Store task relation to concrete service.
          * Local (within context) post-route task router.
          */
-        std::array<basic_task::key_type, basic_task::MAX_KEY>               _handler_bindings;
+        std::array<basic_task::key_type, basic_task::MAX_KEY>   _handler_bindings;
 
         /**
          * Work loop private implementation getter.
