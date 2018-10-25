@@ -7,7 +7,7 @@
 
 #include "context/db/db_loop.h"
 #include "context/db/service/db_connection_service.h"
-#include "context/db/service/request_service.h"
+#include "context/db/service/db_request_service.h"
 #include "context/db/task/db_request_task.h"
 #include "context/db/task/db_response_task.h"
 
@@ -19,7 +19,7 @@ namespace engine {
             crucial(config, router, db_loop::make_unique(router->get_queue<db_context>(), this))
     {
         add_service(db_connection_service::make_unique(config, router, this));
-        add_service(request_service::make_unique(config, router, this));
+        add_service(db_request_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(db_request_task, request_service);
     }

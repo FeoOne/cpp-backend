@@ -20,8 +20,6 @@ namespace engine {
             _connect_interval { 0 },
             _connect_timer {}
     {
-        read_config();
-
         _connections.reserve(_max_connection_count);
     }
 
@@ -33,6 +31,8 @@ namespace engine {
     // virtual
     void db_connection_service::setup() noexcept
     {
+        read_config();
+
         setup_connections();
         setup_connect_timer();
     }
@@ -49,7 +49,7 @@ namespace engine {
         return nullptr;
     }
 
-    void db_connection_service::release_connection(db_connection *connection) noexcept
+    void db_connection_service::return_connection(db_connection *connection) noexcept
     {
 
     }
@@ -74,16 +74,18 @@ namespace engine {
 
     void db_connection_service::setup_connections() noexcept
     {
-        for (size_t i = 0; i < _max_connection_count; ++i) {
-            auto connection { db_connection::make_unique() };
+        while (_connections.size() < _max_connection_count) {
+            auto& connection { _connections.emplace_back() };
             connection->start(delegate()->loop<db_loop>(), _conninfo);
-            //_connections.push_back(connection);
         }
     }
 
     void db_connection_service::reset_connections() noexcept
     {
-        _connections.clear();
+        while (!_connections.empty()) {
+            _connections.back()->finish();
+            _connections.pop_back();
+        }
     }
 
     void db_connection_service::setup_connect_timer() noexcept

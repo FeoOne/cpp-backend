@@ -38,7 +38,7 @@ namespace engine {
                 break;
             }
 
-            int status = uv_poll_init(loop->get_loop(), &_handle, fd);
+            int status = uv_poll_init_socket(loop->get_loop(), &_handle, fd);
             if (status != 0) {
                 logerror("Failed to poll fd (%s).", uv_err_name(status));
                 break;

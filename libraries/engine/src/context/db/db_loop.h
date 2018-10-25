@@ -31,6 +31,7 @@ namespace engine {
         uv_loop_t           _loop;
         uv_async_t          _async_handle;
 
+        void notify() noexcept;
         void on_async() noexcept;
 
         static void async_callback(uv_async_t *handle) noexcept;

@@ -16,15 +16,15 @@ namespace engine {
         STL_DELETE_ALL_DEFAULT(db_connection_service)
 
         explicit db_connection_service(const stl::setting& config,
-                                    task_router *router,
-                                    const work_service_delegate *delegate) noexcept;
+                                       task_router *router,
+                                       const work_service_delegate *delegate) noexcept;
         virtual ~db_connection_service();
 
         void setup() noexcept final;
         void reset() noexcept final;
 
         db_connection *acquire_connection() noexcept;
-        void release_connection(db_connection *connection) noexcept;
+        void return_connection(db_connection *connection) noexcept;
 
     private:
         std::vector<db_connection::uptr>    _connections;
