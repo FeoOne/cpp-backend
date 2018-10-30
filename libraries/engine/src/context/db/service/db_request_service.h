@@ -8,7 +8,7 @@
 #ifndef ENGINE_DB_REQUEST_SERVICE_H
 #define ENGINE_DB_REQUEST_SERVICE_H
 
-#include "work/work_service.h"
+#include "work/service/work_service.h"
 
 namespace engine {
 

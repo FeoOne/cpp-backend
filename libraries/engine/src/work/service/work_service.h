@@ -5,12 +5,12 @@
  * @brief
  */
 
-#ifndef ENGINE_EXECUTION_SERVICE_H
-#define ENGINE_EXECUTION_SERVICE_H
+#ifndef ENGINE_WORK_SERVICE_H
+#define ENGINE_WORK_SERVICE_H
 
 #include "main/engine_consts.h"
 #include "task/task_router.h"
-#include "work/work_service_delegate.h"
+#include "work/service/work_service_delegate.h"
 
 #define EX_ASSIGN_TASK_HANDLER(task, service, routine)  \
     assign_task_handler(task::key(), std::bind(&service::routine, this, std::placeholders::_1))
@@ -47,7 +47,7 @@ namespace engine {
         void assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept;
 
     private:
-        const stl::setting                            _config;
+        const stl::setting                              _config;
         task_router *                                   _router;
         const work_service_delegate *                   _delegate;
         std::array<task_handler, basic_task::MAX_KEY>   _handlers;
@@ -56,4 +56,4 @@ namespace engine {
 
 }
 
-#endif /* ENGINE_EXECUTION_SERVICE_H */
+#endif /* ENGINE_WORK_SERVICE_H */

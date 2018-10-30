@@ -8,7 +8,7 @@
 #ifndef ENGINE_RESPONSE_PROCESSING_SERVICE_H
 #define ENGINE_RESPONSE_PROCESSING_SERVICE_H
 
-#include "work/work_service.h"
+#include "work/service/work_service.h"
 #include "context/io/task/io_response_task.h"
 
 namespace engine {

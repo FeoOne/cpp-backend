@@ -6,7 +6,7 @@
  */
 
 #include "message/message.h"
-#include "work/work_service.h"
+#include "work/service/work_service.h"
 #include "context/io/service/io_connection_service.h"
 
 #include "context/io/service/response_processing_service.h"

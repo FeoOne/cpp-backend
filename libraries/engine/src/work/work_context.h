@@ -13,8 +13,8 @@
 #include "task/task_router.h"
 #include "task/task_handler.h"
 #include "work/work_loop.h"
-#include "work/work_service.h"
-#include "work/work_service_delegate.h"
+#include "work/service/work_service.h"
+#include "work/service/work_service_delegate.h"
 
 #define EX_CONTEXT_CREATOR(context)                                 \
     [](const stl::setting& config, engine::task_router *router) { \

@@ -8,7 +8,7 @@
 #ifndef ENGINE_REQUEST_PROCESSING_SERVICE_H
 #define ENGINE_REQUEST_PROCESSING_SERVICE_H
 
-#include "work/work_service.h"
+#include "work/service/work_service.h"
 #include "context/io/connection/tcp_connection.h"
 
 namespace engine {

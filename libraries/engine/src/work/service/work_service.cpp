@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "work/work_service.h"
+#include "work/service/work_service.h"
 
 namespace engine {
 
