@@ -6,8 +6,9 @@
  */
 
 #include "context/web/service/webserver_service.h"
-#include "context/web/task/ws_incoming_message_task.h"
-#include "context/web/task/ws_outgoing_message_task.h"
+#include "context/web/task/ws_request_task.h"
+#include "context/web/task/ws_response_task.h"
+#include "context/web/task/ws_disconnect_task.h"
 
 #include "context/web/service/websocket_service.h"
 
@@ -18,7 +19,8 @@ namespace engine {
                                          const work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate)
     {
-        EX_ASSIGN_TASK_HANDLER(ws_outgoing_message_task, websocket_service, handle_ws_outgoing_message_task);
+        EX_ASSIGN_TASK_HANDLER(ws_response_task, websocket_service, handle_ws_response_task);
+        EX_ASSIGN_TASK_HANDLER(ws_disconnect_task, websocket_service, handle_ws_disconnect_task);
     }
 
     // virtual
@@ -30,7 +32,7 @@ namespace engine {
     {
         auto server { delegate()->service<webserver_service>()->get_server() };
         if (server == nullptr) {
-            logcrit("Failed to start http service w/o server.");
+            logcrit("Failed to start websocket service w/o server.");
         }
 
         auto websocket_config { config()[consts::config::key::WEBSOCKET] };
@@ -54,13 +56,17 @@ namespace engine {
                                    path.data());
     }
 
-    void websocket_service::handle_ws_outgoing_message_task(basic_task *base_task) noexcept
+    void websocket_service::handle_ws_response_task(basic_task *base_task) noexcept
     {
-        auto task { reinterpret_cast<ws_outgoing_message_task *>(base_task) };
+        auto task { reinterpret_cast<ws_response_task *>(base_task) };
 
         // todo: implement
+    }
 
-        basic_task::destroy(task);
+    void websocket_service::handle_ws_disconnect_task(basic_task *base_task) noexcept
+    {
+        auto task { reinterpret_cast<ws_disconnect_task *>(base_task) };
+        soup_websocket_connection_close(task->connection(), task->code(), nullptr);
     }
 
     void websocket_service::on_handler(SoupServer *server,
@@ -84,7 +90,7 @@ namespace engine {
                                        SoupWebsocketDataType data_type,
                                        GBytes *data) noexcept
     {
-        auto task { basic_task::create<ws_incoming_message_task>(connection, data_type, data) };
+        auto task { basic_task::create<ws_request_task>(connection, data_type, data) };
         router()->enqueue(task);
     }
 

@@ -26,7 +26,7 @@ namespace backend {
 
         EX_BIND_TASK_ROUTE(engine::io_request_task, io_service);
         EX_BIND_TASK_ROUTE(engine::connection_status_changed_task, io_service);
-        EX_BIND_TASK_ROUTE(engine::ws_incoming_message_task, websocket_service);
+        EX_BIND_TASK_ROUTE(engine::ws_request_task, websocket_service);
     }
 
 }

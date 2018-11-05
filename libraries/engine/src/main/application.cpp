@@ -23,8 +23,9 @@
 #include "context/web/web_context.h"
 #include "context/web/task/http_request_task.h"
 #include "context/web/task/http_response_task.h"
-#include "context/web/task/ws_incoming_message_task.h"
-#include "context/web/task/ws_outgoing_message_task.h"
+#include "context/web/task/ws_request_task.h"
+#include "context/web/task/ws_response_task.h"
+#include "context/web/task/ws_disconnect_task.h"
 #include "context/system/system_context.h"
 
 #define EX_ADD_QUEUE(context, queue)    _router->add_queue(context::key(), queue::make_unique())
@@ -112,8 +113,9 @@ namespace engine {
         if (_need_web_worker) {
             EX_ASSIGN_ROUTE(http_request_task, job_context);
             EX_ASSIGN_ROUTE(http_response_task, web_context);
-            EX_ASSIGN_ROUTE(ws_incoming_message_task, job_context);
-            EX_ASSIGN_ROUTE(ws_outgoing_message_task, web_context);
+            EX_ASSIGN_ROUTE(ws_request_task, job_context);
+            EX_ASSIGN_ROUTE(ws_response_task, web_context);
+            EX_ASSIGN_ROUTE(ws_disconnect_task, web_context);
         }
     }
 

@@ -29,15 +29,15 @@
     STL_DELETE_DEFAULT_CTOR(c)                   \
     STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(c)
 
-#define STL_DECLARE_SMARTPOINTERS(T)                                                \
-    using sptr = std::shared_ptr<T>;                                                \
-    using uptr = std::unique_ptr<T>;                                                \
-    using wptr = std::weak_ptr<T>;                                                  \
-    template<typename... Args> static sptr make_shared(Args&&... args) noexcept {   \
-        return std::make_shared<T>(std::forward<Args>(args)...);                    \
-    }                                                                               \
-    template<typename... Args> static uptr make_unique(Args&&... args) noexcept {   \
-        return std::make_unique<T>(std::forward<Args>(args)...);                    \
+#define STL_DECLARE_SMARTPOINTERS(T)                                                    \
+    using sptr = std::shared_ptr<T>;                                                    \
+    using uptr = std::unique_ptr<T>;                                                    \
+    using wptr = std::weak_ptr<T>;                                                      \
+    template<typename... StlArgs> static sptr make_shared(StlArgs&&... args) noexcept { \
+        return std::make_shared<T>(std::forward<StlArgs>(args)...);                     \
+    }                                                                                   \
+    template<typename... StlArgs> static uptr make_unique(StlArgs&&... args) noexcept { \
+        return std::make_unique<T>(std::forward<StlArgs>(args)...);                     \
     }
 
 namespace stl {

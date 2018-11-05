@@ -56,8 +56,6 @@ namespace engine {
 
         soup_server_unpause_message(delegate()->service<webserver_service>()->get_server(),
                                     request->get_message());
-
-        basic_task::destroy(task);
     }
 
     void http_service::handler(SoupServer *server,

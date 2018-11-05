@@ -10,7 +10,8 @@
 #include "context/web/service/http_service.h"
 #include "context/web/service/websocket_service.h"
 #include "context/web/task/http_response_task.h"
-#include "context/web/task/ws_outgoing_message_task.h"
+#include "context/web/task/ws_response_task.h"
+#include "context/web/task/ws_disconnect_task.h"
 
 #include "context/web/web_context.h"
 
@@ -24,7 +25,8 @@ namespace engine {
         add_service(websocket_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(http_response_task, http_service);
-        EX_BIND_TASK_ROUTE(ws_outgoing_message_task, websocket_service);
+        EX_BIND_TASK_ROUTE(ws_response_task, websocket_service);
+        EX_BIND_TASK_ROUTE(ws_disconnect_task, websocket_service);
     }
 
 }

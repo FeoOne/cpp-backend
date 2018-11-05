@@ -8,18 +8,6 @@
 #ifndef STL_JSON_H
 #define STL_JSON_H
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wswitch-enum"
-#pragma clang diagnostic ignored "-Wcovered-switch-default"
-
-#include "data/nlohmann-json.h"
-
-#pragma clang diagnostic pop
-
-namespace stl {
-
-    using json = nlohmann::json;
-
-}
+#include <json/json.h>
 
 #endif /* STL_JSON_H */

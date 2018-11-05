@@ -21,7 +21,7 @@ namespace engine {
         add_service(db_connection_service::make_unique(config, router, this));
         add_service(db_request_service::make_unique(config, router, this));
 
-        EX_BIND_TASK_ROUTE(db_request_task, request_service);
+        EX_BIND_TASK_ROUTE(db_request_task, db_request_service);
     }
 
 }

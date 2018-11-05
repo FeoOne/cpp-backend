@@ -8,12 +8,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/main/stl_consts_gen.h.in
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main/stl_consts_gen.h
         )
 
+find_package(PkgConfig REQUIRED)
 find_package(CONFIG REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(GLIB REQUIRED)
 find_package(UUID REQUIRED)
 find_package(UV REQUIRED)
 find_package(OPENSSL REQUIRED)
+find_package(JsonCpp REQUIRED)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
 
@@ -26,8 +28,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${
 
 # jemalloc config
 
-set(Jemalloc_SOURCE_DIRS ${CMAKE_SOURCE_DIR}/3rdparty/jemalloc/include)
-set(Jemalloc_LIBRARIES ${CMAKE_SOURCE_DIR}/3rdparty/jemalloc/lib/libjemalloc.a)
+set(Jemalloc_SOURCE_DIRS ${CMAKE_SOURCE_DIR}/external/jemalloc/include)
+set(Jemalloc_LIBRARIES ${CMAKE_SOURCE_DIR}/external/jemalloc/lib/libjemalloc.a)
 
 # include directories
 
@@ -41,6 +43,7 @@ target_include_directories(${PROJECT_NAME}
         ${GLib_INCLUDE_DIRS}
         ${UV_INCLUDE_DIRS}
         ${OPENSSL_INCLUDE_DIR}
+        ${JsonCpp_INCLUDE_DIR}
         )
 
 # libraries
@@ -54,4 +57,5 @@ target_link_libraries(${PROJECT_NAME}
         ${GLib_LIBRARY}
         ${UV_LIBRARIES}
         ${OPENSSL_LIBRARIES}
+        ${JsonCpp_LIBRARIES}
         )

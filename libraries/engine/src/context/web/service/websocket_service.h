@@ -28,7 +28,8 @@ namespace engine {
         void reset() noexcept final;
 
     private:
-        void handle_ws_outgoing_message_task(basic_task *base_task) noexcept;
+        void handle_ws_response_task(basic_task *base_task) noexcept;
+        void handle_ws_disconnect_task(basic_task *base_task) noexcept;
 
         void on_handler(SoupServer *server,
                         SoupWebsocketConnection *connection,

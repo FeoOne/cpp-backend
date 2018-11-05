@@ -2,7 +2,7 @@
 .idea
 
 # dependencies
-3rdparty/*
+external
 
 # cmake
 cmake/*

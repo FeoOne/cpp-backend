@@ -27,14 +27,14 @@ namespace backend {
 
     private:
         using message_processor =
-                std::function<engine::ws_outgoing_message_task *(const engine::ws_incoming_message_task *)>;
+                std::function<engine::ws_response_task *(Json::Value&)>;
 
-        std::unordered_map<u32, message_processor>      _processors;
+        std::unordered_map<std::string_view, message_processor>     _processors;
 
-        void handle_ws_incoming_message_task(engine::basic_task *base_task) noexcept;
+        void handle_ws_request_task(engine::basic_task *base_task) noexcept;
 
-        engine::ws_outgoing_message_task *
-        process_create_invoice_message(engine::ws_incoming_message_task *task) noexcept;
+        engine::ws_response_task *
+        process_create_invoice_message(Json::Value& json) noexcept;
 
     };
 
