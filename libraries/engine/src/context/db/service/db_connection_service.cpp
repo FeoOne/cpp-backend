@@ -75,8 +75,9 @@ namespace engine {
     void db_connection_service::setup_connections() noexcept
     {
         while (_connections.size() < _max_connection_count) {
-            auto& connection { _connections.emplace_back() };
+            auto connection { db_connection::make_unique() };
             connection->start(delegate()->loop<db_loop>(), _conninfo);
+            _connections.push_back(std::move(connection));
         }
     }
 

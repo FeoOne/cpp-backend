@@ -1,12 +1,12 @@
 /**
- * @file websocket_service.h
+ * @file ws_service.h
  * @author Feo
  * @date 18/08/2018
  * @brief
  */
 
-#ifndef ENGINE_WEBSOCKET_SERVICE_H
-#define ENGINE_WEBSOCKET_SERVICE_H
+#ifndef ENGINE_WS_SERVICE_H
+#define ENGINE_WS_SERVICE_H
 
 #include <libsoup/soup.h>
 
@@ -14,15 +14,15 @@
 
 namespace engine {
 
-    class websocket_service final : public stl::crucial<work_service, websocket_service> {
+    class ws_service final : public stl::crucial<work_service, ws_service> {
     public:
-        STL_DECLARE_SMARTPOINTERS(websocket_service)
-        STL_DELETE_ALL_DEFAULT(websocket_service)
+        STL_DECLARE_SMARTPOINTERS(ws_service)
+        STL_DELETE_ALL_DEFAULT(ws_service)
 
-        explicit websocket_service(const stl::setting& config,
+        explicit ws_service(const stl::setting& config,
                                    task_router *router,
                                    const work_service_delegate *delegate) noexcept;
-        virtual ~websocket_service();
+        virtual ~ws_service();
 
         void setup() noexcept final;
         void reset() noexcept final;
@@ -57,4 +57,4 @@ namespace engine {
 
 }
 
-#endif /* PROJECT_WEBSOCKET_SERVICE_H */
+#endif /* ENGINE_WS_SERVICE_H */

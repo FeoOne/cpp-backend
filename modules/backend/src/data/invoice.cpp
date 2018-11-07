@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "payment/invoice.h"
+#include "data/invoice.h"
 
 namespace backend {
 

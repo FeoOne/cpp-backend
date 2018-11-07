@@ -19,7 +19,6 @@ namespace engine {
 
     bool db_connection::start(db_loop *loop, const char *conninfo) noexcept
     {
-        return true;
         while (true) {
             _connection = PQconnectStart(conninfo);
             if (_connection == nullptr) {

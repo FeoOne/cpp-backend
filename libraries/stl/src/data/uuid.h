@@ -38,10 +38,15 @@ namespace stl {
         uuid(const uuid& other) { uuid_copy(_uuid, other._uuid); }
         uuid& operator=(const uuid& other) { uuid_copy(_uuid, other._uuid); return *this; }
 
-        bool operator==(const uuid& other) noexcept { return (uuid_compare(_uuid, other._uuid) == 0); }
-        bool operator!=(const uuid& other) noexcept { return (uuid_compare(_uuid, other._uuid) != 0); }
+        bool operator==(const uuid& other) const noexcept { return (uuid_compare(_uuid, other._uuid) == 0); }
+        bool operator!=(const uuid& other) const noexcept { return (uuid_compare(_uuid, other._uuid) != 0); }
 
         bool is_null() const noexcept { return (uuid_is_null(_uuid) == 1); }
+
+        size_t hash() const noexcept {
+            return *reinterpret_cast<const size_t *>(&_uuid[0]) ^
+                   *reinterpret_cast<const size_t *>(&_uuid[8]);
+        }
 
     private:
         uuid_t      _uuid;
@@ -58,6 +63,17 @@ namespace stl {
             uuid_parse(str, _uuid);
         }
 
+    };
+
+}
+
+namespace std {
+
+    template<>
+    struct hash<stl::uuid> {
+        size_t operator()(const stl::uuid& guid) const noexcept {
+            return guid.hash();
+        }
     };
 
 }

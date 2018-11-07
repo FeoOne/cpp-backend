@@ -8,7 +8,7 @@
 #include "context/web/web_loop.h"
 #include "context/web/service/webserver_service.h"
 #include "context/web/service/http_service.h"
-#include "context/web/service/websocket_service.h"
+#include "context/web/service/ws_service.h"
 #include "context/web/task/http_response_task.h"
 #include "context/web/task/ws_response_task.h"
 #include "context/web/task/ws_disconnect_task.h"
@@ -22,11 +22,11 @@ namespace engine {
     {
         add_service(webserver_service::make_unique(config, router, this));
         add_service(http_service::make_unique(config, router, this));
-        add_service(websocket_service::make_unique(config, router, this));
+        add_service(ws_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(http_response_task, http_service);
-        EX_BIND_TASK_ROUTE(ws_response_task, websocket_service);
-        EX_BIND_TASK_ROUTE(ws_disconnect_task, websocket_service);
+        EX_BIND_TASK_ROUTE(ws_response_task, ws_service);
+        EX_BIND_TASK_ROUTE(ws_disconnect_task, ws_service);
     }
 
 }
