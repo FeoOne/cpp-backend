@@ -9,6 +9,7 @@
 #define ENGINE_DB_REQUEST_SERVICE_H
 
 #include "work/service/work_service.h"
+#include "context/db/core/db_request.h"
 
 namespace engine {
 
@@ -26,7 +27,13 @@ namespace engine {
         void reset() noexcept final;
 
     private:
+        std::queue<db_request *>                            _pending_requests;
+        std::unordered_map<poll_handle *, db_request *>     _active_requests;
+
         void handle_db_request_task(basic_task *task) noexcept;
+
+        void on_query(poll_handle* handle, int status, int events) noexcept;
+        static void query_fn(uv_poll_t* handle, int status, int events) noexcept;
 
     };
 

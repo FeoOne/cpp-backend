@@ -45,6 +45,7 @@
 
 #include "scalar/string.h"
 #include "scalar/numeric.h"
+#include "scalar/endianess.h"
 
 #include "logger/log_manager.h"
 

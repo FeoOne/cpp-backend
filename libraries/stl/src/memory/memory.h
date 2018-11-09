@@ -40,10 +40,15 @@
         return std::make_unique<T>(std::forward<StlArgs>(args)...);                     \
     }
 
-#define STL_NEW(T, ...)     \
-    new (stl::memory::malloc<void>(sizeof(T))) T (__VA_ARGS__)
-#define STL_DEL(c)          \
-    stl::memory::free(c)
+#define STL_DECLARE_NEW_DELETE(base_type)                                                           \
+    template<typename T, typename... Args>                                                          \
+    static T *create(Args&&... args) noexcept {                                                     \
+        return new (stl::memory::aligned_alloc<void>(sizeof(T))) T(std::forward<Args>(args)...);    \
+    }                                                                                               \
+    static void destroy(base_type *obj) noexcept {                                                  \
+        obj->~base_type();                                                                          \
+        stl::memory::free(obj);                                                                     \
+    }
 
 namespace stl {
 

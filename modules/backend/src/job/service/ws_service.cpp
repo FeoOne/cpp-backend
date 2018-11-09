@@ -6,6 +6,8 @@
  */
 
 #include "data/currency.h"
+#include "main/backend_consts.h"
+#include "db/select_merchandise_data_db_request.h"
 
 #include "job/service/ws_service.h"
 
@@ -17,7 +19,8 @@ namespace backend {
                                          engine::task_router *router,
                                          const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
-            _processors {}
+            _processors {},
+            _invoice_manager { invoice_manager::make_unique() }
     {
         EX_ASSIGN_TASK_HANDLER(engine::ws_request_task, ws_service, handle_ws_request_task);
 
@@ -49,7 +52,7 @@ namespace backend {
 
     void ws_service::handle_ws_request_task(engine::basic_task *base_task) noexcept
     {
-        static const size_t max_json_size { 512 };
+        static const size_t max_json_size { 256 };
 
         auto task { reinterpret_cast<engine::ws_request_task *>(base_task) };
 
@@ -70,17 +73,31 @@ namespace backend {
 
             // parse json and process message
             try {
-                Json::Value json { text };
-                if (json.isMember("name")) {
-                    _processors[json["name"].asCString()](task->connection(), json);
-                } else {
-                    logwarn("Malformed json: %s", text);
+                Json::Value root;
+                Json::CharReaderBuilder builder;
+                Json::CharReader *reader = builder.newCharReader();
+                std::string errors;
+                bool status { reader->parse(text, text + size, &root, &errors) };
+                delete reader;
+
+                if (!status) {
+                    logwarn("Malformed json.");
                     disconnect(task->connection());
+                    return;
                 }
 
+                auto name { root[consts::ws::name_key.data()].asCString() };
+                auto it { _processors.find(name) };
+                if (it == _processors.end()) {
+                    logwarn("Malformed json name: %s", name);
+                    disconnect(task->connection());
+                    return;
+                }
+
+                it->second(task->connection(), root);
             }
             catch (const std::exception& e) {
-                logwarn("Failed to parse json { %s } from client: %s", text, e.what());
+                logwarn("Failed to parse json: %s", e.what());
                 disconnect(task->connection());
             }
         }
@@ -94,38 +111,63 @@ namespace backend {
     void ws_service::process_create_invoice_message(SoupWebsocketConnection *connection,
                                                     const Json::Value& json) noexcept
     {
-        if (!json.isMember("guid") || !json.isMember("guid")) {
-            logwarn("Malformed json: %s", json.asCString());
+        try {
+            if (!json.isMember("guid") || !json.isMember("mail")) {
+                logwarn("Malformed json: %s", json.asCString());
+                disconnect(connection);
+                return;
+            }
+
+            stl::uuid merchandise_guid { json["guid"].asCString() };
+            std::string email { json["mail"].asCString() };
+
+            auto currency { data::currency::btc() };
+            if (json.isMember("currency")) {
+                currency.from_name(json["currency"].asCString());
+            }
+
+            u64 amount { 0 };
+            if (json.isMember("amount")) {
+                amount = json["amount"].asUInt64();
+            }
+
+            // todo: validate incoming data
+
+            auto invoice { new(std::nothrow) data::invoice(std::move(merchandise_guid),
+                                                           std::move(email),
+                                                           std::move(currency),
+                                                           amount) };
+            _invoice_manager->add(invoice);
+
+            {
+                // select merchandise data
+                auto request { engine::db_request::create<select_merchandise_data_db_request>(merchandise_guid) };
+                request->assign_callback(std::bind(&ws_service::select_merchandise_data_db_response_fn,
+                                                   this,
+                                                   std::placeholders::_1));
+
+                auto task { engine::basic_task::create<engine::db_request_task>(request) };
+                router()->enqueue(task);
+            }
+
+
+
+
+
+            // todo: select merchandise, merchant, user
+            // todo: create wallet
+            // todo: create invoice
+            // todo: respond
+        }
+        catch (const std::exception& e) {
+            logwarn("Failed to process json: %s", e.what());
             disconnect(connection);
-            return;
         }
+    }
 
-        stl::uuid merchandise_guid { json["guid"].asCString() };
-        std::string email { json["mail"].asCString() };
+    void ws_service::select_merchandise_data_db_response_fn(engine::db_response *response) noexcept
+    {
 
-        auto currency { data::currency::btc() };
-        if (json.isMember("currency")) {
-            currency.id(json["currency"].asUInt());
-        }
-
-        u64 amount { 0 };
-        if (json.isMember("amount")) {
-            amount = json["amount"].asUInt64();
-        }
-
-        // todo: validate incoming data
-
-        auto invoice { new (std::nothrow) data::invoice(std::move(merchandise_guid),
-                                                        std::move(email),
-                                                        std::move(currency),
-                                                        amount) };
-        _invoice_manager->add(invoice);
-
-
-        // todo: select merchandise, merchant, user
-        // todo: create wallet
-        // todo: create invoice
-        // todo: respond
     }
 
 }

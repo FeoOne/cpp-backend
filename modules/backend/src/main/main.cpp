@@ -15,5 +15,5 @@ int main(int argc, char **argv)
     return engine::application::start(argc,
                                       argv,
                                       EX_CONTEXT_CREATOR(backend::job_context),
-                                      backend::consts::APP_DESCRIPTION);
+                                      backend::consts::app_description);
 }

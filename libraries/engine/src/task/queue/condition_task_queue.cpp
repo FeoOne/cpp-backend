@@ -16,16 +16,24 @@ namespace engine {
     }
 
     // virtual
-//    condition_task_queue::~condition_task_queue()
-//    {
-//    }
-
-    // virtual
     void condition_task_queue::enqueue(basic_task *task) noexcept
     {
         {
             STL_UNIQUE_LOCK(lock, _mutex);
             _queue.push(task);
+        }
+
+        _cv.notify_one();
+    }
+
+    // virtual
+    void condition_task_queue::enqueue(std::vector<basic_task *>&& tasks) noexcept
+    {
+        {
+            STL_UNIQUE_LOCK(lock, _mutex);
+            for (auto task: tasks) {
+                _queue.push(task);
+            }
         }
 
         _cv.notify_one();

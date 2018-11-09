@@ -12,11 +12,18 @@
 
 namespace backend {
 
-    class consts {
-    public:
-        static constexpr std::string_view   APP_DESCRIPTION     { "- bitpayments backend server." };
+    struct consts {
 
-        static constexpr std::string_view   HTTP_INVOICE_PATH   { "/invoice" };
+        struct currency {
+            static constexpr std::string_view usd { "usd" };
+            static constexpr std::string_view btc { "btc" };
+        };
+
+        struct ws {
+            static constexpr std::string_view name_key { "name" };
+        };
+
+        static constexpr std::string_view app_description { "- bitpayments backend server." };
 
     };
 

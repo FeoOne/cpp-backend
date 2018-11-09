@@ -34,6 +34,12 @@
 #include "context/io/task/io_request_task.h"
 #include "context/io/task/io_response_task.h"
 
+#include "context/db/core/db_params.h"
+#include "context/db/core/db_request.h"
+#include "context/db/core/db_response.h"
+#include "context/db/task/db_request_task.h"
+#include "context/db/task/db_response_task.h"
+
 #include "session/session_manager.h"
 
 #endif /* ENGINE_ENGINE_H */

@@ -18,18 +18,9 @@ namespace engine {
     public:
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(basic_task)
         STL_CRUCIAL_BASE_DEFINITION(EX_TASK_TYPE_MAX_KEY_COUNT)
+        STL_DECLARE_NEW_DELETE(basic_task)
 
         virtual ~basic_task() = default;
-
-        template<typename T, typename... Args>
-        static T *create(Args&&... args) noexcept {
-            return new (stl::memory::aligned_alloc<void>(sizeof(T))) T(std::forward<Args>(args)...);
-        }
-
-        static void destroy(basic_task *any_task) noexcept {
-            any_task->~basic_task();
-            stl::memory::free(any_task);
-        }
 
     protected:
         basic_task() = default;

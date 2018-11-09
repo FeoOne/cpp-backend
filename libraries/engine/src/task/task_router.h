@@ -32,7 +32,7 @@ namespace engine {
 
     private:
         std::array<task_queue::uptr, EX_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>    _queues;
-        std::array<stl::crucial_key_type, basic_task::MAX_KEY>            _context_keys;
+        std::array<stl::crucial_key_type, basic_task::MAX_KEY>              _context_keys;
 
     };
 

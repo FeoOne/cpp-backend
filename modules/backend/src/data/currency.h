@@ -24,6 +24,8 @@ namespace backend::data {
         size_t id() const noexcept { return _id; }
         void id(size_t val) noexcept { _id = val; }
 
+        void from_name(const std::string_view& name) noexcept;
+
         static currency usd() noexcept {
             return currency { ID_USD };
         }

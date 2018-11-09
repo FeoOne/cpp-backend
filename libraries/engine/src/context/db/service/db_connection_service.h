@@ -27,12 +27,13 @@ namespace engine {
         void return_connection(db_connection *connection) noexcept;
 
     private:
-        std::vector<db_connection::uptr>    _connections;
-        std::queue<db_connection *>         _available_connections;
-        const char *                        _conninfo;
-        size_t                              _max_connection_count;
-        u64                                 _connect_interval;
-        uv_timer_t                          _connect_timer;
+        std::vector<db_connection::uptr>                    _connections;
+        std::list<db_connection *>                          _available_connections;
+        const char *                                        _conninfo;
+        size_t                                              _max_connection_count;
+        u64                                                 _connect_interval;
+        uv_timer_t                                          _connect_timer;
+        std::unordered_map<poll_handle *, db_connection *>  _connections_by_handle;
 
         void read_config() noexcept;
 
@@ -44,7 +45,11 @@ namespace engine {
 
         void on_connect_timer() noexcept;
 
+        void poll(db_connection *connection) noexcept;
+        void on_poll(poll_handle* handle, int status, int events) noexcept;
+
         static void connect_timer_callback(uv_timer_t *timer) noexcept;
+        static void poll_fn(uv_poll_t* handle, int status, int events) noexcept;
 
     };
 

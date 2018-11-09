@@ -21,6 +21,7 @@ namespace engine {
         virtual ~condition_task_queue() = default;
 
         void enqueue(basic_task *task) noexcept final;
+        void enqueue(std::vector<basic_task *>&& tasks) noexcept final;
         basic_task *dequeue() noexcept final;
 
         bool empty() const noexcept final;

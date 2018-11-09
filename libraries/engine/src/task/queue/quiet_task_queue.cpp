@@ -16,16 +16,26 @@ namespace engine {
     }
 
     // virtual
-//    quiet_task_queue::~quiet_task_queue()
-//    {
-//    }
-
-    // virtual
     void quiet_task_queue::enqueue(basic_task *task) noexcept
     {
         do {
             STL_UNIQUE_LOCK(lock, _mutex);
             _queue.push(task);
+        } while (false);
+
+        if (_notify_fn) {
+            _notify_fn();
+        }
+    }
+
+    // virtual
+    void quiet_task_queue::enqueue(std::vector<basic_task *>&& tasks) noexcept
+    {
+        do {
+            STL_UNIQUE_LOCK(lock, _mutex);
+            for (auto task: tasks) {
+                _queue.push(task);
+            }
         } while (false);
 
         if (_notify_fn) {

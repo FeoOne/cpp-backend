@@ -13,12 +13,32 @@ namespace engine {
 
     class db_params final {
     public:
-        STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_params)
+        STL_DELETE_ALL_DEFAULT(db_params)
 
-        db_params();
         explicit db_params(size_t count) noexcept;
 
-        ~db_params() = default;
+        ~db_params();
+
+        size_t count() const noexcept { return _count; }
+        const char * const *values() const noexcept { return _values.data(); }
+        const int *lengths() const noexcept { return _lengths.data(); }
+        const int *formats() const noexcept { return _formats.data(); }
+        const Oid *oids() const noexcept { return _oids.data(); }
+
+        void bake() noexcept;
+
+        void operator<<(const std::string& value) noexcept;
+        void operator<<(const std::string_view& value) noexcept;
+        void operator<<(bool value) noexcept;
+        void operator<<(u16 value) noexcept;
+        void operator<<(s16 value) noexcept;
+        void operator<<(u32 value) noexcept;
+        void operator<<(s32 value) noexcept;
+        void operator<<(u64 value) noexcept;
+        void operator<<(s64 value) noexcept;
+        void operator<<(float value) noexcept;
+        void operator<<(double value) noexcept;
+        void operator<<(const stl::uuid& value) noexcept;
 
     private:
         size_t                          _count;
@@ -29,9 +49,8 @@ namespace engine {
 
         u8 *                            _memory;
         size_t                          _length;
-        size_t                          _position;
 
-        void append(const char *memory, int length, int format, Oid oid) noexcept;
+        void append(const char *memory, size_t length, int format, Oid oid) noexcept;
 
     };
 

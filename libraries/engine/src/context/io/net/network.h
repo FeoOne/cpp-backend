@@ -58,15 +58,20 @@ namespace engine {
         uv_udp_t        udp;
     };
 
+    union timer_handle {
+        uv_handle_t     handle;
+        uv_timer_t      timer;
+    };
+
+    union poll_handle {
+        uv_handle_t     handle;
+        uv_poll_t       poll;
+    };
+
     union uv_request {
         uv_req_t        req;
         uv_connect_t    connect;
         uv_shutdown_t   shutdown;
-    };
-
-    union timer_handle {
-        uv_handle_t     handle;
-        uv_timer_t      timer;
     };
 
     const char *transport_protocol_to_str(transport_protocol protocol) noexcept;

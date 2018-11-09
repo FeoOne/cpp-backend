@@ -9,6 +9,7 @@
 #define ENGINE_DB_REQUEST_TASK_H
 
 #include "task/basic_task.h"
+#include "context/db/core/db_request.h"
 
 namespace engine {
 
@@ -17,10 +18,16 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(db_request_task)
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_request_task)
 
-        explicit db_request_task(nullptr_t) noexcept {}
+        explicit db_request_task(db_request *request) noexcept :
+                _request { request }
+        {}
+
         virtual ~db_request_task() = default;
 
+        db_request *request() noexcept { return _request; }
+
     private:
+        db_request *        _request;
 
     };
 

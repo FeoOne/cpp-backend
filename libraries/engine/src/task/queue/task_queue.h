@@ -17,6 +17,7 @@ namespace engine {
         virtual ~task_queue() = default;
 
         virtual void enqueue(basic_task *task) noexcept = 0;
+        virtual void enqueue(std::vector<basic_task *>&& tasks) noexcept = 0;
         virtual basic_task *dequeue() noexcept = 0;
 
         virtual bool empty() const noexcept = 0;

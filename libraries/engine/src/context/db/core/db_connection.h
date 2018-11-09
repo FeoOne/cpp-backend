@@ -10,8 +10,11 @@
 #include <stl.h>
 
 #include "context/db/db_loop.h"
+#include "context/io/net/network.h"
 
 namespace engine {
+
+    class db_request;
 
     class db_connection final {
     public:
@@ -33,14 +36,25 @@ namespace engine {
         bool start(db_loop *loop, const char *conninfo) noexcept;
         void finish() noexcept;
 
-        void poll() noexcept;
+        PostgresPollingStatusType poll() noexcept;
+        int consume_input() noexcept;
+        PGnotify *notifies() noexcept;
+        bool is_busy() noexcept;
 
-        state get_state() const noexcept { return _state; }
+        state status() const noexcept { return _state; }
+        void status(state new_state) noexcept { _state = new_state; }
+        poll_handle *handle() noexcept { return &_handle; }
+
+        const char *error_message() const noexcept { return PQerrorMessage(_connection); }
+
+        int send_query(db_request *request) noexcept;
+        void flush() noexcept;
 
     private:
         state                   _state;
-        uv_poll_t               _handle;
+        poll_handle             _handle;
         PGconn *                _connection;
+        bool                    _is_new;
 
     };
 
