@@ -70,11 +70,11 @@ namespace engine {
     }
 
     void ws_service::on_handler(SoupServer *server,
-                                       SoupWebsocketConnection *connection,
-                                       const char *path,
-                                       SoupClientContext *client) noexcept
+                                SoupWebsocketConnection *connection,
+                                const char *path,
+                                SoupClientContext *client) noexcept
     {
-        // @todo Compare server pointers for extra error check.
+        // todo: compare server pointers for extra error check.
         logdebug("WebSocket handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
@@ -87,8 +87,8 @@ namespace engine {
     }
 
     void ws_service::on_message(SoupWebsocketConnection *connection,
-                                       SoupWebsocketDataType data_type,
-                                       GBytes *data) noexcept
+                                SoupWebsocketDataType data_type,
+                                GBytes *data) noexcept
     {
         auto task { basic_task::create<ws_request_task>(connection, data_type, data) };
         router()->enqueue(task);

@@ -63,7 +63,7 @@ namespace backend {
         } else {
             gsize size { 0 };
             const char *text = task->text(&size);
-            lognotice("Text message from ws: %s", text);
+            logdebug("Text message from ws: %s", text);
 
             // basic checks
             if (text == nullptr || size > max_json_size) {

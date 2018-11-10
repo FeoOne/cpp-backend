@@ -120,7 +120,8 @@ namespace engine {
     {
 #ifndef NDEBUG
         auto type { PQftype(_result, static_cast<int>(column)) };
-        logassert(type == TEXTOID || type == VARCHAROID, "Try to get value with wrong format %u.", type);
+        logassert(type == TEXTOID || type == VARCHAROID || type == BPCHAROID,
+                  "Try to get value with wrong format %u.", type);
 #endif
         *val = PQgetvalue(_result, static_cast<int>(row), static_cast<int>(column));
     }

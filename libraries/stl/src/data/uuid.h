@@ -56,12 +56,6 @@ namespace stl {
                    *reinterpret_cast<const size_t *>(&_uuid[8]);
         }
 
-        std::string to_string() const noexcept {
-            char uuid_str[37];
-            uuid_unparse_lower(_uuid, uuid_str);
-            return uuid_str;
-        }
-
     private:
         uuid_type   _uuid;
 

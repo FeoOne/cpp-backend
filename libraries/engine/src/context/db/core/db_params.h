@@ -20,10 +20,10 @@ namespace engine {
         ~db_params();
 
         size_t count() const noexcept { return _count; }
-        const char * const *values() const noexcept { return _values.data(); }
-        const int *lengths() const noexcept { return _lengths.data(); }
-        const int *formats() const noexcept { return _formats.data(); }
-        const Oid *oids() const noexcept { return _oids.data(); }
+        const char * const *values() const noexcept;
+        const int *lengths() const noexcept;
+        const int *formats() const noexcept;
+        const Oid *oids() const noexcept;
 
         void bake() noexcept;
 

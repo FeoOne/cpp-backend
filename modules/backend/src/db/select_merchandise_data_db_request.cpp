@@ -15,8 +15,6 @@ namespace backend {
     select_merchandise_data_db_request::select_merchandise_data_db_request(const stl::uuid& guid) noexcept :
             engine::db_request(sql, param_count)
     {
-//        auto guid_string { guid.to_string() };
-//        _params << guid_string;
         _params << guid;
         _params.bake();
     }

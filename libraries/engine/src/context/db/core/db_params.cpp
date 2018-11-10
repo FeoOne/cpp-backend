@@ -32,6 +32,26 @@ namespace engine {
         }
     }
 
+    const char * const *db_params::values() const noexcept
+    {
+        return count() == 0 ? nullptr : reinterpret_cast<const char * const *>(&_memory);
+    }
+
+    const int *db_params::lengths() const noexcept
+    {
+        return count() == 0 ? nullptr : _lengths.data();
+    }
+
+    const int *db_params::formats() const noexcept
+    {
+        return count() == 0 ? nullptr : _formats.data();
+    }
+
+    const Oid *db_params::oids() const noexcept
+    {
+        return count() == 0 ? nullptr : _oids.data();
+    }
+
     void db_params::bake() noexcept
     {
         _memory = stl::memory::malloc<u8>(_length);
