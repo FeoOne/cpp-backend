@@ -21,40 +21,41 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(db_connection)
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(db_connection)
 
-        enum class state {
+        enum class connection_state {
             invalid,
             connecting,
-            resetting,
-            bad_connect,
-            bad_reset,
             available,
         };
 
         db_connection();
         ~db_connection();
 
-        bool start(db_loop *loop, const char *conninfo) noexcept;
+        bool start(db_loop *loop, const char *conninfo, void *data) noexcept;
         void finish() noexcept;
+
+        bool start_polling(int events, uv_poll_cb fn) noexcept;
+        void stop_polling() noexcept;
 
         PostgresPollingStatusType poll() noexcept;
         int consume_input() noexcept;
         PGnotify *notifies() noexcept;
         bool is_busy() noexcept;
+        ConnStatusType status() const noexcept;
+        PGresult *result() noexcept;
+        const char *error_message() const noexcept;
 
-        state status() const noexcept { return _state; }
-        void status(state new_state) noexcept { _state = new_state; }
-        poll_handle *handle() noexcept { return &_handle; }
-
-        const char *error_message() const noexcept { return PQerrorMessage(_connection); }
-
-        int send_query(db_request *request) noexcept;
+        int send_request(db_request *request) noexcept;
         void flush() noexcept;
 
+        connection_state state() const noexcept { return _state; }
+        void set_state(connection_state state) noexcept { _state = state; }
+
+        poll_handle *handle() noexcept { return &_handle; }
+
     private:
-        state                   _state;
         poll_handle             _handle;
         PGconn *                _connection;
-        bool                    _is_new;
+        connection_state        _state;
 
     };
 

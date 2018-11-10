@@ -10,10 +10,9 @@
 namespace engine {
 
     db_connection::db_connection() :
-            _state { state::invalid },
             _handle {},
             _connection { nullptr },
-            _is_new { true }
+            _state { connection_state::invalid }
     {
     }
 
@@ -21,7 +20,7 @@ namespace engine {
     {
     }
 
-    bool db_connection::start(db_loop *loop, const char *conninfo) noexcept
+    bool db_connection::start(db_loop *loop, const char *conninfo, void *data) noexcept
     {
         while (true) {
             _connection = PQconnectStart(conninfo);
@@ -30,27 +29,26 @@ namespace engine {
                 break;
             }
 
-            if (PQstatus(_connection) == CONNECTION_BAD) {
+            if (status() == ConnStatusType::CONNECTION_BAD) {
                 logerror("Failed to create pq connection struct (%s).", PQerrorMessage(_connection));
                 break;
             }
 
-            int fd = PQsocket(_connection);
+            int fd { PQsocket(_connection) };
             fd = fcntl(fd, F_DUPFD_CLOEXEC, 0);
             if (fd < 0) {
                 logerror("Failed to dup fd (%s).", strerror(errno));
                 break;
             }
 
-            int status = uv_poll_init_socket(loop->get_loop(), &_handle.poll, fd);
+            int status { uv_poll_init_socket(loop->get_loop(), &_handle.poll, fd) };
             if (status != 0) {
-                logerror("Failed to poll fd (%s).", uv_err_name(status));
+                logerror("Failed to init poll fd (%s).", uv_err_name(status));
                 break;
             }
 
-            _state = state::connecting;
-
-            poll();
+            uv_handle_set_data(&_handle.handle, data);
+            set_state(connection_state::connecting);
 
             return true;
         }
@@ -62,18 +60,36 @@ namespace engine {
 
     void db_connection::finish() noexcept
     {
+        stop_polling();
+
         if (_connection != nullptr) {
             PQfinish(_connection);
             _connection = nullptr;
+
+            set_state(connection_state::invalid);
+        }
+    }
+
+    bool db_connection::start_polling(int events, uv_poll_cb fn) noexcept
+    {
+        bool result { true };
+        int status { uv_poll_start(&_handle.poll, events, fn) };
+        if (status != 0) {
+            logwarn("Failed to start poll connection (%s).", uv_err_name(status));
+            result = false;
+        }
+        return result;
+    }
+
+    void db_connection::stop_polling() noexcept
+    {
+        if (uv_is_active(&_handle.handle)) {
+            uv_poll_stop(&_handle.poll);
         }
     }
 
     PostgresPollingStatusType db_connection::poll() noexcept
     {
-        if (_state == state::resetting) {
-            return PQresetPoll(_connection);
-        }
-
         return PQconnectPoll(_connection);
     }
 
@@ -92,7 +108,22 @@ namespace engine {
         return PQisBusy(_connection) == 1;
     }
 
-    int db_connection::send_query(db_request *request) noexcept
+    ConnStatusType db_connection::status() const noexcept
+    {
+        return PQstatus(_connection);
+    }
+
+    PGresult *db_connection::result() noexcept
+    {
+        return PQgetResult(_connection);
+    }
+
+    const char *db_connection::error_message() const noexcept
+    {
+        return PQerrorMessage(_connection);
+    }
+
+    int db_connection::send_request(db_request *request) noexcept
     {
         request->assign_connection(this);
 

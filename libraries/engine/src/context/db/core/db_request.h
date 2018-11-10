@@ -21,10 +21,12 @@ namespace engine {
         STL_DELETE_ALL_DEFAULT(db_request)
         STL_DECLARE_NEW_DELETE(db_request)
 
-        using callback = std::function<void(db_response *)>;
+        using callback = std::function<void(db_request *)>;
 
         explicit db_request(const std::string_view& query, size_t param_count) noexcept;
         virtual ~db_request();
+
+        bool is_callable() const noexcept { return static_cast<bool>(_callback); }
 
         void assign_callback(callback&& fn) noexcept;
         void assign_connection(db_connection *connection) noexcept;
@@ -33,13 +35,22 @@ namespace engine {
         const db_params& params() const noexcept { return _params; }
         db_connection *connection() noexcept { return _connection; }
 
+        virtual void process_response(db_response *response) noexcept = 0;
+
+        void call() noexcept;
+        void refresh() noexcept;
+
+        bool is_success() const noexcept { return _is_success; }
+
     protected:
         db_params               _params;
+        bool                    _is_success;
 
     private:
         std::string_view        _query;
         db_connection *         _connection;
         callback                _callback;
+
 
     };
 

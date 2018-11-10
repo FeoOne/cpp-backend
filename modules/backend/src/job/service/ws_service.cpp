@@ -165,9 +165,12 @@ namespace backend {
         }
     }
 
-    void ws_service::select_merchandise_data_db_response_fn(engine::db_response *response) noexcept
+    void ws_service::select_merchandise_data_db_response_fn(engine::db_request *base_request) noexcept
     {
+        auto request { reinterpret_cast<select_merchandise_data_db_request *>(base_request) };
+        if (request->is_success()) {
 
+        }
     }
 
 }

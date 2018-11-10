@@ -49,9 +49,17 @@ namespace stl {
             return reinterpret_cast<const u8 *>(_uuid);
         }
 
+        void assign(const u8 *data) noexcept { uuid_copy(_uuid, data); }
+
         size_t hash() const noexcept {
             return *reinterpret_cast<const size_t *>(&_uuid[0]) ^
                    *reinterpret_cast<const size_t *>(&_uuid[8]);
+        }
+
+        std::string to_string() const noexcept {
+            char uuid_str[37];
+            uuid_unparse_lower(_uuid, uuid_str);
+            return uuid_str;
         }
 
     private:

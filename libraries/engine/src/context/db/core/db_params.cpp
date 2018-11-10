@@ -42,37 +42,38 @@ namespace engine {
 
             switch (_oids[i]) {
                 case BOOLOID:
-                case TEXTOID: {
-                    std::memcpy(memory, _values[i], _lengths[i]);
+                case TEXTOID:
+                case UUIDOID: {
+                    std::memcpy(memory, _values[i], static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 case INT2OID: {
                     u16 value { htobe16(*reinterpret_cast<const u16 *>(_values[i])) };
-                    std::memcpy(memory, &value, _lengths[i]);
+                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 case INT4OID: {
                     u32 value { htobe32(*reinterpret_cast<const u32 *>(_values[i])) };
-                    std::memcpy(memory, &value, _lengths[i]);
+                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 case INT8OID: {
                     u64 value { htobe64(*reinterpret_cast<const u64 *>(_values[i])) };
-                    std::memcpy(memory, &value, _lengths[i]);
+                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 case FLOAT4OID: {
                     u8 value[sizeof(float)];
                     std::memcpy(value, _values[i], sizeof(float));
                     std::reverse(std::begin(value), std::end(value));
-                    std::memcpy(memory, value, _lengths[i]);
+                    std::memcpy(memory, value, static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 case FLOAT8OID: {
                     u8 value[sizeof(double)];
                     std::memcpy(value, _values[i], sizeof(double));
                     std::reverse(std::begin(value), std::end(value));
-                    std::memcpy(memory, value, _lengths[i]);
+                    std::memcpy(memory, value, static_cast<size_t>(_lengths[i]));
                     break;
                 }
                 default: {
@@ -80,7 +81,7 @@ namespace engine {
                 }
             }
 
-            offset += _lengths[i];
+            offset += static_cast<size_t>(_lengths[i]);
         }
 
         logassert(offset == _length, "Bake problem.");
@@ -151,7 +152,7 @@ namespace engine {
         logassert(_values.size() < _count, "Wrong param count.");
 
         _values.push_back(memory);
-        _lengths.push_back(length);
+        _lengths.push_back(static_cast<int>(length));
         _formats.push_back(format);
         _oids.push_back(oid);
 
