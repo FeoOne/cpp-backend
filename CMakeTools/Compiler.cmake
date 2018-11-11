@@ -20,6 +20,7 @@ function(setup_compiler_flags TARGET)
     target_compile_options(${TARGET}
             PRIVATE
             -Wno-padded
+            -Wno-switch-enum
             -Wno-return-type
             -Wno-old-style-cast
             -Wno-unused-parameter

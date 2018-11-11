@@ -1,11 +1,15 @@
 # ide
 .idea
 
+# dependencies
+external
+
 # cmake
 cmake/*
 cmake-build-*
 CMakeFiles
 CMakeCache.txt
+build/*
 
 # macos
 .DS_Store
@@ -13,6 +17,7 @@ CMakeCache.txt
 # auto generated code
 *_gen.h
 *_generated.*
+message/generated/*
 
 # local files
 config/*

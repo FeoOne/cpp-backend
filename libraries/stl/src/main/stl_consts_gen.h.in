@@ -1,0 +1,19 @@
+/**
+ * @file framework_const_gen.h
+ * @author Feo
+ * @date 19/08/2018
+ * @brief
+ */
+
+#ifndef STL_CONST_GEN_H
+#define STL_CONST_GEN_H
+
+#define STL_SOURCE_DIR               "${CMAKE_SOURCE_DIR}"
+
+#define STL_VERSION_MAJOR            ${WORKSPACE_VERSION_MAJOR}
+#define STL_VERSION_MINOR            ${WORKSPACE_VERSION_MINOR}
+#define STL_VERSION_PATCH            ${WORKSPACE_VERSION_PATCH}
+#define STL_VERSION_BUILD            ${WORKSPACE_VERSION_BUILD}
+#define STL_VERSION_FULL             "${WORKSPACE_VERSION_FULL}"
+
+#endif /* STL_CONST_GEN_H */

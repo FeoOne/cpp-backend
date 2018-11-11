@@ -4,9 +4,7 @@ find_library(PQ_LIBRARIES NAMES libpq.dylib libpq.so)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PQ DEFAULT_MSG PQ_LIBRARIES PQ_INCLUDE_DIR)
 
-if (PQ_FOUND)
-    message(STATUS "Found libpq: ${PQ_LIBRARIES}, ${PQ_INCLUDE_DIR}")
-else()
+if (NOT PQ_FOUND)
     message(FATAL_ERROR "Couldn't find libpq.")
 endif()
 
