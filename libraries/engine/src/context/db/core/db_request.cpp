@@ -14,12 +14,16 @@ namespace engine {
             _is_success { false },
             _query { query },
             _connection { nullptr },
-            _callback { nullptr }
+            _callback { nullptr },
+            _result { nullptr }
     {
     }
 
     db_request::~db_request()
     {
+        if (_result != nullptr) {
+            PQclear(_result);
+        }
     }
 
     void db_request::assign_callback(callback&& fn) noexcept
@@ -32,6 +36,11 @@ namespace engine {
         _connection = connection;
     }
 
+    void db_request::assign_result(PGresult *result) noexcept
+    {
+        _result = result;
+    }
+
     void db_request::call() noexcept
     {
         _callback(this);
@@ -40,6 +49,7 @@ namespace engine {
     void db_request::refresh() noexcept
     {
         _connection = nullptr;
+        _result = nullptr;
     }
 
 }

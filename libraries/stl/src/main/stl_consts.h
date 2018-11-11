@@ -17,15 +17,17 @@ namespace stl {
 
     class consts {
     public:
-        static constexpr size_t             LOGGER_MAX_MESSAGE_LENGTH { 4096 };
+        static constexpr size_t logger_max_message_length { 4096 };
 
-        static constexpr std::string_view   SOURCE_DIR  { STL_SOURCE_DIR };
+        static constexpr const char *source_dir { STL_SOURCE_DIR };
 
-        static constexpr size_t             VERSION_MAJOR { STL_VERSION_MAJOR };
-        static constexpr size_t             VERSION_MINOR { STL_VERSION_MINOR };
-        static constexpr size_t             VERSION_PATCH { STL_VERSION_PATCH };
-        static constexpr size_t             VERSION_BUILD { STL_VERSION_BUILD };
-        static constexpr std::string_view   VERSION_FULL { STL_VERSION_FULL };
+        struct version {
+            static constexpr size_t major { STL_VERSION_MAJOR };
+            static constexpr size_t minor { STL_VERSION_MINOR };
+            static constexpr size_t patch { STL_VERSION_PATCH };
+            static constexpr size_t build { STL_VERSION_BUILD };
+            static constexpr const char *full { STL_VERSION_FULL };
+        };
 
     };
 

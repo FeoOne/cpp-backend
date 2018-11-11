@@ -20,9 +20,9 @@ namespace stl {
         return setting(config_setting_get_elem(_setting, static_cast<unsigned int>(index)));
     }
 
-    setting setting::operator[](const std::string_view& key) const noexcept
+    setting setting::operator[](const char *key) const noexcept
     {
-        return setting(config_setting_get_member(_setting, key.data()));
+        return setting(config_setting_get_member(_setting, key));
     }
 
     bool setting::to_bool() const noexcept
@@ -37,31 +37,31 @@ namespace stl {
         return config_setting_get_float(_setting);
     }
 
-    const std::string_view setting::to_string() const noexcept
+    const char *setting::to_string() const noexcept
     {
         assert(config_setting_type(_setting) == CONFIG_TYPE_STRING);
         return config_setting_get_string(_setting);
     }
 
-    bool setting::lookup_bool(const std::string_view& key, bool *value) const noexcept
+    bool setting::lookup_bool(const char *key, bool *value) const noexcept
     {
         int i;
         bool result { false };
-        if (config_setting_lookup_bool(_setting, key.data(), &i) == CONFIG_TRUE) {
+        if (config_setting_lookup_bool(_setting, key, &i) == CONFIG_TRUE) {
             *value = (i != CONFIG_FALSE);
             result = true;
         }
         return result;
     }
 
-    bool setting::lookup_double(const std::string_view& key, double *value) const noexcept
+    bool setting::lookup_double(const char *key, double *value) const noexcept
     {
-        return (config_setting_lookup_float(_setting, key.data(), value) == CONFIG_TRUE);
+        return (config_setting_lookup_float(_setting, key, value) == CONFIG_TRUE);
     }
 
-    bool setting::lookup_string(const std::string_view& key, const char **value) const noexcept
+    bool setting::lookup_string(const char *key, const char **value) const noexcept
     {
-        return (config_setting_lookup_string(_setting, key.data(), value) == CONFIG_TRUE);
+        return (config_setting_lookup_string(_setting, key, value) == CONFIG_TRUE);
     }
 
     setting setting::root() const noexcept
@@ -95,13 +95,13 @@ namespace stl {
         config_destroy(_config.get());
     }
 
-    void config::load(const std::string_view &filename) noexcept
+    void config::load(const char *filename) noexcept
     {
-        lognotice("Loading config from path: '%s'.", filename.data());
+        lognotice("Loading config from path: '%s'.", filename);
 
         auto ptr = _config.get();
         config_init(ptr);
-        if (config_read_file(ptr, filename.data()) == CONFIG_TRUE) {
+        if (config_read_file(ptr, filename) == CONFIG_TRUE) {
             lognotice("Config successfully loaded.");
             assign_setting(ptr->root);
         } else {

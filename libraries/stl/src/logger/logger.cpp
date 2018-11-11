@@ -27,7 +27,7 @@ namespace stl {
                             const char *format,
                             ...) const noexcept
     {
-        static std::unordered_map<level_t, std::string_view> levels {
+        static const std::unordered_map<level_t, const char *> levels {
                 { level_t::EMERG, "EMERG" },
                 { level_t::ALERT, "ALERT" },
                 { level_t::CRIT, "CRIT" },
@@ -43,16 +43,18 @@ namespace stl {
 
         struct tm *timeinfo { localtime(&rawtime) };
 
-        char buffer[consts::LOGGER_MAX_MESSAGE_LENGTH];
-        char format_buffer[consts::LOGGER_MAX_MESSAGE_LENGTH];
+        char buffer[consts::logger_max_message_length];
+        char format_buffer[consts::logger_max_message_length];
 
         va_list args;
         va_start(args, format);
-        vsnprintf(format_buffer, consts::LOGGER_MAX_MESSAGE_LENGTH, format, args);
+        vsnprintf(format_buffer, consts::logger_max_message_length, format, args);
         va_end(args);
 
+        static const size_t source_dir_length { std::strlen(consts::source_dir) + 1 };
+
         std::snprintf(buffer,
-                      consts::LOGGER_MAX_MESSAGE_LENGTH,
+                      consts::logger_max_message_length,
                       "[%4d-%02d-%02d %02d:%02d:%02d][%s:%lu][%s] %s",
                       timeinfo->tm_year + 1900,
                       timeinfo->tm_mon + 1,
@@ -60,10 +62,10 @@ namespace stl {
                       timeinfo->tm_hour,
                       timeinfo->tm_min,
                       timeinfo->tm_sec,
-                      &file[consts::SOURCE_DIR.size() + 1],
+                      &file[source_dir_length],
                       line,
                       //function,
-                      levels[level].data(),
+                      levels.at(level),
                       format_buffer
                 );
 

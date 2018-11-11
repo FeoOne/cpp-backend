@@ -27,14 +27,9 @@ namespace engine {
                    false);
     }
 
-    // virtual
-//    engine_option_processor::engine_option_processor()
-//    {
-//    }
-
-    std::string_view command_line_argument_parser::config_path() const noexcept
+    const char *command_line_argument_parser::config_path() const noexcept
     {
-        return (_config_path != nullptr) ? _config_path : "";
+        return _config_path;
     }
 
 }

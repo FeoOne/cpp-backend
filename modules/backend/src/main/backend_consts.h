@@ -15,15 +15,21 @@ namespace backend {
     struct consts {
 
         struct currency {
-            static constexpr std::string_view usd { "usd" };
-            static constexpr std::string_view btc { "btc" };
+            static constexpr const char *usd { "usd" };
+            static constexpr const char *btc { "btc" };
         };
 
         struct ws {
-            static constexpr std::string_view name_key { "name" };
+            static constexpr const char *name_key { "name" };
         };
 
-        static constexpr std::string_view app_description { "- bitpayments backend server." };
+        struct config {
+            struct key {
+                static constexpr const char *bitcoin_rpc_address { "bitcoin_rpc_address" };
+            };
+        };
+
+        static constexpr const char *app_description { "- bitpayments backend server." };
 
     };
 

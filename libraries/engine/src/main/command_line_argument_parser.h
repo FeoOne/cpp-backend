@@ -22,7 +22,7 @@ namespace engine {
                                               const std::string_view& app_description) noexcept;
         virtual ~command_line_argument_parser() = default;
 
-        std::string_view config_path() const noexcept;
+        const char *config_path() const noexcept;
 
     private:
         gchar *         _config_path;

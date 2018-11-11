@@ -26,12 +26,16 @@ namespace backend {
         char *          callback_url;
         char *          private_key;
 
-        explicit select_merchandise_data_db_request(const stl::uuid& guid) noexcept;
+        explicit select_merchandise_data_db_request(const stl::uuid& guid, const stl::uuid& invoice_guid) noexcept;
         virtual ~select_merchandise_data_db_request() = default;
 
         void process_response(engine::db_response *response) noexcept final;
 
+        const stl::uuid& invoice_guid() const noexcept { return _invoice_guid; }
+
     private:
+
+        stl::uuid       _invoice_guid;
 
     };
 

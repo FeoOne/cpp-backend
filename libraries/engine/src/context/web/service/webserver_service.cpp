@@ -26,12 +26,12 @@ namespace engine {
     {
         GError *error { nullptr };
 
-        auto header { consts::WEB_WEBSERVER_HEADER.data() };
+        auto header { consts::webserver::header };
         if (!config().lookup_string("header", &header)) {
             logwarn("Used default web server header: '%s'.", header);
         }
 
-        auto port { static_cast<s32>(consts::WEB_DEFAULT_HTTP_PORT) };
+        auto port { static_cast<s32>(consts::webserver::default_http_port) };
         if (!config().lookup_int32<s32>("port", &port)) {
             logwarn("Used default web server port: '%d'.", port);
         }
@@ -39,13 +39,13 @@ namespace engine {
         _server = soup_server_new(SOUP_SERVER_SERVER_HEADER, header, nullptr);
         if (_server != nullptr) {
             gboolean result { FALSE };
-            auto listen { config()[consts::config::key::LISTEN].to_string() };
-            if (listen == consts::config::web::ALL) {
+            auto listen { config()[consts::config::key::listen].to_string() };
+            if (std::strcmp(listen, consts::config::web::all) == 0) {
                 result = soup_server_listen_all(_server,
                                                 static_cast<guint>(port),
                                                 static_cast<SoupServerListenOptions>(0),
                                                 &error);
-            } else if (listen == consts::config::web::LOCAL) {
+            } else if (std::strcmp(listen, consts::config::web::local) == 0) {
                 result = soup_server_listen_local(_server,
                                                   static_cast<guint>(port),
                                                   static_cast<SoupServerListenOptions>(0),

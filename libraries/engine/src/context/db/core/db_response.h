@@ -21,6 +21,7 @@ namespace engine {
 
         bool is_valid() const noexcept { return _is_valid; }
         ExecStatusType status() const noexcept { return _status; }
+        PGresult *result() noexcept { return _result; }
 
         size_t row_count() const noexcept;
         size_t column_count() const noexcept;

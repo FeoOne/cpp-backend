@@ -19,19 +19,18 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(ws_response_task)
         STL_DELETE_ALL_DEFAULT(ws_response_task)
 
-        explicit ws_response_task(SoupWebsocketConnection *connection, GBytes *data, size_t size) noexcept :
-                _connection { connection }
-//                _data { data },
-//                _size { size }
+        explicit ws_response_task(SoupWebsocketConnection *connection, std::string&& data) noexcept :
+                _connection { connection },
+                _data { data }
         {}
         virtual ~ws_response_task() = default;
 
         SoupWebsocketConnection *connection() noexcept { return _connection; }
+        const char *data() const noexcept { return _data.data(); }
 
     private:
         SoupWebsocketConnection *       _connection;
-//        GBytes *                        _data;
-//        size_t                          _size;
+        std::string                     _data;
 
     };
 

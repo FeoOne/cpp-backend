@@ -55,17 +55,17 @@ namespace engine {
     void db_control_service::setup_connections() noexcept
     {
         // conninfo
-        if (!config().lookup_string(consts::config::key::CONNINFO, &_conninfo)) {
-            logemerg("Can't setup db connection service: no '%s' presented.", consts::config::key::CONNINFO.data());
+        if (!config().lookup_string(consts::config::key::conninfo, &_conninfo)) {
+            logemerg("Can't setup db connection service: no '%s' presented.", consts::config::key::conninfo);
         }
 
         // max connection count
-        config().lookup_int32<size_t>(consts::config::key::MAX_CONNECTION_COUNT,
+        config().lookup_int32<size_t>(consts::config::key::max_connection_count,
                                       &_max_connection_count,
                                       EX_DEFAULT_MAX_CONNECTION_COUNT);
 
         // connect interval
-        config().lookup_int64<u64>(consts::config::key::CONNECT_INTERVAL,
+        config().lookup_int64<u64>(consts::config::key::connect_interval,
                                    &_connect_interval,
                                    EX_DEFAULT_CONNECT_INTERVAL);
 
@@ -277,6 +277,8 @@ namespace engine {
             return;
         }
 
+        connection->stop_polling();
+
         db_response response { connection->result() };
         if (!response.is_valid() || response.status() == PGRES_FATAL_ERROR) {
             // todo: process error
@@ -285,9 +287,8 @@ namespace engine {
             return;
         }
 
+        request->assign_result(response.result());
         request->process_response(&response);
-
-        connection->stop_polling();
 
         auto it { _active_requests.find(connection->handle()) };
         if (it != _active_requests.end()) {

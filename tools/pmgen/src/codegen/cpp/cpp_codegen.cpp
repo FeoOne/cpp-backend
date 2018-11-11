@@ -14,7 +14,7 @@
 
 std::map<std::string, std::string> cpp_codegen::generate(parse_processor *parser) noexcept
 {
-    static const std::string header_suffix { consts::GENERATED_HEADER_SUFFIX };
+    static const std::string header_suffix { consts::generated_header_suffix };
 
     std::map<std::string, std::string> result {};
 

@@ -36,11 +36,11 @@ namespace stl {
         virtual ~setting() = default;
 
         setting operator[](size_t index) const noexcept;
-        setting operator[](const std::string_view& key) const noexcept;
+        setting operator[](const char *key) const noexcept;
 
         bool to_bool() const noexcept;
         double to_double() const noexcept;
-        const std::string_view to_string() const noexcept;
+        const char *to_string() const noexcept;
 
         template<typename T>
         T to_int32() const noexcept {
@@ -54,15 +54,15 @@ namespace stl {
             return static_cast<T>(config_setting_get_int64(_setting));
         }
 
-        bool lookup_bool(const std::string_view& key, bool *value) const noexcept;
-        bool lookup_double(const std::string_view& key, double *value) const noexcept;
-        bool lookup_string(const std::string_view& key, const char **value) const noexcept;
+        bool lookup_bool(const char *key, bool *value) const noexcept;
+        bool lookup_double(const char *key, double *value) const noexcept;
+        bool lookup_string(const char *key, const char **value) const noexcept;
 
         template<typename T>
-        bool lookup_int32(const std::string_view& key, T *value) const noexcept {
+        bool lookup_int32(const char *key, T *value) const noexcept {
             int i;
             bool result { false };
-            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+            if (config_setting_lookup_int(_setting, key, &i) == CONFIG_TRUE) {
                 *value = static_cast<T>(i);
                 result = true;
             }
@@ -70,10 +70,10 @@ namespace stl {
         }
 
         template<typename T>
-        bool lookup_int32(const std::string_view& key, T *value, T default_value) const noexcept {
+        bool lookup_int32(const char *key, T *value, T default_value) const noexcept {
             int i;
             bool result { false };
-            if (config_setting_lookup_int(_setting, key.data(), &i) == CONFIG_TRUE) {
+            if (config_setting_lookup_int(_setting, key, &i) == CONFIG_TRUE) {
                 *value = static_cast<T>(i);
                 result = true;
             } else {
@@ -83,10 +83,10 @@ namespace stl {
         }
 
         template<typename T>
-        bool lookup_int64(const std::string_view& key, T *value) const noexcept {
+        bool lookup_int64(const char *key, T *value) const noexcept {
             long long i;
             bool result { false };
-            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+            if (config_setting_lookup_int64(_setting, key, &i) == CONFIG_TRUE) {
                 *value = static_cast<T>(i);
                 result = true;
             }
@@ -94,10 +94,10 @@ namespace stl {
         }
 
         template<typename T>
-        bool lookup_int64(const std::string_view& key, T *value, T default_value) const noexcept {
+        bool lookup_int64(const char *key, T *value, T default_value) const noexcept {
             long long i;
             bool result { false };
-            if (config_setting_lookup_int64(_setting, key.data(), &i) == CONFIG_TRUE) {
+            if (config_setting_lookup_int64(_setting, key, &i) == CONFIG_TRUE) {
                 *value = static_cast<T>(i);
                 result = true;
             } else {
@@ -130,7 +130,7 @@ namespace stl {
         config();
         virtual ~config();
 
-        void load(const std::string_view &filename) noexcept;
+        void load(const char *filename) noexcept;
 
     private:
         std::unique_ptr<config_t>       _config;

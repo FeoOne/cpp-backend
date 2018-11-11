@@ -35,11 +35,11 @@ namespace engine {
             logcrit("Failed to start websocket service w/o server.");
         }
 
-        auto websocket_config { config()[consts::config::key::WEBSOCKET] };
-        auto path { websocket_config[consts::config::key::PATH].to_string() }; // @todo Make array of pathes.
+        auto websocket_config { config()[consts::config::key::websocket] };
+        auto path { websocket_config[consts::config::key::path].to_string() }; // @todo Make array of pathes.
 
         soup_server_add_websocket_handler(server,
-                                          path.data(),
+                                          path,
                                           nullptr,
                                           nullptr,
                                           &ws_service::handler_callback,
@@ -49,18 +49,17 @@ namespace engine {
 
     void ws_service::reset() noexcept
     {
-        auto websocket_config { config()[consts::config::key::WEBSOCKET] };
-        auto path { websocket_config[consts::config::key::PATH].to_string() };
+        auto websocket_config { config()[consts::config::key::websocket] };
+        auto path { websocket_config[consts::config::key::path].to_string() };
 
-        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(),
-                                   path.data());
+        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(), path);
     }
 
     void ws_service::handle_ws_response_task(basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<ws_response_task *>(base_task) };
 
-        // todo: implement
+        soup_websocket_connection_send_text(task->connection(), task->data());
     }
 
     void ws_service::handle_ws_disconnect_task(basic_task *base_task) noexcept

@@ -35,7 +35,7 @@ namespace engine {
         }
 
         soup_server_add_handler(server,
-                                consts::WEB_DEFAULT_HTTP_ROUTE.data(),
+                                consts::webserver::default_http_route,
                                 &http_service::handler_callback,
                                 this,
                                 nullptr);
@@ -45,7 +45,7 @@ namespace engine {
     void http_service::reset() noexcept
     {
         soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(),
-                                   consts::WEB_DEFAULT_HTTP_ROUTE.data());
+                                   consts::webserver::default_http_route);
     }
 
     void http_service::handle_http_response_task(basic_task *base_task) noexcept

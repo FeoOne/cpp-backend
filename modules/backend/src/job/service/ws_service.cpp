@@ -75,7 +75,7 @@ namespace backend {
             try {
                 Json::Value root;
                 Json::CharReaderBuilder builder;
-                Json::CharReader *reader = builder.newCharReader();
+                auto reader { builder.newCharReader() };
                 std::string errors;
                 bool status { reader->parse(text, text + size, &root, &errors) };
                 delete reader;
@@ -86,7 +86,7 @@ namespace backend {
                     return;
                 }
 
-                auto name { root[consts::ws::name_key.data()].asCString() };
+                auto name { root[consts::ws::name_key].asCString() };
                 auto it { _processors.find(name) };
                 if (it == _processors.end()) {
                     logwarn("Malformed json name: %s", name);
@@ -133,15 +133,17 @@ namespace backend {
 
             // todo: validate incoming data
 
-            auto invoice { new(std::nothrow) data::invoice(std::move(merchandise_guid),
+            auto invoice { new(std::nothrow) data::invoice(connection,
+                                                           merchandise_guid,
                                                            std::move(email),
-                                                           std::move(currency),
+                                                           currency,
                                                            amount) };
             _invoice_manager->add(invoice);
 
             {
                 // select merchandise data
-                auto request { engine::db_request::create<select_merchandise_data_db_request>(merchandise_guid) };
+                auto request { engine::db_request::create<select_merchandise_data_db_request>(merchandise_guid,
+                                                                                              invoice->guid()) };
                 request->assign_callback(std::bind(&ws_service::select_merchandise_data_db_response_fn,
                                                    this,
                                                    std::placeholders::_1));
@@ -149,15 +151,6 @@ namespace backend {
                 auto task { engine::basic_task::create<engine::db_request_task>(request) };
                 router()->enqueue(task);
             }
-
-
-
-
-
-            // todo: select merchandise, merchant, user
-            // todo: create wallet
-            // todo: create invoice
-            // todo: respond
         }
         catch (const std::exception& e) {
             logwarn("Failed to process json: %s", e.what());
@@ -169,10 +162,25 @@ namespace backend {
     {
         auto request { reinterpret_cast<select_merchandise_data_db_request *>(base_request) };
         if (request->is_success()) {
+            auto invoice { _invoice_manager->get(request->invoice_guid()) };
+            if (invoice != nullptr) {
+                invoice->update(request);
 
+                // todo: save invoice to db
+
+                Json::Value root;
+                root["name"] = "invoice_created";
+                root["address"] = invoice->address();
+                root["amount"] = invoice->amount();
+
+                Json::StreamWriterBuilder builder;
+                auto json { Json::writeString(builder, root) };
+
+                auto task { engine::basic_task::create<engine::ws_response_task>(invoice->connection(),
+                                                                                 std::move(json)) };
+                router()->enqueue(task);
+            }
         }
     }
 
 }
-
-#undef MAX_MESSAGE_SIZE

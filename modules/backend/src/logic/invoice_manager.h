@@ -22,6 +22,7 @@ namespace backend {
         ~invoice_manager();
 
         void add(data::invoice *invoice) noexcept;
+        data::invoice *get(const stl::uuid& merchandise_guid) noexcept;
 
     private:
         mutable std::timed_mutex    _mutex;

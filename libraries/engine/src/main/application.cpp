@@ -32,7 +32,7 @@
 #define EX_ASSIGN_ROUTE(task, context)  _router->assign_route(task::key(), context::key())
 #define EX_ASSIGN_CONTEXT_CREATOR(name, context)                                        \
     _context_creators.insert({ name,                                                    \
-                             [](const stl::setting& config, task_router *router) {    \
+                             [](const stl::setting& config, task_router *router) {      \
                                  return context::make_unique(config, router);           \
                              } })
 
@@ -48,10 +48,10 @@ namespace engine {
             _need_db_worker { false },
             _need_web_worker { false }
     {
-        EX_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_IO, io_context);
-        EX_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_DB, db_context);
-        EX_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_WEB, web_context);
-        EX_ASSIGN_CONTEXT_CREATOR(consts::WORKER_NAME_SYSTEM, system_context);
+        EX_ASSIGN_CONTEXT_CREATOR(consts::worker::name::io, io_context);
+        EX_ASSIGN_CONTEXT_CREATOR(consts::worker::name::db, db_context);
+        EX_ASSIGN_CONTEXT_CREATOR(consts::worker::name::web, web_context);
+        EX_ASSIGN_CONTEXT_CREATOR(consts::worker::name::system, system_context);
     }
 
     int application::start() noexcept
@@ -121,12 +121,12 @@ namespace engine {
 
     void application::create_workers() noexcept
     {
-        auto workers_config { _config[consts::config::key::WORKERS] };
+        auto workers_config { _config[consts::config::key::workers] };
         for (size_t i = 0; i < workers_config.size(); ++i) {
             auto worker_config { workers_config[i] };
-            auto name { worker_config[consts::config::key::NAME].to_string() };
+            auto name { worker_config[consts::config::key::name].to_string() };
 
-            if (name == consts::WORKER_NAME_JOB) {
+            if (std::strcmp(name, consts::worker::name::job) == 0) {
                 create_multiple_instance_worker(name, worker_config);
             } else {
                 create_single_instance_worker(name, worker_config);
@@ -147,7 +147,7 @@ namespace engine {
     void application::create_multiple_instance_worker(const std::string_view& name,
                                                       const stl::setting& worker_config) noexcept
     {
-        auto count { worker_config[consts::config::key::COUNT].to_int32<size_t>() };
+        auto count { worker_config[consts::config::key::count].to_int32<size_t>() };
         for (size_t i = 0; i < count; ++i) {
             auto context { _context_creators[name](worker_config, _router.get()) };
 
@@ -157,19 +157,24 @@ namespace engine {
 
     void application::process_config() noexcept
     {
-        _config.load(_argument_parser->config_path());
+        auto path { _argument_parser->config_path() };
+        if (path == nullptr) {
+            logcrit("Path to config not specified.");
+        }
+
+        _config.load(path);
 
         // Determine which optional workers must be initialized
-        auto workers_config { _config[consts::config::key::WORKERS] };
+        auto workers_config { _config[consts::config::key::workers] };
         for (size_t i = 0; i < workers_config.size(); ++i) {
             auto config { workers_config[i] };
-            auto name { config[consts::config::key::NAME].to_string() };
+            auto name { config[consts::config::key::name].to_string() };
 
-            if (name == consts::WORKER_NAME_IO) {
+            if (std::strcmp(name, consts::worker::name::io) == 0) {
                 _need_io_worker = true;
-            } else if (name == consts::WORKER_NAME_DB) {
+            } else if (std::strcmp(name, consts::worker::name::db) == 0) {
                 _need_db_worker = true;
-            } else if (name == consts::WORKER_NAME_WEB) {
+            } else if (std::strcmp(name, consts::worker::name::web) == 0) {
                 _need_web_worker = true;
             }
         }
@@ -192,7 +197,7 @@ namespace engine {
         // Create and start application
         auto app { application::make_unique(argc, argv, description) };
         // Add user-defined job context creator
-        app->_context_creators.insert({ consts::WORKER_NAME_JOB, std::move(job_context_creator) });
+        app->_context_creators.insert({ consts::worker::name::job, std::move(job_context_creator) });
         return app->start();
     }
 

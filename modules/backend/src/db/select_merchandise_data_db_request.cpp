@@ -12,8 +12,10 @@ namespace backend {
     static constexpr std::string_view sql { "SELECT * FROM select_merchandise_data($1::UUID);" };
     static constexpr size_t param_count { 1 };
 
-    select_merchandise_data_db_request::select_merchandise_data_db_request(const stl::uuid& guid) noexcept :
-            engine::db_request(sql, param_count)
+    select_merchandise_data_db_request::select_merchandise_data_db_request(const stl::uuid& guid,
+                                                                           const stl::uuid& invoice_guid) noexcept :
+            engine::db_request(sql, param_count),
+            _invoice_guid { invoice_guid }
     {
         _params << guid;
         _params.bake();

@@ -39,7 +39,7 @@ namespace engine {
 
     void io_connection_service::setup_masters() noexcept
     {
-        auto servers_config { config()[consts::config::key::MASTER] };
+        auto servers_config { config()[consts::config::key::master] };
         if (servers_config.is_null()) {
             lognotice("No masters presented.");
             return;
@@ -47,13 +47,13 @@ namespace engine {
 
         const std::unordered_map<std::string_view, std::function<void(const stl::setting&)>> setup {
             // setup tcp master connection
-            { consts::config::io::TCP, [this](const stl::setting& config) {
+            { consts::config::io::tcp, [this](const stl::setting& config) {
                 auto session_id { config[consts::config::key::session_id].to_int32<size_t>() };
-                auto name { config[consts::config::key::NAME].to_string() };
-                auto listen { config[consts::config::key::LISTEN].to_string() };
-                auto port { config[consts::config::key::PORT].to_int32<u16>() };
-                auto backlog { config[consts::config::key::BACKLOG].to_int32<u16>() };
-                auto keepalive { config[consts::config::key::KEEPALIVE].to_int32<u16>() };
+                auto name { config[consts::config::key::name].to_string() };
+                auto listen { config[consts::config::key::listen].to_string() };
+                auto port { config[consts::config::key::port].to_int32<u16>() };
+                auto backlog { config[consts::config::key::backlog].to_int32<u16>() };
+                auto keepalive { config[consts::config::key::keepalive].to_int32<u16>() };
 
                 auto connection { _tcp_connections->produce() };
                 connection->setup(session_id, name, listen, port, backlog, keepalive);
@@ -61,18 +61,18 @@ namespace engine {
                 delegate()->service<tcp_service>()->add_local_connection(connection);
             } },
             // setup udp master connection
-            { consts::config::io::UDP, [](const stl::setting& config) {} },
+            { consts::config::io::udp, [](const stl::setting& config) {} },
         };
 
         for (size_t i = 0; i < servers_config.size(); ++i) {
             auto server_config { servers_config[i] };
-            setup.at(server_config[consts::config::key::TYPE].to_string())(server_config);
+            setup.at(server_config[consts::config::key::type].to_string())(server_config);
         }
     }
 
     void io_connection_service::setup_slaves() noexcept
     {
-        auto clients_config { config()[consts::config::key::SLAVE] };
+        auto clients_config { config()[consts::config::key::slave] };
         if (clients_config.is_null()) {
             lognotice("No slaves presented.");
             return;
@@ -80,11 +80,11 @@ namespace engine {
 
         const std::unordered_map<std::string_view, std::function<void(const stl::setting&)>> setup {
             // setup tcp slave connection
-            { consts::config::io::TCP, [this](const stl::setting& config) {
+            { consts::config::io::tcp, [this](const stl::setting& config) {
                 auto session_id { config[consts::config::key::session_id].to_int32<size_t>() };
-                auto name { config[consts::config::key::NAME].to_string() };
-                auto host { config[consts::config::key::HOST].to_string() };
-                auto port { config[consts::config::key::PORT].to_int32<u16>() };
+                auto name { config[consts::config::key::name].to_string() };
+                auto host { config[consts::config::key::host].to_string() };
+                auto port { config[consts::config::key::port].to_int32<u16>() };
 
                 auto connection { _tcp_connections->produce() };
                 connection->setup(session_id, name, host, port);
@@ -92,12 +92,12 @@ namespace engine {
                 delegate()->service<tcp_service>()->add_local_connection(connection);
             } },
             // setup udp slave connection
-            { consts::config::io::UDP, [](const stl::setting& config) {} },
+            { consts::config::io::udp, [](const stl::setting& config) {} },
         };
 
         for (size_t i = 0; i < clients_config.size(); ++i) {
             auto client_config { clients_config[i] };
-            setup.at(client_config[consts::config::key::TYPE].to_string())(client_config);
+            setup.at(client_config[consts::config::key::type].to_string())(client_config);
         }
     }
 

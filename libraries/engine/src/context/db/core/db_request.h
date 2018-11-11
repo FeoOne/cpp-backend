@@ -30,6 +30,7 @@ namespace engine {
 
         void assign_callback(callback&& fn) noexcept;
         void assign_connection(db_connection *connection) noexcept;
+        void assign_result(PGresult *result) noexcept;
 
         const std::string_view& query() const noexcept { return _query; }
         const db_params& params() const noexcept { return _params; }
@@ -50,6 +51,7 @@ namespace engine {
         std::string_view        _query;
         db_connection *         _connection;
         callback                _callback;
+        PGresult *              _result;
 
 
     };

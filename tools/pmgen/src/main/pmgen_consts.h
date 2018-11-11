@@ -14,7 +14,7 @@ class consts {
 public:
     STL_DELETE_ALL_DEFAULT(consts)
 
-    static constexpr std::string_view GENERATED_HEADER_SUFFIX { "_gen.h" };
+    static constexpr const char *generated_header_suffix { "_gen.h" };
 
 };
 

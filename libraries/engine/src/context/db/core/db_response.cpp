@@ -28,7 +28,6 @@ namespace engine {
 
     db_response::~db_response()
     {
-        PQclear(_result);
     }
 
     size_t db_response::row_count() const noexcept
