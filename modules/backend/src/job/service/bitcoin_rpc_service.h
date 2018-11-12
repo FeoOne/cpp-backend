@@ -8,6 +8,8 @@
 #ifndef BACKEND_BITCOIN_RPC_SERVICE_H
 #define BACKEND_BITCOIN_RPC_SERVICE_H
 
+#include <curl/curl.h>
+
 #include <engine.h>
 
 namespace backend {
@@ -30,6 +32,11 @@ namespace backend {
 
     private:
         const char *        _bitcoin_rpc_address;
+        const char *        _bitcoin_rpc_credentials;
+
+        size_t perform(const Json::Value& in, Json::Value& out) noexcept;
+
+        static size_t write_callback(void *ptr, size_t size, size_t nmemb, std::string* data) noexcept;
 
     };
 

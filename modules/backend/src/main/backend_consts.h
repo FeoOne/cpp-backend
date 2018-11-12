@@ -26,6 +26,7 @@ namespace backend {
         struct config {
             struct key {
                 static constexpr const char *bitcoin_rpc_address { "bitcoin_rpc_address" };
+                static constexpr const char *bitcoin_rpc_credentials { "bitcoin_rpc_credentials" };
             };
         };
 
