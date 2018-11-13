@@ -18,19 +18,23 @@ namespace engine {
 
     void worker_pool::push(worker::uptr&& worker) noexcept
     {
-        _workers[worker->get_context_key()].push_back(std::move(worker));
+        _workers[worker->get_context_key()] = std::move(worker);
     }
 
     void worker_pool::start() noexcept
     {
         for (size_t i = 0; i < _workers.size(); ++i) {
-            auto& workers = _workers[i];
-            auto state = (i == system_context::key()) ?
-                         worker::detach_state::JOINABLE :
-                         worker::detach_state::DETACHED;
-            for (auto& worker: workers) {
-                worker->start(state);
+            auto worker { _workers[i].get() };
+            if (worker == nullptr) {
+                continue;
             }
+
+            auto state { worker::detach_state::DETACHED };
+            if (i == system_context::key()) {
+                state = worker::detach_state::JOINABLE;
+            }
+
+            worker->start(state);
         }
     }
 

@@ -29,17 +29,12 @@ namespace engine {
         void start() noexcept;
 
         template<typename Context>
-        const worker::uptr& get_worker() noexcept {
-            return _workers[Context::key()][0].get();
-        }
-
-        template<typename Context>
-        std::vector<worker::uptr>& get_workers() noexcept {
-            return _workers[Context::key()];
+        inline worker *get_worker() noexcept {
+            return _workers[Context::key()].get();
         }
 
     private:
-        std::array<std::vector<worker::uptr>, EX_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>   _workers;
+        std::array<worker::uptr, EX_WORK_CONTEXT_TYPE_MAX_KEY_COUNT>    _workers;
 
     };
 

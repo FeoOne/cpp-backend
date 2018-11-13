@@ -40,12 +40,12 @@ namespace engine {
         if (_server != nullptr) {
             gboolean result { FALSE };
             auto listen { config()[consts::config::key::listen].to_string() };
-            if (std::strcmp(listen, consts::config::web::all) == 0) {
+            if (STL_IS_STR_EQUAL(listen, consts::config::web::all)) {
                 result = soup_server_listen_all(_server,
                                                 static_cast<guint>(port),
                                                 static_cast<SoupServerListenOptions>(0),
                                                 &error);
-            } else if (std::strcmp(listen, consts::config::web::local) == 0) {
+            } else if (STL_IS_STR_EQUAL(listen, consts::config::web::local)) {
                 result = soup_server_listen_local(_server,
                                                   static_cast<guint>(port),
                                                   static_cast<SoupServerListenOptions>(0),

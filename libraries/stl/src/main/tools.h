@@ -11,6 +11,8 @@
 #define STL_STR_IMPL(str)                #str
 #define STL_STR(str)                     STL_STR_IMPL(str)
 
+#define STL_IS_STR_EQUAL(str1, str2)     (std::strcmp(str1, str2) == 0)
+
 #define STL_COMMA()                      ,
 
 #define STL_FORMAT_BOOL(b)               (b ? "true" : "false")

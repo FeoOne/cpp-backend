@@ -68,9 +68,7 @@ namespace engine {
 
         // There are no more work for main thread,
         // so join to system worker to keep process alive.
-        auto& system_workers = _pool->get_workers<system_context>();
-        logassert(system_workers.size() == 1, "System worker count can't be other than 1.");
-        system_workers.front()->join();
+        _pool->get_worker<system_context>()->join();
 
         return EXIT_SUCCESS;
     }
@@ -78,8 +76,8 @@ namespace engine {
     void application::create_queues() noexcept
     {
         // required
-        EX_ADD_QUEUE(job_context, condition_task_queue);
         EX_ADD_QUEUE(system_context, condition_task_queue);
+        EX_ADD_QUEUE(job_context, condition_task_queue);
 
         // optional
         if (_need_io_worker) {
@@ -126,33 +124,16 @@ namespace engine {
             auto worker_config { workers_config[i] };
             auto name { worker_config[consts::config::key::name].to_string() };
 
-            if (std::strcmp(name, consts::worker::name::job) == 0) {
-                create_multiple_instance_worker(name, worker_config);
-            } else {
-                create_single_instance_worker(name, worker_config);
-            }
+            create_worker(name, worker_config);
         }
 
         _context_creators.clear();
     }
 
-    void application::create_single_instance_worker(const std::string_view& name,
-                                                    const stl::setting& worker_config) noexcept
+    void application::create_worker(const std::string_view &name, const stl::setting &worker_config) noexcept
     {
         auto context { _context_creators[name](worker_config, _router.get()) };
-
         _pool->push(worker::make_unique(worker_config, std::move(context)));
-    }
-
-    void application::create_multiple_instance_worker(const std::string_view& name,
-                                                      const stl::setting& worker_config) noexcept
-    {
-        auto count { worker_config[consts::config::key::count].to_int32<size_t>() };
-        for (size_t i = 0; i < count; ++i) {
-            auto context { _context_creators[name](worker_config, _router.get()) };
-
-            _pool->push(worker::make_unique(worker_config, std::move(context)));
-        }
     }
 
     void application::process_config() noexcept
@@ -170,11 +151,11 @@ namespace engine {
             auto config { workers_config[i] };
             auto name { config[consts::config::key::name].to_string() };
 
-            if (std::strcmp(name, consts::worker::name::io) == 0) {
+            if (STL_IS_STR_EQUAL(name, consts::worker::name::io)) {
                 _need_io_worker = true;
-            } else if (std::strcmp(name, consts::worker::name::db) == 0) {
+            } else if (STL_IS_STR_EQUAL(name, consts::worker::name::db)) {
                 _need_db_worker = true;
-            } else if (std::strcmp(name, consts::worker::name::web) == 0) {
+            } else if (STL_IS_STR_EQUAL(name, consts::worker::name::web)) {
                 _need_web_worker = true;
             }
         }
@@ -189,15 +170,14 @@ namespace engine {
         // Pre-initialize systems
         stl::log_manager::setup();
 
-#ifndef NDEBUG
         // Print hardware info
         stl::hardware::print_info();
-#endif
 
         // Create and start application
         auto app { application::make_unique(argc, argv, description) };
         // Add user-defined job context creator
         app->_context_creators.insert({ consts::worker::name::job, std::move(job_context_creator) });
+
         return app->start();
     }
 

@@ -40,7 +40,7 @@ namespace engine {
     private:
         command_line_argument_parser::uptr                              _argument_parser;
         std::unordered_map<std::string_view, context_creator>           _context_creators;
-        stl::config                                                   _config;
+        stl::config                                                     _config;
         worker_pool::uptr                                               _pool;
         task_router::uptr                                               _router;
 
@@ -56,10 +56,7 @@ namespace engine {
         void create_routes() noexcept;
         void create_workers() noexcept;
 
-        void create_single_instance_worker(const std::string_view& name,
-                                           const stl::setting& worker_config) noexcept;
-        void create_multiple_instance_worker(const std::string_view& name,
-                                             const stl::setting& worker_config) noexcept;
+        void create_worker(const std::string_view &name, const stl::setting &worker_config) noexcept;
     };
 
 }

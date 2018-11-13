@@ -50,10 +50,10 @@ namespace backend {
     {
         Json::Value in;
         in["id"] = "curltest";
-//        in["method"] = "getrawmempool";
-//        in["format"] = true;
-        in["method"] = "getrawtransaction";
-        in["txid"] = "de1f4099324d87c3054579260d095f8e5a9d44ecf3966b7ad83cff1d9faade37";
+        in["method"] = "getrawmempool";
+        in["verbose"] = true;
+//        in["method"] = "getrawtransaction";
+//        in["txid"] = "a37392db002769d1f7248b150b4ee11f23d0eb74ab4fa564b02fd9cc9be8e447";
 
         Json::Value out;
 
