@@ -8,6 +8,8 @@
 #ifndef ENGINE_JOB_LOOP_H
 #define ENGINE_JOB_LOOP_H
 
+#include <uv.h>
+
 #include "work/work_loop.h"
 
 namespace engine {
@@ -23,8 +25,16 @@ namespace engine {
         void start() noexcept final;
         void stop() noexcept final;
 
+        uv_loop_t *loop() noexcept { return &_loop; }
+
     private:
-        std::atomic_bool        _should_work;
+        uv_loop_t       _loop;
+        uv_async_t      _async_handle;
+
+        void notify() noexcept;
+        void on_async() noexcept;
+
+        static void async_callback(uv_async_t *handle) noexcept;
 
     };
 

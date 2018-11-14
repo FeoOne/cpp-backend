@@ -77,7 +77,7 @@ namespace engine {
     {
         // required
         EX_ADD_QUEUE(system_context, condition_task_queue);
-        EX_ADD_QUEUE(job_context, condition_task_queue);
+        EX_ADD_QUEUE(job_context, quiet_task_queue);
 
         // optional
         if (_need_io_worker) {
