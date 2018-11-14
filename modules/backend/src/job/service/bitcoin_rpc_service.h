@@ -34,7 +34,7 @@ namespace backend {
         const char *        _bitcoin_rpc_address;
         const char *        _bitcoin_rpc_credentials;
 
-        size_t perform(const Json::Value& in, Json::Value& out) noexcept;
+        bool perform(const Json::Value& in, Json::Value& out) noexcept;
 
         static size_t write_callback(void *ptr, size_t size, size_t nmemb, std::string* data) noexcept;
 

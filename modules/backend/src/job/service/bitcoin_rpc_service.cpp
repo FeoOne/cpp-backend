@@ -38,7 +38,32 @@ namespace backend {
                      consts::config::key::bitcoin_rpc_credentials);
         }
 
-        get_block_count();
+        Json::Value in;
+        in["jsonrpc"] = "1.0";
+        in["method"] = "getrawmempool";
+//        in["params"] = Json::Value { Json::arrayValue };
+//        in["params"].append(true);
+
+        Json::Value out;
+        if (perform(in, out)) {
+            Json::StreamWriterBuilder write_builder;
+            auto data { Json::writeString(write_builder, out) };
+
+            auto txid { out["result"][0].asString() };
+            in["method"] = "getrawtransaction";
+            in["params"] = Json::Value { Json::arrayValue };
+            in["params"].append(txid);
+            in["params"].append(true);
+
+            out = Json::Value {};
+            if (perform(in, out)) {
+                data = Json::writeString(write_builder, out);
+                printf("%s\n", data.data());
+
+            }
+        }
+
+
     }
 
     void bitcoin_rpc_service::reset() noexcept
@@ -49,18 +74,19 @@ namespace backend {
     size_t bitcoin_rpc_service::get_block_count() noexcept
     {
         Json::Value in;
-        in["id"] = "curltest";
-        in["method"] = "getrawmempool";
-        in["verbose"] = true;
-//        in["method"] = "getrawtransaction";
-//        in["txid"] = "a37392db002769d1f7248b150b4ee11f23d0eb74ab4fa564b02fd9cc9be8e447";
+        in["method"] = "getblockcount";
 
         Json::Value out;
+        size_t result { 0 };
 
-        perform(in, out);
+        if (perform(in, out)) {
+            return out["result"].asUInt();
+        }
+
+        return result;
     }
 
-    size_t bitcoin_rpc_service::perform(const Json::Value& in, Json::Value& out) noexcept
+    bool bitcoin_rpc_service::perform(const Json::Value& in, Json::Value& out) noexcept
     {
         static const curl_slist *headers { curl_slist_append(nullptr, "content-type: text/plain;") };
 
@@ -75,26 +101,28 @@ namespace backend {
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.data());
         curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
 
-        std::string response_string;
+        std::string response;
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bitcoin_rpc_service::write_callback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_string);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        auto result { curl_easy_perform(curl) };
-
-        printf("%s", response_string.data());
+        {
+            auto result { curl_easy_perform(curl) };
+            if (result != CURLE_OK) {
+                return false;
+            }
+        }
 
         curl_easy_cleanup(curl);
 
         Json::CharReaderBuilder read_builder;
         auto reader { read_builder.newCharReader() };
         std::string errors;
-        bool status { reader->parse(response_string.data(),
-                                    response_string.data() + response_string.length(),
-                                    &out,
-                                    &errors) };
+        bool result { reader->parse(response.data(), response.data() + response.length(), &out, &errors) };
+        logassert(result, "Failed to parse json: %s", errors.data());
+        logassert(out["error"].isNull(), "Failed to process request: %s", out["error"]["message"].asCString());
         delete reader;
 
-        return 0;
+        return result && out["error"].isNull();
     }
 
     // static

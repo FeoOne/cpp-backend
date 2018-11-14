@@ -41,6 +41,7 @@ function(setup_compiler_flags TARGET)
                 -Wno-exit-time-destructors
                 -Wno-c++98-compat-pedantic
                 -Wno-c++98-c++11-c++14-compat
+                -Wno-disabled-macro-expansion
                 -Wno-documentation-unknown-command
                 -Wno-c++98-c++11-c++14-compat-pedantic
                 -Wno-gnu-zero-variadic-macro-arguments

@@ -47,7 +47,7 @@ namespace engine {
 
     private:
         pthread_t                       _thread;
-        const stl::setting            _config;
+        const stl::setting              _config;
         work_context::uptr              _context;
         bool                            _should_restart;
 
