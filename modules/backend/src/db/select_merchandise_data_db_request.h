@@ -23,6 +23,7 @@ namespace backend {
         stl::uuid       merchant_guid;
         char *          merchant_label;
         u64             user_id;
+        u32             confirm_block_count;
         char *          callback_url;
         char *          private_key;
 

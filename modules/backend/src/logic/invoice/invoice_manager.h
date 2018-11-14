@@ -10,7 +10,7 @@
 
 #include <engine.h>
 
-#include "data/invoice.h"
+#include "logic/invoice/pending_invoice.h"
 
 namespace backend {
 
@@ -21,13 +21,11 @@ namespace backend {
         invoice_manager();
         ~invoice_manager();
 
-        void add(data::invoice *invoice) noexcept;
-        data::invoice *get(const stl::uuid& merchandise_guid) noexcept;
+        pending_invoice *create(const stl::uuid& merchandise_guid, std::string&& mail) noexcept;
+        pending_invoice *get(const stl::uuid& guid) noexcept;
 
     private:
-        mutable std::timed_mutex    _mutex;
-
-        std::unordered_map<stl::uuid, data::invoice *>      _invoices_by_guid;
+        std::unordered_map<stl::uuid, pending_invoice *>        _invoices_by_guid;
 
     };
 

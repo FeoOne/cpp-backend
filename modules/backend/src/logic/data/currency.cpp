@@ -7,21 +7,24 @@
 
 #include "main/backend_consts.h"
 
-#include "data/currency.h"
+#include "logic/data/currency.h"
 
 namespace backend::data {
 
-    void currency::from_name(const std::string_view& name) noexcept
+    // static
+    currency currency::from_name(const std::string_view& name) noexcept
     {
         static std::map<std::string_view, size_t> map {
-                { consts::currency::usd, ID_USD },
-                { consts::currency::btc, ID_BTC },
+                { consts::currency::usd, id_usd },
+                { consts::currency::btc, id_btc },
         };
 
         auto it = map.find(name);
         if (it != map.end()) {
-            _id = it->second;
+            return currency { it->second };
         }
+
+        return currency {};
     }
 
 }

@@ -10,32 +10,30 @@
 
 #include <engine.h>
 
-namespace backend::data {
+namespace backend {
 
     class currency {
     public:
-        STL_DELETE_DEFAULT_CTOR(currency)
+        static constexpr size_t id_usd { 1 };
+        static constexpr size_t id_btc { 2 };
 
-        static constexpr size_t ID_USD { 1 };
-        static constexpr size_t ID_BTC { 2 };
-
+        currency() : _id { id_usd } {}
         explicit currency(size_t id) noexcept : _id { id } {}
 
         size_t id() const noexcept { return _id; }
-        void id(size_t val) noexcept { _id = val; }
 
-        void from_name(const std::string_view& name) noexcept;
+        static currency from_name(const std::string_view& name) noexcept;
 
         static currency usd() noexcept {
-            return currency { ID_USD };
+            return currency { id_usd };
         }
 
         static currency btc() noexcept {
-            return currency { ID_BTC };
+            return currency { id_btc };
         }
 
     private:
-        size_t          _id;
+        const size_t        _id;
 
     };
 

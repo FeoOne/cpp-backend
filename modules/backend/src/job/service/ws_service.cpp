@@ -5,7 +5,6 @@
  * @brief
  */
 
-#include "data/currency.h"
 #include "main/backend_consts.h"
 #include "db/select_merchandise_data_db_request.h"
 
@@ -119,26 +118,17 @@ namespace backend {
             }
 
             stl::uuid merchandise_guid { json["guid"].asCString() };
-            std::string email { json["mail"].asCString() };
+            std::string mail { json["mail"].asCString() };
 
-            auto currency { data::currency::btc() };
+            auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail)) };
+
             if (json.isMember("currency")) {
-                currency.from_name(json["currency"].asCString());
+                invoice->set_currency(currency::from_name(json["currency"].asCString()));
             }
 
-            u64 amount { 0 };
             if (json.isMember("amount")) {
-                amount = json["amount"].asUInt64();
+                invoice->set_amount(json["amount"].asUInt64());
             }
-
-            // todo: validate incoming data
-
-            auto invoice { new(std::nothrow) data::invoice(connection,
-                                                           merchandise_guid,
-                                                           std::move(email),
-                                                           currency,
-                                                           amount) };
-            _invoice_manager->add(invoice);
 
             {
                 // select merchandise data

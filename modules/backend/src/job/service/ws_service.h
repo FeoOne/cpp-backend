@@ -10,7 +10,7 @@
 
 #include <engine.h>
 
-#include "logic/invoice_manager.h"
+#include "logic/invoice/invoice_manager.h"
 
 namespace backend {
 

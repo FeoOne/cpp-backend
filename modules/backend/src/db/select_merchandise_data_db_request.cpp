@@ -36,6 +36,7 @@ namespace backend {
         static size_t merchant_guid_column_index { response->column_index("merchant_guid") };
         static size_t merchant_label_column_index { response->column_index("merchant_label") };
         static size_t user_id_column_index { response->column_index("user_id") };
+        static size_t confirm_block_count_column_index { response->column_index("confirm_block_count") };
         static size_t callback_url_column_index { response->column_index("callback_url") };
         static size_t private_key_column_index { response->column_index("private_key") };
 
@@ -46,6 +47,7 @@ namespace backend {
         response->value(0, merchant_guid_column_index, merchant_guid);
         response->value(0, merchant_label_column_index, &merchant_label);
         response->value(0, user_id_column_index, &user_id);
+        response->value(0, confirm_block_count_column_index, &confirm_block_count);
         response->value(0, callback_url_column_index, &callback_url);
         response->value(0, private_key_column_index, &private_key);
 
