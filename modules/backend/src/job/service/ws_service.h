@@ -41,7 +41,7 @@ namespace backend {
 
         void process_create_invoice_message(SoupWebsocketConnection *connection, const Json::Value& json) noexcept;
 
-        void select_merchandise_data_db_response_fn(engine::db_request *base_request) noexcept;
+        void create_float_invoice_db_response_fn(engine::db_request *base_request) noexcept;
 
     };
 

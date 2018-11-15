@@ -30,6 +30,8 @@ namespace stl {
             TIME,
         };
 
+        static constexpr size_t size { sizeof(uuid_type) };
+
         uuid() { uuid_clear(_uuid); }
         explicit uuid(generate_strategy strategy) noexcept { generate(strategy); }
         explicit uuid(const u8 *data) noexcept { uuid_copy(_uuid, data); }

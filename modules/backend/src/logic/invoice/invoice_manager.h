@@ -21,8 +21,8 @@ namespace backend {
         invoice_manager();
         ~invoice_manager();
 
-        pending_invoice *create(const stl::uuid& merchandise_guid, std::string&& mail) noexcept;
-        pending_invoice *get(const stl::uuid& guid) noexcept;
+        pending_invoice *create(const stl::uuid& merchandise_guid, std::string&& mail, u64 amount) noexcept;
+        pending_invoice *get_by_merchandise_guid(const stl::uuid &merchandise_guid) noexcept;
 
     private:
         std::unordered_map<stl::uuid, pending_invoice *>        _invoices_by_guid;

@@ -9,7 +9,7 @@
 
 namespace engine {
 
-    db_request::db_request(const std::string_view& query, size_t param_count) noexcept :
+    db_request::db_request(const char *query, size_t param_count) noexcept :
             _params { param_count },
             _is_success { false },
             _query { query },

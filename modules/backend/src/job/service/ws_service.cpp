@@ -6,7 +6,8 @@
  */
 
 #include "main/backend_consts.h"
-#include "db/select_merchandise_data_db_request.h"
+#include "bitcoin/bitcoin.h"
+#include "db/create_float_invoice_db_request.h"
 
 #include "job/service/ws_service.h"
 
@@ -111,7 +112,7 @@ namespace backend {
                                                     const Json::Value& json) noexcept
     {
         try {
-            if (!json.isMember("guid") || !json.isMember("mail")) {
+            if (!json.isMember("guid") || !json.isMember("mail") || !json.isMember("amount")) {
                 logwarn("Malformed json: %s", json.asCString());
                 disconnect(connection);
                 return;
@@ -119,28 +120,18 @@ namespace backend {
 
             stl::uuid merchandise_guid { json["guid"].asCString() };
             std::string mail { json["mail"].asCString() };
+            u64 amount { json["amount"].asUInt64() };
 
-            auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail)) };
+            auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail), amount) };
+            auto request { engine::db_request::create<create_float_invoice_db_request>(merchandise_guid,
+                                                                                       invoice->mail(),
+                                                                                       invoice->amount()) };
+            request->assign_callback(std::bind(&ws_service::create_float_invoice_db_response_fn,
+                                               this,
+                                               std::placeholders::_1));
 
-            if (json.isMember("currency")) {
-                invoice->set_currency(currency::from_name(json["currency"].asCString()));
-            }
-
-            if (json.isMember("amount")) {
-                invoice->set_amount(json["amount"].asUInt64());
-            }
-
-            {
-                // select merchandise data
-                auto request { engine::db_request::create<select_merchandise_data_db_request>(merchandise_guid,
-                                                                                              invoice->guid()) };
-                request->assign_callback(std::bind(&ws_service::select_merchandise_data_db_response_fn,
-                                                   this,
-                                                   std::placeholders::_1));
-
-                auto task { engine::basic_task::create<engine::db_request_task>(request) };
-                router()->enqueue(task);
-            }
+            auto task { engine::basic_task::create<engine::db_request_task>(request) };
+            router()->enqueue(task);
         }
         catch (const std::exception& e) {
             logwarn("Failed to process json: %s", e.what());
@@ -148,19 +139,19 @@ namespace backend {
         }
     }
 
-    void ws_service::select_merchandise_data_db_response_fn(engine::db_request *base_request) noexcept
+    void ws_service::create_float_invoice_db_response_fn(engine::db_request *base_request) noexcept
     {
-        auto request { reinterpret_cast<select_merchandise_data_db_request *>(base_request) };
+        auto request { reinterpret_cast<create_float_invoice_db_request *>(base_request) };
         if (request->is_success()) {
-            auto invoice { _invoice_manager->get(request->invoice_guid()) };
+            auto invoice { _invoice_manager->get_by_merchandise_guid(request->merchandise_guid) };
             if (invoice != nullptr) {
                 invoice->update(request);
 
-                // todo: save invoice to db
-
                 Json::Value root;
                 root["name"] = "invoice_created";
-                root["address"] = invoice->address();
+                root["address"] = bitcoin::generate_address(invoice->wallet_guid().data(),
+                                                            stl::uuid::size,
+                                                            invoice->id());
                 root["amount"] = invoice->amount();
 
                 Json::StreamWriterBuilder builder;

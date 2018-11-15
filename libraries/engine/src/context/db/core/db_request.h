@@ -23,7 +23,7 @@ namespace engine {
 
         using callback = std::function<void(db_request *)>;
 
-        explicit db_request(const std::string_view& query, size_t param_count) noexcept;
+        explicit db_request(const char *query, size_t param_count) noexcept;
         virtual ~db_request();
 
         bool is_callable() const noexcept { return static_cast<bool>(_callback); }
@@ -32,7 +32,7 @@ namespace engine {
         void assign_connection(db_connection *connection) noexcept;
         void assign_result(PGresult *result) noexcept;
 
-        const std::string_view& query() const noexcept { return _query; }
+        const char *query() const noexcept { return _query; }
         const db_params& params() const noexcept { return _params; }
         db_connection *connection() noexcept { return _connection; }
 
@@ -48,11 +48,10 @@ namespace engine {
         bool                    _is_success;
 
     private:
-        std::string_view        _query;
+        const char *            _query;
         db_connection *         _connection;
         callback                _callback;
         PGresult *              _result;
-
 
     };
 
