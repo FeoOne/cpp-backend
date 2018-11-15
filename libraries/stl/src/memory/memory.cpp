@@ -8,7 +8,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <jemalloc/jemalloc.h>
+
 #include "main/platform.h"
+#include "logger/log_manager.h"
 
 #include "memory/memory.h"
 
@@ -24,24 +27,29 @@ namespace stl {
     // static
     void *memory::malloc_impl(size_t size) noexcept
     {
-        return je_malloc(size);
+        return std::malloc(size);
     }
 
     // static
     void *memory::realloc_impl(void *memory, size_t size) noexcept
     {
-        return je_realloc(memory, size);
+        return std::realloc(memory, size);
     }
 
     // static
     void *memory::aligned_alloc_impl(size_t size) noexcept
     {
-        return je_aligned_alloc(page_size(), size);
+#ifdef STL_PLATFORM_APPLE
+        return std::malloc(size);
+#else
+        return std::aligned_alloc(page_size(), size);
+#endif
     }
 
     // static
-    void memory::free(void *mem) noexcept {
-        je_free(mem);
+    void memory::print_stats() noexcept
+    {
+        malloc_stats_print(nullptr, nullptr, nullptr);
     }
 
 }

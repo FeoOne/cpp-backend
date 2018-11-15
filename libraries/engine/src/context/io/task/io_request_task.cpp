@@ -27,7 +27,7 @@ namespace engine {
     io_request_task::~io_request_task()
     {
         if (_memory != nullptr) {
-            stl::memory::free(_memory);
+            std::free(_memory);
         }
     }
 

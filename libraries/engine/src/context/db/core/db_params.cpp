@@ -28,7 +28,7 @@ namespace engine {
     db_params::~db_params()
     {
         if (_memory != nullptr) {
-            stl::memory::free(_memory);
+            std::free(_memory);
         }
     }
 

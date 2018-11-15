@@ -50,7 +50,7 @@ namespace stl {
     //virtual
     float_memory_page::~float_memory_page()
     {
-        memory::free(_memory);
+        std::free(_memory);
     }
 
     void *float_memory_page::alloc(u32 alloc_size) noexcept

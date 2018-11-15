@@ -27,7 +27,7 @@ namespace engine {
     // virtual
     void worker_watchdog_service::setup() noexcept
     {
-
+        stl::memory::print_stats();
     }
 
     // virtual

@@ -11,8 +11,6 @@
 #include <atomic>
 #include <memory>
 
-#include <jemalloc/jemalloc.h>
-
 #define STL_DELETE_DEFAULT_CTOR(c)               c() = delete;
 #define STL_DELETE_DEFAULT_COPY_CTOR(c)          c(const c&) = delete;
 #define STL_DELETE_DEFAULT_MOVE_CTOR(c)          c(c&&) = delete;
@@ -40,6 +38,7 @@
         return std::make_unique<T>(std::forward<StlArgs>(args)...);                     \
     }
 
+// todo: got rid
 #define STL_DECLARE_NEW_DELETE(base_type)                                                           \
     template<typename T, typename... Args>                                                          \
     static T *create(Args&&... args) noexcept {                                                     \
@@ -47,7 +46,7 @@
     }                                                                                               \
     static void destroy(base_type *obj) noexcept {                                                  \
         obj->~base_type();                                                                          \
-        stl::memory::free(obj);                                                                     \
+        std::free(obj);                                                                     \
     }
 
 namespace stl {
@@ -71,8 +70,7 @@ namespace stl {
             return reinterpret_cast<T *>(aligned_alloc_impl(size));
         }
 
-
-        static void free(void *mem) noexcept;
+        static void print_stats() noexcept;
 
     private:
         static void *malloc_impl(size_t size) noexcept;
