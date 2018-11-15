@@ -19,7 +19,7 @@ namespace engine {
 
     tcp_stream::~tcp_stream()
     {
-        stl::memory::free(_memory);
+        std::free(_memory);
     }
 
     void tcp_stream::grow_if_needed() noexcept

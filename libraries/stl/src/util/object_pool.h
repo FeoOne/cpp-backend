@@ -54,7 +54,7 @@ namespace stl {
             while (!_objects.empty()) {
                 auto object { _objects.front() };
                 object->~value_type();
-                memory::free(object);
+                std::free(object);
 
                 _objects.pop();
             }

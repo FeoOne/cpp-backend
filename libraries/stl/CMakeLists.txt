@@ -26,17 +26,24 @@ setup_compiler_flags(${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION})
 
-# jemalloc config
+# configure jemalloc
 
-set(Jemalloc_SOURCE_DIRS ${CMAKE_SOURCE_DIR}/external/jemalloc/include)
-set(Jemalloc_LIBRARIES ${CMAKE_SOURCE_DIR}/external/jemalloc/lib/libjemalloc.a)
+execute_process(COMMAND
+        bash "-c" "jemalloc-config --libdir"
+        OUTPUT_VARIABLE JEMALLOC_LIBRARY_DIR
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND
+        bash "-c" "jemalloc-config --includedir"
+        OUTPUT_VARIABLE JEMALLOC_INCLUDE_DIR
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(JEMALLOC_LIBRARIES ${JEMALLOC_LIBRARY_DIR}/libjemalloc.a)
 
 # include directories
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${Jemalloc_SOURCE_DIRS}
+        ${JEMALLOC_INCLUDE_DIR}
         ${Config_INCLUDE_DIR}
         ${ZLIB_INCLUDE_DIRS}
         ${UUID_INCLUDE_DIR}
@@ -50,7 +57,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
-        ${Jemalloc_LIBRARIES}
+        ${JEMALLOC_LIBRARIES}
         ${Config_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${UUID_LIBRARIES}

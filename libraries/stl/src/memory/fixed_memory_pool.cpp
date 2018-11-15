@@ -72,7 +72,7 @@ namespace stl {
     // virtual
     fixed_memory_page::~fixed_memory_page()
     {
-        memory::free(_memory);
+        std::free(_memory);
     }
 
     void *fixed_memory_page::alloc() noexcept
