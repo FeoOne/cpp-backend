@@ -20,7 +20,7 @@ namespace backend {
             _callback_url { nullptr },
             _merchandise_guid { merchandise_guid },
             _mail { mail },
-            _amount { 0 }
+            _amount { amount }
     {
         generate_address();
     }
