@@ -26,6 +26,7 @@
 #include "context/web/task/ws_request_task.h"
 #include "context/web/task/ws_response_task.h"
 #include "context/web/task/ws_disconnect_task.h"
+#include "context/web/task/ws_connection_status_task.h"
 #include "context/web/page/web_view_loader.h"
 #include "context/web/page/web_view_manager.h"
 

@@ -21,11 +21,21 @@ namespace backend {
         invoice_manager();
         ~invoice_manager();
 
-        pending_invoice *create(const stl::uuid& merchandise_guid, std::string&& mail, u64 amount) noexcept;
-        pending_invoice *get_by_merchandise_guid(const stl::uuid &merchandise_guid) noexcept;
+        pending_invoice *create(const stl::uuid& merchandise_guid,
+                                std::string&& mail,
+                                u64 amount,
+                                SoupWebsocketConnection *connection) noexcept;
+
+        pending_invoice *get_by_invoice_guid(const stl::uuid& invoice_guid) noexcept;
+        pending_invoice *get_by_merchandise_guid(const stl::uuid& invoice_guid) noexcept;
+        pending_invoice *get_by_connection(SoupWebsocketConnection *connection) noexcept;
+
+        void disconnected(SoupWebsocketConnection *connection) noexcept;
 
     private:
-        std::unordered_map<stl::uuid, pending_invoice *>        _invoices_by_guid;
+        std::unordered_map<stl::uuid, pending_invoice *>                    _invoices_by_invoice_guid;
+        std::unordered_map<stl::uuid, pending_invoice *>                    _invoices_by_merchandise_guid;
+        std::unordered_map<SoupWebsocketConnection *, pending_invoice *>    _invoices_by_connection;
 
     };
 

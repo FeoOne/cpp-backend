@@ -9,6 +9,7 @@
 #include "context/web/task/ws_request_task.h"
 #include "context/web/task/ws_response_task.h"
 #include "context/web/task/ws_disconnect_task.h"
+#include "context/web/task/ws_connection_status_task.h"
 
 #include "context/web/service/ws_service.h"
 
@@ -83,6 +84,9 @@ namespace engine {
         g_signal_connect(connection, "message", G_CALLBACK(&ws_service::message_callback), this);
         g_signal_connect(connection, "error", G_CALLBACK(&ws_service::error_callback), this);
         g_signal_connect(connection, "closed", G_CALLBACK(&ws_service::closed_callback), this);
+
+        auto task { basic_task::create<ws_connection_status_task>(connection, connection_status::connected) };
+        router()->enqueue(task);
     }
 
     void ws_service::on_message(SoupWebsocketConnection *connection,
@@ -102,6 +106,9 @@ namespace engine {
     {
         g_signal_handlers_disconnect_by_data(connection, this);
         STL_GOBJECT_RELEASE(connection);
+
+        auto task { basic_task::create<ws_connection_status_task>(connection, connection_status::disconnected) };
+        router()->enqueue(task);
     }
 
     // static

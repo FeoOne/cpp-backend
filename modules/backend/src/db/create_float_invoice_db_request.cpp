@@ -32,10 +32,6 @@ namespace backend {
     // virtual
     create_float_invoice_db_request::~create_float_invoice_db_request()
     {
-        // memory freed in `pending_invoice::~pending_invoice()`
-//        if (callback_url != nullptr) {
-//            std::free(callback_url);
-//        }
     }
 
     // virtual
@@ -58,8 +54,6 @@ namespace backend {
         response->value(0, wallet_guid_column_index, wallet_guid);
         response->value(0, confirm_block_count_column_index, &confirm_block_count);
         response->value(0, callback_url_column_index, &callback_url);
-
-        callback_url = strdup(callback_url);
 
         _is_success = true;
     }

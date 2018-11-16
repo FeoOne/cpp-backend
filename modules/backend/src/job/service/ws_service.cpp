@@ -6,7 +6,6 @@
  */
 
 #include "main/backend_consts.h"
-#include "bitcoin/bitcoin.h"
 #include "db/create_float_invoice_db_request.h"
 
 #include "job/service/ws_service.h"
@@ -23,6 +22,7 @@ namespace backend {
             _invoice_manager { invoice_manager::make_unique() }
     {
         EX_ASSIGN_TASK_HANDLER(engine::ws_request_task, ws_service, handle_ws_request_task);
+        EX_ASSIGN_TASK_HANDLER(engine::ws_connection_status_task, ws_service, handle_ws_connection_status_task);
 
         _processors.insert({
             create_invoice_message_name,
@@ -103,6 +103,14 @@ namespace backend {
         }
     }
 
+    void ws_service::handle_ws_connection_status_task(engine::basic_task *base_task) noexcept
+    {
+        auto task { reinterpret_cast<engine::ws_connection_status_task *>(base_task) };
+        if (task->status() == engine::connection_status::disconnected) {
+            _invoice_manager->disconnected(task->connection());
+        }
+    }
+
     /**
      * Create invoice request.
      * @param json
@@ -122,7 +130,7 @@ namespace backend {
             std::string mail { json["mail"].asCString() };
             u64 amount { json["amount"].asUInt64() };
 
-            auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail), amount) };
+            auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail), amount, connection) };
             auto request { engine::db_request::create<create_float_invoice_db_request>(merchandise_guid,
                                                                                        invoice->mail(),
                                                                                        invoice->amount()) };
@@ -147,21 +155,25 @@ namespace backend {
             if (invoice != nullptr) {
                 invoice->update(request);
 
-                Json::Value root;
-                root["name"] = "invoice_created";
-                root["address"] = bitcoin::generate_address(invoice->wallet_guid().data(),
-                                                            stl::uuid::size,
-                                                            invoice->id());
-                root["amount"] = invoice->amount();
-
-                Json::StreamWriterBuilder builder;
-                auto json { Json::writeString(builder, root) };
-
-                auto task { engine::basic_task::create<engine::ws_response_task>(invoice->connection(),
-                                                                                 std::move(json)) };
-                router()->enqueue(task);
+                if (invoice->connection() != nullptr) {
+                    respond_invoice_created(invoice);
+                }
             }
         }
+    }
+
+    void ws_service::respond_invoice_created(pending_invoice *invoice) noexcept
+    {
+        Json::Value root;
+        root["name"] = "invoice_created";
+        root["address"] = invoice->address();
+        root["amount"] = invoice->amount();
+
+        Json::StreamWriterBuilder builder;
+        auto data { Json::writeString(builder, root) };
+
+        auto task { engine::basic_task::create<engine::ws_response_task>(invoice->connection(), std::move(data)) };
+        router()->enqueue(task);
     }
 
 }

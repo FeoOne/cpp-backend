@@ -128,7 +128,7 @@ namespace engine {
         request->assign_connection(this);
 
         return PQsendQueryParams(_connection,
-                request->query().data(),
+                request->query(),
                 static_cast<int>(request->params().count()),
                 request->params().oids(),
                 request->params().values(),

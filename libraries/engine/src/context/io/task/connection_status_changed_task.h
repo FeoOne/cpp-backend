@@ -13,7 +13,7 @@
 
 namespace engine {
 
-    class connection_status_changed_task : public stl::crucial<basic_task, connection_status_changed_task> {
+    class connection_status_changed_task final : public stl::crucial<basic_task, connection_status_changed_task> {
     public:
         STL_DECLARE_SMARTPOINTERS(connection_status_changed_task)
         STL_DELETE_ALL_DEFAULT(connection_status_changed_task)

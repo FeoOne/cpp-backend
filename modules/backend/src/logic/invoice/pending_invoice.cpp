@@ -5,7 +5,7 @@
  * @brief
  */
 
-
+#include "bitcoin/bitcoin.h"
 
 #include "logic/invoice/pending_invoice.h"
 
@@ -20,21 +20,13 @@ namespace backend {
             _callback_url { nullptr },
             _merchandise_guid { merchandise_guid },
             _mail { mail },
-            _amount { amount }
+            _amount { amount },
+            _connection { nullptr }
     {
-        generate_address();
     }
 
     pending_invoice::~pending_invoice()
     {
-        if (_callback_url != nullptr) {
-            std::free(_callback_url);
-        }
-    }
-
-    void pending_invoice::generate_address() noexcept
-    {
-
     }
 
     void pending_invoice::update(create_float_invoice_db_request *request) noexcept
@@ -43,7 +35,9 @@ namespace backend {
         _guid = request->invoice_guid;
         _wallet_guid = request->wallet_guid;
         _confirm_block_count = request->confirm_block_count;
-        _callback_url = request->callback_url;
+        _callback_url.assign(request->callback_url);
+
+        _address = bitcoin::generate_address(_wallet_guid.data(), stl::uuid::size, _id);
 
         _state = pending_state::created;
     }
