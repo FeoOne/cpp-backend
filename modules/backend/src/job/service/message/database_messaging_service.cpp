@@ -45,13 +45,11 @@ namespace backend {
         size_t length { 0 };
         builder.build(&memory, &length);
 
-        auto task {
-                engine::basic_task::create<engine::io_response_task>(link,
-                                                                     pmp::backend_database::handshake_response::opcode,
-                                                                     memory,
-                                                                     length,
-                                                                     true)
-        };
+        auto task { new (std::nothrow) engine::io_response_task(link,
+                                                                pmp::backend_database::handshake_response::opcode,
+                                                                memory,
+                                                                length,
+                                                                true) };
         router()->enqueue(task);
     }
 

@@ -78,7 +78,7 @@ namespace engine {
 
         read_stream->flush_if_needed();
 
-        auto task { basic_task::create<io_request_task>(connection->link(), header.opcode(), memory, size) };
+        auto task { new (std::nothrow) io_request_task(connection->link(), header.opcode(), memory, size) };
         router()->enqueue(task);
     }
 

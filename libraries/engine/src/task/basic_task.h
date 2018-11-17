@@ -18,7 +18,6 @@ namespace engine {
     public:
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(basic_task)
         STL_CRUCIAL_BASE_DEFINITION(EX_TASK_TYPE_MAX_KEY_COUNT)
-        STL_DECLARE_NEW_DELETE(basic_task)
 
         virtual ~basic_task() = default;
 

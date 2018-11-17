@@ -22,7 +22,7 @@ namespace engine {
     class connection_link final {
     public:
         connection_link() :
-                _protocol { transport_protocol::undefined },
+                _protocol { socket_type::undefined },
                 _session_id { 0 },
                 _connection_id { 0 },
                 _side { connection_side::undefined },
@@ -35,7 +35,7 @@ namespace engine {
         connection_link& operator=(const connection_link&) = default;
         connection_link& operator=(connection_link&&) = default;
 
-        inline transport_protocol protocol() const noexcept { return _protocol; }
+        inline socket_type protocol() const noexcept { return _protocol; }
         inline size_t session_id() const noexcept { return _session_id; }
         inline u64 connection_id() const noexcept { return _connection_id; }
         inline connection_side side() const noexcept { return _side; }
@@ -54,7 +54,7 @@ namespace engine {
     private:
         friend class connection;
 
-        transport_protocol          _protocol;
+        socket_type          _protocol;
         size_t                      _session_id;
         u64                         _connection_id;
         connection_side             _side;

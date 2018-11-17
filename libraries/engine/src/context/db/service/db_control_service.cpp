@@ -302,7 +302,7 @@ namespace engine {
         }
 
         if (response.is_valid() && request->is_callable()) {
-            auto task { basic_task::create<db_response_task>(request) };
+            auto task { new (std::nothrow) db_response_task(request) };
             router()->enqueue(task);
         }
 

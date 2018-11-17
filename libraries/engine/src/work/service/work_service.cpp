@@ -23,18 +23,14 @@ namespace engine {
 
     void work_service::handle_task(basic_task *task) const noexcept
     {
-#ifdef NDEBUG
-        _handlers[task->get_key()](task);
-#else
         auto& handler { _handlers[task->get_key()] };
         if (handler) {
             handler(task);
         } else {
             logerror("Task handler for key %lu not presented.", task->get_key());
         }
-#endif
 
-        engine::basic_task::destroy(task);
+        delete task;
     }
 
     void work_service::assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept

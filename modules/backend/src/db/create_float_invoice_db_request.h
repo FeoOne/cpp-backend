@@ -16,8 +16,6 @@ namespace backend {
     public:
         STL_DELETE_ALL_DEFAULT(create_float_invoice_db_request)
 
-        const stl::uuid     merchandise_guid;
-
         u64                 invoice_id;
         stl::uuid           invoice_guid;
         stl::uuid           wallet_guid;
@@ -31,7 +29,10 @@ namespace backend {
 
         void process_response(engine::db_response *response) noexcept final;
 
+        const stl::uuid& merchandise_guid() const noexcept { return _merchandise_guid; }
+
     private:
+        stl::uuid           _merchandise_guid;
 
     };
 

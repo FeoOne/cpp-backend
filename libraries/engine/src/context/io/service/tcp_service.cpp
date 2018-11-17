@@ -127,8 +127,14 @@ namespace engine {
     {
         auto previous_status { connection->status() };
         connection->status(status);
-        // produce task about changing connection status
-        router()->enqueue(basic_task::create<connection_status_changed_task>(connection->link(), status, previous_status));
+
+        {
+            // produce task about changing connection status
+            auto task { new (std::nothrow) connection_status_changed_task(connection->link(),
+                                                                          status,
+                                                                          previous_status) };
+            router()->enqueue(task);
+        }
 
         // reconnect if disconnected connection is local
         if (status == connection_status::disconnected && connection->side() == connection_side::local) {

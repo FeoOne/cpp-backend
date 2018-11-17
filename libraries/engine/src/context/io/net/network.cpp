@@ -9,23 +9,23 @@
 
 namespace engine {
 
-    const char *transport_protocol_to_str(transport_protocol protocol) noexcept
+    const char *socket_type_to_str(socket_type protocol) noexcept
     {
-        static const std::unordered_map<transport_protocol, std::string_view> values {
+        static const std::unordered_map<socket_type, std::string_view> values {
                 {
-                        { transport_protocol::tcp, { "tcp" } },
-                        { transport_protocol::udp, { "udp" } },
+                        { socket_type::stream, { "tcp" } },
+                        { socket_type::datagram, { "udp" } },
                 }
         };
         return values.at(protocol).data();
     }
 
-    const char *internet_protocol_version_to_str(internet_protocol_version version) noexcept
+    const char *protocol_domain_to_str(protocol_domain version) noexcept
     {
-        static const std::unordered_map<internet_protocol_version, std::string_view> values {
+        static const std::unordered_map<protocol_domain, std::string_view> values {
                 {
-                        { internet_protocol_version::ip_v4, { "ip_v4" } },
-                        { internet_protocol_version::ip_v6, { "ip_v6" } },
+                        { protocol_domain::v4, { "ip_v4" } },
+                        { protocol_domain::v6, { "ip_v6" } },
                 }
         };
         return values.at(version).data();

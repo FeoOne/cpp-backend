@@ -16,11 +16,11 @@ namespace backend {
                                                                      const char *mail,
                                                                      u64 amount) noexcept :
             engine::db_request(sql, param_count),
-            merchandise_guid { merchandise_guid },
             invoice_id { 0 },
             wallet_guid {},
             confirm_block_count { 0 },
-            callback_url { nullptr }
+            callback_url { nullptr },
+            _merchandise_guid { merchandise_guid }
     {
         _params << merchandise_guid;
         _params << mail;

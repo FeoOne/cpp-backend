@@ -45,11 +45,11 @@ namespace engine {
                  task->length());
 
         switch (task->link().protocol()) {
-            case transport_protocol::tcp: {
+            case socket_type::stream: {
                 handle_tcp_response(task);
                 break;
             }
-            case transport_protocol::udp: {
+            case socket_type::datagram: {
 
                 break;
             }

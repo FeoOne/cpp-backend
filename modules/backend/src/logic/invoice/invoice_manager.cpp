@@ -24,7 +24,7 @@ namespace backend {
     {
         auto invoice { new (std::nothrow) pending_invoice(merchandise_guid, std::move(mail), amount) };
         invoice->assign_connection(connection);
-        _invoices_by_merchandise_guid.insert({ invoice->guid(), invoice });
+        _invoices_by_merchandise_guid.insert({ merchandise_guid, invoice });
         _invoices_by_connection.insert({ connection, invoice });
         return invoice;
     }

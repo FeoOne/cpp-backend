@@ -40,7 +40,7 @@ namespace engine {
     {
         auto task { reinterpret_cast<db_response_task *>(base_task) };
         task->request()->call();
-        db_request::destroy(task->request());
+        delete task->request();
     }
 
 }

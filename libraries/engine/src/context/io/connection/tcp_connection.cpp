@@ -15,7 +15,7 @@
 namespace engine {
 
     tcp_connection::tcp_connection() :
-            connection(transport_protocol::tcp),
+            connection(socket_type::stream),
             _read_stream { consts::net::read_stream_size },
             _write_stream { consts::net::write_stream_size },
             _connect_request {},

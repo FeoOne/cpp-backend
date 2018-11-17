@@ -19,7 +19,6 @@ namespace engine {
     class db_request {
     public:
         STL_DELETE_ALL_DEFAULT(db_request)
-        STL_DECLARE_NEW_DELETE(db_request)
 
         using callback = std::function<void(db_request *)>;
 

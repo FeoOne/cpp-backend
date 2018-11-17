@@ -72,7 +72,7 @@ namespace engine {
 
         std::string_view p { path };
         auto request { http_request::make_shared(message, p, query, client) };
-        auto task { basic_task::create<http_request_task>(request) };
+        auto task { new (std::nothrow) http_request_task(request) };
         router()->enqueue(task);
 
         soup_server_pause_message(delegate()->service<webserver_service>()->get_server(), message);

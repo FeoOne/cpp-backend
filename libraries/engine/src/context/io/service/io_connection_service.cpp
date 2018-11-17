@@ -106,15 +106,15 @@ namespace engine {
         auto task { reinterpret_cast<disconnect_connection_task *>(base_task) };
         logdebug("Handle disconnect_connection_task. Connection id: %llu, protocol: %s.",
                 task->link().connection_id(),
-                 transport_protocol_to_str(task->link().protocol()));
+                 socket_type_to_str(task->link().protocol()));
 
         switch (task->link().protocol()) {
-            case transport_protocol::tcp: {
+            case socket_type::stream: {
                 auto connection { _tcp_connections->get(task->link()) };
                 delegate()->service<tcp_service>()->shutdown_connection(connection);
                 break;
             }
-            case transport_protocol::udp: {
+            case socket_type::datagram: {
 
                 break;
             }

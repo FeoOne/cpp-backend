@@ -17,7 +17,7 @@ namespace backend {
             _guid {},
             _wallet_guid {},
             _confirm_block_count { 0 },
-            _callback_url { nullptr },
+            _callback_url {},
             _merchandise_guid { merchandise_guid },
             _mail { mail },
             _amount { amount },

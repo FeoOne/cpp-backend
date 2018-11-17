@@ -49,7 +49,7 @@ namespace stl {
     // static
     void memory::print_stats() noexcept
     {
-        malloc_stats_print(nullptr, nullptr, nullptr);
+        //malloc_stats_print(nullptr, nullptr, nullptr);
     }
 
 }

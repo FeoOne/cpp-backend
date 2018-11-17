@@ -9,11 +9,11 @@
 
 namespace engine {
 
-    connection::connection(transport_protocol protocol) noexcept :
+    connection::connection(socket_type protocol) noexcept :
             _id { 0 },
             _handle {},
             _protocol { protocol },
-            _version { internet_protocol_version::undefined },
+            _version { protocol_domain::undefined },
             _status { connection_status::disconnected },
             _side { connection_side::undefined },
             _kind { connection_kind::undefined },
@@ -95,14 +95,14 @@ namespace engine {
         auto status { uv_ip6_addr(_host.data(), _port, &_addr.sin6) };
         if (status == 0) {
             logdebug("Converted ip6 address to binary representation: %s:%hu, cid: %llu.", _host.data(), _port, _id);
-            _version = internet_protocol_version::ip_v6;
+            _version = protocol_domain::v6;
             return;
         }
 
         status = uv_ip4_addr(_host.data(), _port, &_addr.sin);
         if (status == 0) {
             logdebug("Converted ip4 address to binary representation: %s:%hu, cid: %llu.", _host.data(), _port, _id);
-            _version = internet_protocol_version::ip_v4;
+            _version = protocol_domain::v4;
             return;
         }
 

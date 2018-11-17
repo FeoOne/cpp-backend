@@ -47,7 +47,8 @@ namespace backend {
 
     void ws_service::disconnect(SoupWebsocketConnection *ws) noexcept
     {
-        router()->enqueue(engine::basic_task::create<engine::ws_disconnect_task>(ws));
+        auto task { new (std::nothrow) engine::ws_disconnect_task(ws) };
+        router()->enqueue(task);
     }
 
     void ws_service::handle_ws_request_task(engine::basic_task *base_task) noexcept
@@ -131,14 +132,14 @@ namespace backend {
             u64 amount { json["amount"].asUInt64() };
 
             auto invoice { _invoice_manager->create(merchandise_guid, std::move(mail), amount, connection) };
-            auto request { engine::db_request::create<create_float_invoice_db_request>(merchandise_guid,
-                                                                                       invoice->mail(),
-                                                                                       invoice->amount()) };
+            auto request { new (std::nothrow) create_float_invoice_db_request(merchandise_guid,
+                                                                              invoice->mail(),
+                                                                              invoice->amount()) };
             request->assign_callback(std::bind(&ws_service::create_float_invoice_db_response_fn,
                                                this,
                                                std::placeholders::_1));
 
-            auto task { engine::basic_task::create<engine::db_request_task>(request) };
+            auto task { new (std::nothrow) engine::db_request_task(request) };
             router()->enqueue(task);
         }
         catch (const std::exception& e) {
@@ -151,7 +152,7 @@ namespace backend {
     {
         auto request { reinterpret_cast<create_float_invoice_db_request *>(base_request) };
         if (request->is_success()) {
-            auto invoice { _invoice_manager->get_by_merchandise_guid(request->merchandise_guid) };
+            auto invoice { _invoice_manager->get_by_merchandise_guid(request->merchandise_guid()) };
             if (invoice != nullptr) {
                 invoice->update(request);
 
@@ -172,7 +173,7 @@ namespace backend {
         Json::StreamWriterBuilder builder;
         auto data { Json::writeString(builder, root) };
 
-        auto task { engine::basic_task::create<engine::ws_response_task>(invoice->connection(), std::move(data)) };
+        auto task { new (std::nothrow) engine::ws_response_task(invoice->connection(), std::move(data)) };
         router()->enqueue(task);
     }
 

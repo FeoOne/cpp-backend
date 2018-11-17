@@ -14,16 +14,16 @@
 
 namespace engine {
 
-    enum class transport_protocol {
+    enum class socket_type {
         undefined,
-        tcp,
-        udp,
+        stream,
+        datagram,
     };
 
-    enum class internet_protocol_version {
+    enum class protocol_domain {
         undefined,
-        ip_v4,
-        ip_v6,
+        v4,
+        v6,
     };
 
     enum class connection_side {
@@ -74,8 +74,8 @@ namespace engine {
         uv_shutdown_t   shutdown;
     };
 
-    const char *transport_protocol_to_str(transport_protocol protocol) noexcept;
-    const char *internet_protocol_version_to_str(internet_protocol_version version) noexcept;
+    const char *socket_type_to_str(socket_type protocol) noexcept;
+    const char *protocol_domain_to_str(protocol_domain version) noexcept;
     const char *connection_status_to_str(connection_status status) noexcept;
 
 }

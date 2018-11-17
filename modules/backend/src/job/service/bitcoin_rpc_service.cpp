@@ -58,8 +58,7 @@ namespace backend {
             out = Json::Value {};
             if (perform(in, out)) {
                 data = Json::writeString(write_builder, out);
-                printf("%s\n", data.data());
-
+                //printf("%s\n", data.data());
             }
         }
 

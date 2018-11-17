@@ -85,7 +85,7 @@ namespace engine {
         g_signal_connect(connection, "error", G_CALLBACK(&ws_service::error_callback), this);
         g_signal_connect(connection, "closed", G_CALLBACK(&ws_service::closed_callback), this);
 
-        auto task { basic_task::create<ws_connection_status_task>(connection, connection_status::connected) };
+        auto task { new (std::nothrow) ws_connection_status_task(connection, connection_status::connected) };
         router()->enqueue(task);
     }
 
@@ -93,7 +93,7 @@ namespace engine {
                                 SoupWebsocketDataType data_type,
                                 GBytes *data) noexcept
     {
-        auto task { basic_task::create<ws_request_task>(connection, data_type, data) };
+        auto task { new (std::nothrow) ws_request_task(connection, data_type, data) };
         router()->enqueue(task);
     }
 
@@ -107,7 +107,7 @@ namespace engine {
         g_signal_handlers_disconnect_by_data(connection, this);
         STL_GOBJECT_RELEASE(connection);
 
-        auto task { basic_task::create<ws_connection_status_task>(connection, connection_status::disconnected) };
+        auto task { new (std::nothrow) ws_connection_status_task(connection, connection_status::disconnected) };
         router()->enqueue(task);
     }
 

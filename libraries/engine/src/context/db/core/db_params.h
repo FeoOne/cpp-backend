@@ -20,7 +20,7 @@ namespace engine {
         ~db_params();
 
         size_t count() const noexcept { return _count; }
-        const char * const *values() const noexcept;
+        const char *values() const noexcept;
         const int *lengths() const noexcept;
         const int *formats() const noexcept;
         const Oid *oids() const noexcept;
@@ -28,7 +28,7 @@ namespace engine {
         void bake() noexcept;
 
         void operator<<(const std::string& value) noexcept;
-        void operator<<(const std::string_view& value) noexcept;
+        void operator<<(const char *value) noexcept;
         void operator<<(bool value) noexcept;
         void operator<<(u16 value) noexcept;
         void operator<<(s16 value) noexcept;

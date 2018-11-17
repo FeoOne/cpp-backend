@@ -38,17 +38,6 @@
         return std::make_unique<T>(std::forward<StlArgs>(args)...);                     \
     }
 
-// todo: got rid
-#define STL_DECLARE_NEW_DELETE(base_type)                                                           \
-    template<typename T, typename... Args>                                                          \
-    static T *create(Args&&... args) noexcept {                                                     \
-        return new (stl::memory::aligned_alloc<void>(sizeof(T))) T(std::forward<Args>(args)...);    \
-    }                                                                                               \
-    static void destroy(base_type *obj) noexcept {                                                  \
-        obj->~base_type();                                                                          \
-        std::free(obj);                                                                     \
-    }
-
 namespace stl {
 
     class memory final {

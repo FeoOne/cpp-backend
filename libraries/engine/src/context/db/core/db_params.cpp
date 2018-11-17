@@ -32,24 +32,24 @@ namespace engine {
         }
     }
 
-    const char * const *db_params::values() const noexcept
+    const char *db_params::values() const noexcept
     {
-        return count() == 0 ? nullptr : reinterpret_cast<const char * const *>(&_memory);
+        return count() != 0 ? reinterpret_cast<char *>(_memory) : nullptr;
     }
 
     const int *db_params::lengths() const noexcept
     {
-        return count() == 0 ? nullptr : _lengths.data();
+        return count() != 0 ? _lengths.data() : nullptr;
     }
 
     const int *db_params::formats() const noexcept
     {
-        return count() == 0 ? nullptr : _formats.data();
+        return count() != 0 ? _formats.data() : nullptr;
     }
 
     const Oid *db_params::oids() const noexcept
     {
-        return count() == 0 ? nullptr : _oids.data();
+        return count() != 0 ? _oids.data() : nullptr;
     }
 
     void db_params::bake() noexcept
@@ -112,9 +112,9 @@ namespace engine {
         append(value.data(), value.length() + 1, FORMAT_TEXT, TEXTOID);
     }
 
-    void db_params::operator<<(const std::string_view& value) noexcept
+    void db_params::operator<<(const char *value) noexcept
     {
-        append(value.data(), value.length() + 1, FORMAT_TEXT, TEXTOID);
+        append(value, std::strlen(value) + 1, FORMAT_TEXT, TEXTOID);
     }
 
     void db_params::operator<<(bool value) noexcept

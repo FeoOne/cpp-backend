@@ -10,7 +10,7 @@
 namespace engine {
 
     udp_connection::udp_connection() :
-            connection(transport_protocol::udp)
+            connection(socket_type::datagram)
     {
     }
 

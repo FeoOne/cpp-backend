@@ -127,11 +127,12 @@ namespace engine {
     {
         request->assign_connection(this);
 
+        auto values { request->params().values() };
         return PQsendQueryParams(_connection,
                 request->query(),
                 static_cast<int>(request->params().count()),
                 request->params().oids(),
-                request->params().values(),
+                &values,
                 request->params().lengths(),
                 request->params().formats(),
                 FORMAT_BINARY);

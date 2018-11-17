@@ -14,9 +14,10 @@ namespace backend {
 
     class bitcoin {
     public:
-        static std::string generate_address(const u8 *seed, size_t size, u64 index) noexcept;
+        static std::string generate_address(const u8 *seed, size_t seed_size, u64 index) noexcept;
 
     private:
+
 
     };
 

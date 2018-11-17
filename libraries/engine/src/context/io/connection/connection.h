@@ -48,10 +48,10 @@ namespace engine {
 
         inline size_t id() const noexcept { return _id; }
         inline network_handle *handle() noexcept { return &_handle; }
-        inline transport_protocol protocol() const noexcept { return _protocol; }
+        inline socket_type protocol() const noexcept { return _protocol; }
         inline connection_side side() const noexcept { return _side; }
         inline connection_kind kind() const noexcept { return _kind; }
-        inline internet_protocol_version version() const noexcept { return _version; }
+        inline protocol_domain version() const noexcept { return _version; }
 
         inline connection_link link() noexcept { return connection_link { this }; }
 
@@ -62,7 +62,7 @@ namespace engine {
         inline const std::string_view& name() const noexcept { return _name; }
 
     protected:
-        explicit connection(transport_protocol protocol) noexcept;
+        explicit connection(socket_type protocol) noexcept;
 
         inline u16 backlog() const noexcept { return _backlog; }
         inline u16 keepalive() const noexcept { return _keepalive; }
@@ -72,8 +72,8 @@ namespace engine {
         u64                         _id;
 
         network_handle              _handle;
-        transport_protocol          _protocol;
-        internet_protocol_version   _version;
+        socket_type          _protocol;
+        protocol_domain   _version;
         connection_status           _status;
         connection_side             _side;
         connection_kind             _kind;
