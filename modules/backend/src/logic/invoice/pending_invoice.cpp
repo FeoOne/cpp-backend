@@ -11,16 +11,21 @@
 
 namespace backend {
 
-    pending_invoice::pending_invoice(const stl::uuid& merchandise_guid, std::string&& mail, u64 amount) noexcept :
+    pending_invoice::pending_invoice(const stl::uuid& merchandise_guid,
+                                     std::string&& mail,
+                                     s64 amount,
+                                     s64 fee) noexcept :
             _state { pending_state::initialized },
             _id { 0 },
             _guid {},
+            _pending_guid { stl::uuid::generate_strategy::RANDOM },
             _wallet_guid {},
             _confirm_block_count { 0 },
             _callback_url {},
             _merchandise_guid { merchandise_guid },
             _mail { mail },
             _amount { amount },
+            _fee { fee },
             _connection { nullptr }
     {
     }

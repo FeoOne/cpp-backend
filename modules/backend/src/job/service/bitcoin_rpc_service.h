@@ -32,10 +32,14 @@ namespace backend {
 
         size_t get_block_count() noexcept;
         s64 get_estimated_fee(size_t wait_for_block_count) noexcept;
+        bool get_raw_mempool(bool is_verbose, Json::Value& out) noexcept;
+        bool get_raw_transaction(const char *txid, Json::Value& out) noexcept;
 
     private:
         const char *        _bitcoin_rpc_address;
         const char *        _bitcoin_rpc_credentials;
+
+        void init_in_json(Json::Value& in, const std::string& method) noexcept;
 
         bool perform(const Json::Value& in, Json::Value& out) noexcept;
 

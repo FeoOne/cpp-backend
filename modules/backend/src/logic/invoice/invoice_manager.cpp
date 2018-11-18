@@ -19,12 +19,13 @@ namespace backend {
 
     pending_invoice *invoice_manager::create(const stl::uuid& merchandise_guid,
                                              std::string&& mail,
-                                             u64 amount,
+                                             s64 amount,
+                                             s64 fee,
                                              SoupWebsocketConnection *connection) noexcept
     {
-        auto invoice { new (std::nothrow) pending_invoice(merchandise_guid, std::move(mail), amount) };
+        auto invoice { new (std::nothrow) pending_invoice(merchandise_guid, std::move(mail), amount, fee) };
         invoice->assign_connection(connection);
-        _invoices_by_merchandise_guid.insert({ merchandise_guid, invoice });
+        _invoices_by_pending_guid.insert({ invoice->pending_guid(), invoice });
         _invoices_by_connection.insert({ connection, invoice });
         return invoice;
     }
@@ -39,11 +40,11 @@ namespace backend {
         return result;
     }
 
-    pending_invoice *invoice_manager::get_by_merchandise_guid(const stl::uuid &merchandise_guid) noexcept
+    pending_invoice *invoice_manager::get_by_pending_guid(const stl::uuid &pending_guid) noexcept
     {
         pending_invoice *result { nullptr };
-        auto it { _invoices_by_merchandise_guid.find(merchandise_guid) };
-        if (it != _invoices_by_merchandise_guid.end()) {
+        auto it { _invoices_by_pending_guid.find(pending_guid) };
+        if (it != _invoices_by_pending_guid.end()) {
             result = it->second;
         }
         return result;

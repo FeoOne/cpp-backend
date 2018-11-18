@@ -37,6 +37,8 @@ namespace backend {
 
         invoice_manager::uptr                                       _invoice_manager;
 
+        engine::timer::uptr                                         _invoice_poll_timer;
+
         void handle_ws_request_task(engine::basic_task *base_task) noexcept;
         void handle_ws_connection_status_task(engine::basic_task *base_task) noexcept;
 
@@ -45,6 +47,8 @@ namespace backend {
         void create_float_invoice_db_response_fn(engine::db_request *base_request) noexcept;
 
         void respond_invoice_created(pending_invoice *invoice) noexcept;
+
+        void on_invoice_poll_timer() noexcept;
 
     };
 

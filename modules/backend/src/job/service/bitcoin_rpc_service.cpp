@@ -38,30 +38,6 @@ namespace backend {
             logemerg("Can't setup db connection service: no '%s' presented.",
                      consts::config::key::bitcoin_rpc_credentials);
         }
-
-//        Json::Value in;
-//        in["jsonrpc"] = "1.0";
-//        in["method"] = "getrawmempool";
-////        in["params"] = Json::Value { Json::arrayValue };
-////        in["params"].append(true);
-//
-//        Json::Value out;
-//        if (perform(in, out)) {
-//            Json::StreamWriterBuilder write_builder;
-//            auto data { Json::writeString(write_builder, out) };
-//
-//            auto txid { out["result"][0].asString() };
-//            in["method"] = "getrawtransaction";
-//            in["params"] = Json::Value { Json::arrayValue };
-//            in["params"].append(txid);
-//            in["params"].append(true);
-//
-//            out = Json::Value {};
-//            if (perform(in, out)) {
-//                data = Json::writeString(write_builder, out);
-//                //printf("%s\n", data.data());
-//            }
-//        }
     }
 
     void bitcoin_rpc_service::reset() noexcept
@@ -72,7 +48,7 @@ namespace backend {
     size_t bitcoin_rpc_service::get_block_count() noexcept
     {
         Json::Value in;
-        in["method"] = "getblockcount";
+        init_in_json(in, "getblockcount");
 
         Json::Value out;
         size_t result { 0 };
@@ -89,7 +65,7 @@ namespace backend {
         logassert(wait_for_block_count >= 2 && wait_for_block_count <= 1000, "conf_target out of bounds.");
 
         Json::Value in;
-        in["method"] = "estimatesmartfee";
+        init_in_json(in, "estimatesmartfee");
         in["params"] = Json::Value { Json::arrayValue };
         in["params"].append(static_cast<u32>(wait_for_block_count));
         in["params"].append("ECONOMICAL"); // todo: add configuration for "UNSET" "ECONOMICAL" "CONSERVATIVE"
@@ -102,6 +78,33 @@ namespace backend {
         }
 
         return result;
+    }
+
+    bool bitcoin_rpc_service::get_raw_mempool(bool is_verbose, Json::Value& out) noexcept
+    {
+        Json::Value in;
+        init_in_json(in, "getrawmempool");
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(is_verbose);
+
+        return perform(in, out);
+    }
+
+    bool bitcoin_rpc_service::get_raw_transaction(const char *txid, Json::Value& out) noexcept
+    {
+        Json::Value in;
+        init_in_json(in, "getrawtransaction");
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(txid);
+        in["params"].append(true);
+
+        return perform(in, out);
+    }
+
+    void bitcoin_rpc_service::init_in_json(Json::Value& in, const std::string& method) noexcept
+    {
+        in["jsonrpc"] = "1.0";
+        in["method"] = method;
     }
 
     bool bitcoin_rpc_service::perform(const Json::Value& in, Json::Value& out) noexcept

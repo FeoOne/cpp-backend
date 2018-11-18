@@ -31,13 +31,13 @@ namespace backend {
         s64 estimated_fee() const noexcept { return _estimated_fee; }
 
     private:
-        engine::timer::uptr         _10m_timer;
+        engine::timer::uptr         _fee_poll_timer;
 
         size_t                      _fee_wait_block_count;
 
         s64                         _estimated_fee;
 
-        void on_10m_timer() noexcept;
+        void on_fee_poll_timer() noexcept;
     };
 
 }

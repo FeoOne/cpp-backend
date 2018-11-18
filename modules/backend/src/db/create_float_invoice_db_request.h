@@ -21,18 +21,21 @@ namespace backend {
         stl::uuid           wallet_guid;
         u32                 confirm_block_count;
         char *              callback_url;
+        u64                 created_at;
 
-        explicit create_float_invoice_db_request(const stl::uuid& merchandise_guid,
+        explicit create_float_invoice_db_request(const stl::uuid& pending_guid,
+                                                 const stl::uuid& merchandise_guid,
                                                  const std::string& mail,
-                                                 u64 amount) noexcept;
+                                                 s64 amount,
+                                                 s64 fee) noexcept;
         virtual ~create_float_invoice_db_request();
 
         void process_response(engine::db_response *response) noexcept final;
 
-        const stl::uuid& merchandise_guid() const noexcept { return _merchandise_guid; }
+        const stl::uuid& pending_guid() const noexcept { return _pending_guid; }
 
     private:
-        stl::uuid           _merchandise_guid;
+        stl::uuid           _pending_guid;
 
     };
 

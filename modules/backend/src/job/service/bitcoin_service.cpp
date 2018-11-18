@@ -10,8 +10,8 @@
 
 #include "job/service/bitcoin_service.h"
 
-#define EX_10M_TIMER_DELAY          1000
-#define EX_10M_TIMER_REPEAT         60000
+#define EX_FEE_POLL_TIMER_DELAY     1000
+#define EX_FEE_POLL_TIMER_REPEAT    60000
 
 #define EX_FEE_WAIT_BLOCK_COUNT     2
 
@@ -21,7 +21,7 @@ namespace backend {
                                      engine::task_router *router,
                                      const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
-            _10m_timer { engine::timer::make_unique() },
+            _fee_poll_timer { engine::timer::make_unique() },
             _fee_wait_block_count { 0 },
             _estimated_fee { 0 }
     {
@@ -38,19 +38,19 @@ namespace backend {
                                       &_fee_wait_block_count,
                                       EX_FEE_WAIT_BLOCK_COUNT);
 
-        _10m_timer->setup(delegate()->loop<engine::job_loop>()->loop(),
-                          EX_10M_TIMER_DELAY,
-                          EX_10M_TIMER_REPEAT,
-                          std::bind(&bitcoin_service::on_10m_timer, this));
-        _10m_timer->start();
+        _fee_poll_timer->setup(delegate()->loop<engine::job_loop>()->loop(),
+                               EX_FEE_POLL_TIMER_DELAY,
+                               EX_FEE_POLL_TIMER_REPEAT,
+                               std::bind(&bitcoin_service::on_fee_poll_timer, this));
+        _fee_poll_timer->start();
     }
 
     void bitcoin_service::reset() noexcept
     {
-        _10m_timer->stop();
+        _fee_poll_timer->stop();
     }
 
-    void bitcoin_service::on_10m_timer() noexcept
+    void bitcoin_service::on_fee_poll_timer() noexcept
     {
         _estimated_fee = BITCOIN_RPC_SERVICE->get_estimated_fee(_fee_wait_block_count);
     }
@@ -59,5 +59,5 @@ namespace backend {
 
 #undef EX_FEE_WAIT_BLOCK_COUNT
 
-#undef EX_10M_TIMER_REPEAT
-#undef EX_10M_TIMER_DELAY
+#undef EX_FEE_POLL_TIMER_REPEAT
+#undef EX_FEE_POLL_TIMER_DELAY
