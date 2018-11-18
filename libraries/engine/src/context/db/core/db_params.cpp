@@ -109,12 +109,12 @@ namespace engine {
 
     void db_params::operator<<(const std::string& value) noexcept
     {
-        append(value.data(), value.length() + 1, FORMAT_TEXT, TEXTOID);
+        append(value.data(), value.length() + 1, FORMAT_BINARY, TEXTOID);
     }
 
     void db_params::operator<<(const char *value) noexcept
     {
-        append(value, std::strlen(value) + 1, FORMAT_TEXT, TEXTOID);
+        append(value, std::strlen(value) + 1, FORMAT_BINARY, TEXTOID);
     }
 
     void db_params::operator<<(bool value) noexcept

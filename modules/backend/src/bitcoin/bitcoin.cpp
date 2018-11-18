@@ -35,4 +35,16 @@ namespace backend {
         return { result };
     }
 
+    // static
+    s64 bitcoin::json_value_to_amount(double value) noexcept
+    {
+        return static_cast<s64>(value * 1e8 + (value < 0.0 ? -0.5 : 0.5));
+    }
+
+    // static
+    double bitcoin::amount_to_json_value(s64 amount) noexcept
+    {
+        return static_cast<double>(amount) / 1e8;
+    }
+
 }

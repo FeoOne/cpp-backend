@@ -12,6 +12,8 @@
 
 #include <engine.h>
 
+#define BITCOIN_RPC_SERVICE     delegate()->service<bitcoin_rpc_service>()
+
 namespace backend {
 
     class bitcoin_rpc_service : public stl::crucial<engine::work_service, bitcoin_rpc_service> {
@@ -29,6 +31,7 @@ namespace backend {
         void reset() noexcept final;
 
         size_t get_block_count() noexcept;
+        s64 get_estimated_fee(size_t wait_for_block_count) noexcept;
 
     private:
         const char *        _bitcoin_rpc_address;

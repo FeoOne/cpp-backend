@@ -117,7 +117,6 @@ namespace engine {
 
     void tcp_service::on_reconnect_timer() noexcept
     {
-        logdebug("Reconnect timer.");
         for (auto connection: _disconnected_connections) {
             _start_callbacks.at(connection->kind())(connection);
         }

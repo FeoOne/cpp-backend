@@ -5,6 +5,7 @@
  * @brief
  */
 
+#include "bitcoin/bitcoin.h"
 #include "main/backend_consts.h"
 
 #include "job/service/bitcoin_rpc_service.h"
@@ -38,31 +39,29 @@ namespace backend {
                      consts::config::key::bitcoin_rpc_credentials);
         }
 
-        Json::Value in;
-        in["jsonrpc"] = "1.0";
-        in["method"] = "getrawmempool";
-//        in["params"] = Json::Value { Json::arrayValue };
-//        in["params"].append(true);
-
-        Json::Value out;
-        if (perform(in, out)) {
-            Json::StreamWriterBuilder write_builder;
-            auto data { Json::writeString(write_builder, out) };
-
-            auto txid { out["result"][0].asString() };
-            in["method"] = "getrawtransaction";
-            in["params"] = Json::Value { Json::arrayValue };
-            in["params"].append(txid);
-            in["params"].append(true);
-
-            out = Json::Value {};
-            if (perform(in, out)) {
-                data = Json::writeString(write_builder, out);
-                //printf("%s\n", data.data());
-            }
-        }
-
-
+//        Json::Value in;
+//        in["jsonrpc"] = "1.0";
+//        in["method"] = "getrawmempool";
+////        in["params"] = Json::Value { Json::arrayValue };
+////        in["params"].append(true);
+//
+//        Json::Value out;
+//        if (perform(in, out)) {
+//            Json::StreamWriterBuilder write_builder;
+//            auto data { Json::writeString(write_builder, out) };
+//
+//            auto txid { out["result"][0].asString() };
+//            in["method"] = "getrawtransaction";
+//            in["params"] = Json::Value { Json::arrayValue };
+//            in["params"].append(txid);
+//            in["params"].append(true);
+//
+//            out = Json::Value {};
+//            if (perform(in, out)) {
+//                data = Json::writeString(write_builder, out);
+//                //printf("%s\n", data.data());
+//            }
+//        }
     }
 
     void bitcoin_rpc_service::reset() noexcept
@@ -79,7 +78,27 @@ namespace backend {
         size_t result { 0 };
 
         if (perform(in, out)) {
-            return out["result"].asUInt();
+            result = out["result"].asUInt();
+        }
+
+        return result;
+    }
+
+    s64 bitcoin_rpc_service::get_estimated_fee(size_t wait_for_block_count) noexcept
+    {
+        logassert(wait_for_block_count >= 2 && wait_for_block_count <= 1000, "conf_target out of bounds.");
+
+        Json::Value in;
+        in["method"] = "estimatesmartfee";
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(static_cast<u32>(wait_for_block_count));
+        in["params"].append("ECONOMICAL"); // todo: add configuration for "UNSET" "ECONOMICAL" "CONSERVATIVE"
+
+        Json::Value out;
+        s64 result { 0 };
+
+        if (perform(in, out)) {
+            result = bitcoin::json_value_to_amount(out["result"]["feerate"].asDouble());
         }
 
         return result;

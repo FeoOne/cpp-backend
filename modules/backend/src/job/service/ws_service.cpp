@@ -6,6 +6,7 @@
  */
 
 #include "main/backend_consts.h"
+#include "job/service/bitcoin_service.h"
 #include "db/create_float_invoice_db_request.h"
 
 #include "job/service/ws_service.h"
@@ -15,8 +16,8 @@ namespace backend {
     static constexpr std::string_view create_invoice_message_name { "create_invoice" };
 
     ws_service::ws_service(const stl::setting& config,
-                                         engine::task_router *router,
-                                         const engine::work_service_delegate *delegate) noexcept :
+                           engine::task_router *router,
+                           const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
             _processors {},
             _invoice_manager { invoice_manager::make_unique() }
@@ -64,7 +65,6 @@ namespace backend {
         } else {
             gsize size { 0 };
             const char *text = task->text(&size);
-            logdebug("Text message from ws: %s", text);
 
             // basic checks
             if (text == nullptr || size > max_json_size) {
@@ -169,6 +169,7 @@ namespace backend {
         root["name"] = "invoice_created";
         root["address"] = invoice->address();
         root["amount"] = invoice->amount();
+        root["fee"] = BITCOIN_SERVICE->estimated_fee();
 
         Json::StreamWriterBuilder builder;
         auto data { Json::writeString(builder, root) };

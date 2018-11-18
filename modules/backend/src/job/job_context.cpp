@@ -8,6 +8,7 @@
 #include "job/service/io_service.h"
 #include "job/service/ws_service.h"
 #include "job/service/session_service.h"
+#include "job/service/bitcoin_service.h"
 #include "job/service/bitcoin_rpc_service.h"
 #include "job/service/message/database_messaging_service.h"
 #include "job/service/message/manbtc_messaging_service.h"
@@ -25,6 +26,7 @@ namespace backend {
         add_service(database_messaging_service::make_unique(config, router, this));
         add_service(manbtc_messaging_service::make_unique(config, router, this));
         add_service(bitcoin_rpc_service::make_unique(config, router, this));
+        add_service(bitcoin_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(engine::io_request_task, io_service);
         EX_BIND_TASK_ROUTE(engine::connection_status_changed_task, io_service);

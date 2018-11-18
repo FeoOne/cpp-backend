@@ -206,7 +206,6 @@ namespace engine {
 
     void db_control_service::on_reconnect_timer() noexcept
     {
-        logdebug("Reconnect timer.");
         auto it { _unavailable_connections.begin() };
         while (it != _unavailable_connections.end()) {
             auto connection { *it };
@@ -282,7 +281,7 @@ namespace engine {
         db_response response { connection->result() };
         if (!response.is_valid() || response.status() == PGRES_FATAL_ERROR) {
             // todo: process error
-            logwarn("Request error: %s", response.result_error_message());
+            logwarn("%s", response.result_error_message());
             finish_connection(connection);
             return;
         }
