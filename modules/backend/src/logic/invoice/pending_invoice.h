@@ -33,7 +33,7 @@ namespace backend {
         const std::string& address() const noexcept { return _address; }
 
         const stl::uuid& merchandise_guid() const noexcept { return _merchandise_guid; }
-        const char *mail() const noexcept { return _mail.data(); }
+        const std::string& mail() const noexcept { return _mail; }
         u64 amount() const noexcept { return _amount; }
 
         void update(create_float_invoice_db_request *request) noexcept;

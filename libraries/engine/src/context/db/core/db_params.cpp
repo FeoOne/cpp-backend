@@ -6,16 +6,19 @@
 
 #include "context/db/core/db_params.h"
 
+#define EX_MEM_POOL_SIZE    4194304
+
 namespace engine {
+
+    // static
+    stl::float_memory_pool::uptr db_params::_memory_pool { stl::float_memory_pool::make_unique(EX_MEM_POOL_SIZE) };
 
     db_params::db_params(size_t count) noexcept :
             _count { count },
             _values {},
             _lengths {},
             _formats {},
-            _oids {},
-            _memory { nullptr },
-            _length { 0 }
+            _oids {}
     {
         if (count > 0) {
             _values.reserve(count);
@@ -27,94 +30,39 @@ namespace engine {
 
     db_params::~db_params()
     {
-        if (_memory != nullptr) {
-            std::free(_memory);
+        for (auto memory: _values) {
+            _memory_pool->free(memory);
         }
     }
 
-    const char *db_params::values() const noexcept
+    const char * const *db_params::values() const noexcept
     {
-        return count() != 0 ? reinterpret_cast<char *>(_memory) : nullptr;
+        return _count != 0 ? _values.data() : nullptr;
     }
 
     const int *db_params::lengths() const noexcept
     {
-        return count() != 0 ? _lengths.data() : nullptr;
+        return _count != 0 ? _lengths.data() : nullptr;
     }
 
     const int *db_params::formats() const noexcept
     {
-        return count() != 0 ? _formats.data() : nullptr;
+        return _count != 0 ? _formats.data() : nullptr;
     }
 
     const Oid *db_params::oids() const noexcept
     {
-        return count() != 0 ? _oids.data() : nullptr;
-    }
-
-    void db_params::bake() noexcept
-    {
-        _memory = stl::memory::malloc<u8>(_length);
-
-        size_t offset { 0 };
-        for (size_t i = 0; i < _count; ++i) {
-            auto memory { &_memory[offset] };
-
-            switch (_oids[i]) {
-                case BOOLOID:
-                case TEXTOID:
-                case UUIDOID: {
-                    std::memcpy(memory, _values[i], static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                case INT2OID: {
-                    u16 value { htobe16(*reinterpret_cast<const u16 *>(_values[i])) };
-                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                case INT4OID: {
-                    u32 value { htobe32(*reinterpret_cast<const u32 *>(_values[i])) };
-                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                case INT8OID: {
-                    u64 value { htobe64(*reinterpret_cast<const u64 *>(_values[i])) };
-                    std::memcpy(memory, &value, static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                case FLOAT4OID: {
-                    u8 value[sizeof(float)];
-                    std::memcpy(value, _values[i], sizeof(float));
-                    std::reverse(std::begin(value), std::end(value));
-                    std::memcpy(memory, value, static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                case FLOAT8OID: {
-                    u8 value[sizeof(double)];
-                    std::memcpy(value, _values[i], sizeof(double));
-                    std::reverse(std::begin(value), std::end(value));
-                    std::memcpy(memory, value, static_cast<size_t>(_lengths[i]));
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-
-            offset += static_cast<size_t>(_lengths[i]);
-        }
-
-        logassert(offset == _length, "Bake problem.");
+        return _count != 0 ? _oids.data() : nullptr;
     }
 
     void db_params::operator<<(const std::string& value) noexcept
     {
-        append(value.data(), value.length() + 1, FORMAT_BINARY, TEXTOID);
+        append(value.data(), value.length() + 1, FORMAT_TEXT, TEXTOID);
     }
 
     void db_params::operator<<(const char *value) noexcept
     {
-        append(value, std::strlen(value) + 1, FORMAT_BINARY, TEXTOID);
+        append(value, std::strlen(value) + 1, FORMAT_TEXT, TEXTOID);
     }
 
     void db_params::operator<<(bool value) noexcept
@@ -171,12 +119,59 @@ namespace engine {
     {
         logassert(_values.size() < _count, "Wrong param count.");
 
-        _values.push_back(memory);
+        char *data { reinterpret_cast<char *>(_memory_pool->alloc(length)) };
+        switch (oid) {
+            case BOOLOID:
+            case TEXTOID:
+            case UUIDOID: {
+                std::memcpy(data, memory, length);
+                break;
+            }
+            case INT2OID: {
+                logassert(length == sizeof(u16), "Param length missmatch.");
+                u16 value { htobe16(*reinterpret_cast<const u16 *>(memory)) };
+                std::memcpy(data, &value, sizeof(u16));
+                break;
+            }
+            case INT4OID: {
+                logassert(length == sizeof(u32), "Param length missmatch.");
+                u32 value { htobe32(*reinterpret_cast<const u32 *>(memory)) };
+                std::memcpy(data, &value, sizeof(u32));
+                break;
+            }
+            case INT8OID: {
+                logassert(length == sizeof(u64), "Param length missmatch.");
+                u64 value { htobe64(*reinterpret_cast<const u64 *>(memory)) };
+                std::memcpy(data, &value, sizeof(u64));
+                break;
+            }
+            case FLOAT4OID: {
+                logassert(length == sizeof(float), "Param length missmatch.");
+                u8 value[sizeof(float)];
+                std::memcpy(value, memory, sizeof(float));
+                std::reverse(std::begin(value), std::end(value));
+                std::memcpy(data, value, sizeof(float));
+                break;
+            }
+            case FLOAT8OID: {
+                logassert(length == sizeof(double), "Param length missmatch.");
+                u8 value[sizeof(double)];
+                std::memcpy(value, memory, sizeof(double));
+                std::reverse(std::begin(value), std::end(value));
+                std::memcpy(data, value, sizeof(double));
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        _values.push_back(data);
         _lengths.push_back(static_cast<int>(length));
         _formats.push_back(format);
         _oids.push_back(oid);
-
-        _length += length;
     }
 
 }
+
+#undef EX_MEM_POOL_SIZE

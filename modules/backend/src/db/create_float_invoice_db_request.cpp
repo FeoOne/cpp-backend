@@ -13,7 +13,7 @@ namespace backend {
     static constexpr size_t param_count { 3 };
 
     create_float_invoice_db_request::create_float_invoice_db_request(const stl::uuid& merchandise_guid,
-                                                                     const char *mail,
+                                                                     const std::string& mail,
                                                                      u64 amount) noexcept :
             engine::db_request(sql, param_count),
             invoice_id { 0 },
@@ -25,8 +25,6 @@ namespace backend {
         _params << merchandise_guid;
         _params << mail;
         _params << amount;
-
-        _params.bake();
     }
 
     // virtual

@@ -23,7 +23,7 @@ namespace backend {
         char *              callback_url;
 
         explicit create_float_invoice_db_request(const stl::uuid& merchandise_guid,
-                                                 const char *mail,
+                                                 const std::string& mail,
                                                  u64 amount) noexcept;
         virtual ~create_float_invoice_db_request();
 

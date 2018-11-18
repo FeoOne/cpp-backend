@@ -20,12 +20,10 @@ namespace engine {
         ~db_params();
 
         size_t count() const noexcept { return _count; }
-        const char *values() const noexcept;
+        const char * const *values() const noexcept;
         const int *lengths() const noexcept;
         const int *formats() const noexcept;
         const Oid *oids() const noexcept;
-
-        void bake() noexcept;
 
         void operator<<(const std::string& value) noexcept;
         void operator<<(const char *value) noexcept;
@@ -41,14 +39,13 @@ namespace engine {
         void operator<<(const stl::uuid& value) noexcept;
 
     private:
-        size_t                          _count;
-        std::vector<const char *>       _values;
-        std::vector<int>                _lengths;
-        std::vector<int>                _formats;
-        std::vector<Oid>                _oids;
+        size_t                                  _count;
+        std::vector<char *>                     _values;
+        std::vector<int>                        _lengths;
+        std::vector<int>                        _formats;
+        std::vector<Oid>                        _oids;
 
-        u8 *                            _memory;
-        size_t                          _length;
+        static stl::float_memory_pool::uptr     _memory_pool;
 
         void append(const char *memory, size_t length, int format, Oid oid) noexcept;
 
