@@ -23,20 +23,21 @@ namespace engine {
     // virtual
     void system_loop::start() noexcept
     {
-        _should_work.store(true, std::memory_order_relaxed);
-        while (_should_work.load(std::memory_order_relaxed)) {
+        _should_work = true;
+        do {
             auto task = queue()->dequeue();
             handler()->handle_task(task);
-        }
+        } while (_should_work);
     }
 
     // virtual
     void system_loop::stop() noexcept
     {
-        bool expected = true;
-        do {
-            expected = !_should_work.compare_exchange_weak(expected, false);
-        } while (expected);
+        _should_work = false;
+//        bool expected = true;
+//        do {
+//            expected = !_should_work.compare_exchange_weak(expected, false);
+//        } while (expected);
     }
 
 }
