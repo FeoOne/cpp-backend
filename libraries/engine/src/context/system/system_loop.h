@@ -24,7 +24,7 @@ namespace engine {
         void stop() noexcept final;
 
     private:
-        std::atomic_bool        _should_work;
+        bool                _should_work; // todo: mt safety
 
     };
 

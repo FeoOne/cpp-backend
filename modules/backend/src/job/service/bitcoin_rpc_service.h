@@ -3,6 +3,7 @@
  * @author Feo
  * @date 12/11/2018
  * @brief
+ * @see https://curl.haxx.se/libcurl/c/multi-uv.html
  */
 
 #ifndef BACKEND_BITCOIN_RPC_SERVICE_H
@@ -36,10 +37,25 @@ namespace backend {
         bool get_raw_transaction(const char *txid, Json::Value& out) noexcept;
 
     private:
-        const char *        _bitcoin_rpc_address;
-        const char *        _bitcoin_rpc_credentials;
+        const char *                                        _bitcoin_rpc_address;
+        const char *                                        _bitcoin_rpc_credentials;
+
+        engine::timer_handle                                _timeout_timer_handle;
+        CURLM *                                             _curl;
+        std::unordered_map<CURL *, engine::poll_handle>     _poll_handles;
 
         void init_in_json(Json::Value& in, const std::string& method) noexcept;
+
+        int on_handle_socket(CURL *easy, curl_socket_t socket, int action, void *userp) noexcept;
+        int on_start_timeout(CURLM *multi, long timeout_ms, void *userp) noexcept;
+        void on_curl_perform(uv_poll_t *poll_handle, int status, int events) noexcept;
+
+        static int handle_socket_fn(CURL *easy, curl_socket_t socket, int action, void *userp, void *socketp) noexcept;
+        static int start_timeout_fn(CURLM *multi, long timeout_ms, void *userp) noexcept;
+        static void curl_perform_fn(uv_poll_t *poll_handle, int status, int events) noexcept;
+
+
+
 
         bool perform(const Json::Value& in, Json::Value& out) noexcept;
 

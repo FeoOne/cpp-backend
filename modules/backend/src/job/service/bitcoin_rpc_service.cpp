@@ -17,9 +17,11 @@ namespace backend {
                                              const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
             _bitcoin_rpc_address { nullptr },
-            _bitcoin_rpc_credentials { nullptr }
+            _bitcoin_rpc_credentials { nullptr },
+            _timeout_timer_handle {},
+            _curl { nullptr },
+            _poll_handles {}
     {
-
     }
 
     // virtual
@@ -38,11 +40,22 @@ namespace backend {
             logemerg("Can't setup db connection service: no '%s' presented.",
                      consts::config::key::bitcoin_rpc_credentials);
         }
+
+        if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
+            logerror("Failed to init libcurl.");
+        }
+
+        uv_timer_init(delegate()->loop<engine::job_loop>()->loop(), &_timeout_timer_handle.timer);
+
+        _curl = curl_multi_init();
+        curl_multi_setopt(_curl, CURLMOPT_SOCKETFUNCTION, &bitcoin_rpc_service::handle_socket_fn);
+        curl_multi_setopt(_curl, CURLMOPT_TIMERFUNCTION, &bitcoin_rpc_service::start_timeout_fn);
     }
 
     void bitcoin_rpc_service::reset() noexcept
     {
-
+        curl_multi_cleanup(_curl);
+        _curl = nullptr;
     }
 
     size_t bitcoin_rpc_service::get_block_count() noexcept
@@ -144,6 +157,83 @@ namespace backend {
         delete reader;
 
         return result && out["error"].isNull();
+    }
+
+    int bitcoin_rpc_service::on_handle_socket(CURL *easy, curl_socket_t socket, int action, void *userp) noexcept
+    {
+        switch(action) {
+            case CURL_POLL_IN:
+            case CURL_POLL_OUT:
+            case CURL_POLL_INOUT: {
+                curl_multi_assign(_curl, socket, this);
+
+                int events = 0;
+                if (action != CURL_POLL_IN) {
+                    events |= UV_WRITABLE;
+                }
+                if (action != CURL_POLL_OUT) {
+                    events |= UV_READABLE;
+                }
+
+                auto it { _poll_handles.find(easy) };
+                auto &handle { _poll_handles[easy] };
+                if (it == _poll_handles.end()) {
+                    uv_poll_init_socket(delegate()->loop<engine::job_loop>()->loop(), &handle.poll, socket);
+                    uv_handle_set_data(&handle.handle, this);
+                }
+                uv_poll_start(&handle.poll, events, &bitcoin_rpc_service::curl_perform_fn);
+                break;
+            }
+            case CURL_POLL_REMOVE: {
+                auto &handle { _poll_handles[easy] };
+                    uv_poll_stop(&handle.poll);
+                    uv_close(&handle.handle, nullptr);
+                    curl_multi_assign(_curl, socket, nullptr);
+                break;
+            }
+            default: {
+            }
+        }
+
+        return 0;
+    }
+
+    int bitcoin_rpc_service::on_start_timeout(CURLM *multi, long timeout_ms, void *userp) noexcept
+    {
+
+    }
+
+    void bitcoin_rpc_service::on_curl_perform(uv_poll_t *poll_handle, int status, int events) noexcept
+    {
+
+    }
+
+    // static
+    int bitcoin_rpc_service::handle_socket_fn(CURL *easy,
+                                              curl_socket_t socket,
+                                              int action,
+                                              void *userp,
+                                              void *socketp) noexcept
+    {
+        int result { 0 };
+        if (socketp != nullptr) {
+            result = reinterpret_cast<bitcoin_rpc_service *>(socketp)->on_handle_socket(easy, socket, action, userp);
+        }
+        return result;
+    }
+
+    // static
+    int bitcoin_rpc_service::start_timeout_fn(CURLM *multi, long timeout_ms, void *userp) noexcept
+    {
+
+    }
+
+    // static
+    void bitcoin_rpc_service::curl_perform_fn(uv_poll_t *poll_handle, int status, int events) noexcept
+    {
+        if (poll_handle != nullptr && poll_handle->data != nullptr) {
+            reinterpret_cast<bitcoin_rpc_service *>(poll_handle->data)->on_curl_perform(poll_handle, status, events);
+        }
     }
 
     // static
