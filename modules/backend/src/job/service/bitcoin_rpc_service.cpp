@@ -20,7 +20,8 @@ namespace backend {
             _bitcoin_rpc_credentials { nullptr },
             _timeout_timer_handle {},
             _curl { nullptr },
-            _poll_handles {}
+            _context_by_curl {},
+            _context_by_poll {}
     {
     }
 
@@ -159,6 +160,28 @@ namespace backend {
         return result && out["error"].isNull();
     }
 
+    void bitcoin_rpc_service::check_multi_info() noexcept
+    {
+        int pending { 0 };
+        CURLMsg *message { nullptr };
+
+        while ((message = curl_multi_info_read(message, &pending)) != nullptr) {
+            switch (message->msg) {
+                case CURLMSG_DONE: {
+                    /**
+                     * Do not use message data after calling curl_multi_remove_handle() and
+                     * curl_easy_cleanup(). As per curl_multi_info_read() docs:
+                     * "WARNING: The data the returned pointer points to will not survive
+                     * calling curl_multi_cleanup, curl_multi_remove_handle or
+                     * curl_easy_cleanup."
+                     */
+
+                    break;
+                }
+            }
+        }
+    }
+
     int bitcoin_rpc_service::on_handle_socket(CURL *easy, curl_socket_t socket, int action, void *userp) noexcept
     {
         switch(action) {
@@ -175,20 +198,35 @@ namespace backend {
                     events |= UV_READABLE;
                 }
 
-                auto it { _poll_handles.find(easy) };
-                auto &handle { _poll_handles[easy] };
-                if (it == _poll_handles.end()) {
-                    uv_poll_init_socket(delegate()->loop<engine::job_loop>()->loop(), &handle.poll, socket);
-                    uv_handle_set_data(&handle.handle, this);
+                curl_context *context { nullptr };
+                auto it { _context_by_curl.find(easy) };
+                if (it == _context_by_curl.end()) {
+                    context = new curl_context;
+                    context->socket = socket;
+
+                    uv_poll_init_socket(delegate()->loop<engine::job_loop>()->loop(),
+                                        &context->poll_handle.poll,
+                                        socket);
+                    uv_handle_set_data(&context->poll_handle.handle, this);
+
+                    _context_by_curl[easy] = context;
+                    _context_by_poll[&context->poll_handle] = context;
                 }
-                uv_poll_start(&handle.poll, events, &bitcoin_rpc_service::curl_perform_fn);
+
+                uv_poll_start(&context->poll_handle.poll, events, &bitcoin_rpc_service::curl_perform_fn);
                 break;
             }
             case CURL_POLL_REMOVE: {
-                auto &handle { _poll_handles[easy] };
-                    uv_poll_stop(&handle.poll);
-                    uv_close(&handle.handle, nullptr);
+                auto it { _context_by_curl.find(easy) };
+                if (it != _context_by_curl.end()) {
+                    auto context { it->second };
+
+                    uv_poll_stop(&context->poll_handle.poll);
+                    uv_close(&context->poll_handle.handle, &bitcoin_rpc_service::curl_close_fn);
                     curl_multi_assign(_curl, socket, nullptr);
+
+                    _context_by_curl.erase(it);
+                }
                 break;
             }
             default: {
@@ -203,9 +241,39 @@ namespace backend {
 
     }
 
-    void bitcoin_rpc_service::on_curl_perform(uv_poll_t *poll_handle, int status, int events) noexcept
+    void bitcoin_rpc_service::on_curl_perform(engine::poll_handle *poll_handle, int status, int events) noexcept
     {
+        auto it { _context_by_poll.find(poll_handle) };
+        if (it == _context_by_poll.end()) {
+            logwarn("Curl perform error.");
+            return;
+        }
 
+        auto context { it->second };
+
+        int running_handles;
+        int flags = 0;
+
+        if (events & UV_READABLE) {
+            flags |= CURL_CSELECT_IN;
+        }
+        if (events & UV_WRITABLE) {
+            flags |= CURL_CSELECT_OUT;
+        }
+
+        curl_multi_socket_action(_curl, context->socket, flags, &running_handles);
+
+        check_multi_info();
+    }
+
+    void bitcoin_rpc_service::on_curl_close(engine::poll_handle *poll_handle) noexcept
+    {
+        auto it { _context_by_poll.find(poll_handle) };
+        if (it != _context_by_poll.end()) {
+            auto context { it->second };
+            delete context;
+            _context_by_poll.erase(it);
+        }
     }
 
     // static
@@ -232,7 +300,17 @@ namespace backend {
     void bitcoin_rpc_service::curl_perform_fn(uv_poll_t *poll_handle, int status, int events) noexcept
     {
         if (poll_handle != nullptr && poll_handle->data != nullptr) {
-            reinterpret_cast<bitcoin_rpc_service *>(poll_handle->data)->on_curl_perform(poll_handle, status, events);
+            auto handle { reinterpret_cast<engine::poll_handle *>(poll_handle) };
+            reinterpret_cast<bitcoin_rpc_service *>(poll_handle->data)->on_curl_perform(handle, status, events);
+        }
+    }
+
+    // static
+    void bitcoin_rpc_service::curl_close_fn(uv_handle_t *poll_handle) noexcept
+    {
+        if (poll_handle != nullptr && poll_handle->data != nullptr) {
+            auto handle { reinterpret_cast<engine::poll_handle *>(poll_handle) };
+            reinterpret_cast<bitcoin_rpc_service *>(poll_handle->data)->on_curl_close(handle);
         }
     }
 

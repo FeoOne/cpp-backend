@@ -37,22 +37,33 @@ namespace backend {
         bool get_raw_transaction(const char *txid, Json::Value& out) noexcept;
 
     private:
-        const char *                                        _bitcoin_rpc_address;
-        const char *                                        _bitcoin_rpc_credentials;
+        struct curl_context {
+            engine::poll_handle     poll_handle;
+            curl_socket_t           socket;
+        };
 
-        engine::timer_handle                                _timeout_timer_handle;
-        CURLM *                                             _curl;
-        std::unordered_map<CURL *, engine::poll_handle>     _poll_handles;
+        const char *                                                _bitcoin_rpc_address;
+        const char *                                                _bitcoin_rpc_credentials;
+
+        engine::timer_handle                                        _timeout_timer_handle;
+        CURLM *                                                     _curl;
+
+        std::unordered_map<CURL *, curl_context *>                  _context_by_curl;
+        std::unordered_map<engine::poll_handle *, curl_context *>   _context_by_poll;
 
         void init_in_json(Json::Value& in, const std::string& method) noexcept;
 
+        void check_multi_info() noexcept;
+
         int on_handle_socket(CURL *easy, curl_socket_t socket, int action, void *userp) noexcept;
         int on_start_timeout(CURLM *multi, long timeout_ms, void *userp) noexcept;
-        void on_curl_perform(uv_poll_t *poll_handle, int status, int events) noexcept;
+        void on_curl_perform(engine::poll_handle *poll_handle, int status, int events) noexcept;
+        void on_curl_close(engine::poll_handle *poll_handle) noexcept;
 
         static int handle_socket_fn(CURL *easy, curl_socket_t socket, int action, void *userp, void *socketp) noexcept;
         static int start_timeout_fn(CURLM *multi, long timeout_ms, void *userp) noexcept;
         static void curl_perform_fn(uv_poll_t *poll_handle, int status, int events) noexcept;
+        static void curl_close_fn(uv_handle_t *poll_handle) noexcept;
 
 
 
