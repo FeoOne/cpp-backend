@@ -18,13 +18,16 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(http_request_task)
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_request_task)
 
-        explicit http_request_task(const http_request::sptr& request) noexcept : _request { request } {}
+        explicit http_request_task(http_request *request) noexcept :
+                _request { request }
+        {}
+
         virtual ~http_request_task() = default;
 
-        http_request::sptr get_request() const noexcept { return _request; }
+        http_request *request() const noexcept { return _request; }
 
     private:
-        http_request::sptr      _request;
+        http_request *          _request;
 
     };
 

@@ -5,7 +5,7 @@
  * @brief
  */
 
-#include "context/web/service/webserver_service.h"
+#include "context/web/service/server_service.h"
 #include "context/web/task/ws_request_task.h"
 #include "context/web/task/ws_response_task.h"
 #include "context/web/task/ws_disconnect_task.h"
@@ -31,7 +31,7 @@ namespace engine {
 
     void ws_service::setup() noexcept
     {
-        auto server { delegate()->service<webserver_service>()->get_server() };
+        auto server { delegate()->service<server_service>()->soup_server() };
         if (server == nullptr) {
             logcrit("Failed to start websocket service w/o server.");
         }
@@ -53,7 +53,7 @@ namespace engine {
         auto websocket_config { config()[consts::config::key::websocket] };
         auto path { websocket_config[consts::config::key::path].to_string() };
 
-        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(), path);
+        soup_server_remove_handler(delegate()->service<server_service>()->soup_server(), path);
     }
 
     void ws_service::handle_ws_response_task(basic_task *base_task) noexcept

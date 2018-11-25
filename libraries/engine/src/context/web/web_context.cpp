@@ -6,7 +6,7 @@
  */
 
 #include "context/web/web_loop.h"
-#include "context/web/service/webserver_service.h"
+#include "context/web/service/server_service.h"
 #include "context/web/service/http_service.h"
 #include "context/web/service/ws_service.h"
 #include "context/web/task/http_response_task.h"
@@ -20,7 +20,7 @@ namespace engine {
     web_context::web_context(const stl::setting& config, task_router *router) noexcept :
             crucial(config, router, web_loop::make_unique(router->get_queue<web_context>(), this))
     {
-        add_service(webserver_service::make_unique(config, router, this));
+        add_service(server_service::make_unique(config, router, this));
         add_service(http_service::make_unique(config, router, this));
         add_service(ws_service::make_unique(config, router, this));
 

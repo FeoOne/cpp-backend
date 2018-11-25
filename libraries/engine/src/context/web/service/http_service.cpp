@@ -7,7 +7,7 @@
 
 #include "context/web/task/http_request_task.h"
 #include "context/web/task/http_response_task.h"
-#include "context/web/service/webserver_service.h"
+#include "context/web/service/server_service.h"
 
 #include "context/web/service/http_service.h"
 
@@ -29,7 +29,7 @@ namespace engine {
     // virtual
     void http_service::setup() noexcept
     {
-        auto server { delegate()->service<webserver_service>()->get_server() };
+        auto server { delegate()->service<server_service>()->soup_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
         }
@@ -44,7 +44,7 @@ namespace engine {
     // virtual
     void http_service::reset() noexcept
     {
-        soup_server_remove_handler(delegate()->service<webserver_service>()->get_server(),
+        soup_server_remove_handler(delegate()->service<server_service>()->soup_server(),
                                    consts::webserver::default_http_route);
     }
 
@@ -54,7 +54,7 @@ namespace engine {
         auto response { task->get_response() };
         auto request { response->get_request() };
 
-        soup_server_unpause_message(delegate()->service<webserver_service>()->get_server(),
+        soup_server_unpause_message(delegate()->service<server_service>()->soup_server(),
                                     request->get_message());
     }
 
@@ -67,7 +67,7 @@ namespace engine {
         logdebug("HTTP handler fired. Host: %s, user: %s.",
                  soup_client_context_get_host(client),
                  soup_client_context_get_auth_user(client));
-        logassert(delegate()->service<webserver_service>()->get_server() == server,
+        logassert(delegate()->service<server_service>()->soup_server() == server,
                   "Can't process http request from different server.");
 
         std::string_view p { path };
@@ -75,7 +75,7 @@ namespace engine {
         auto task { new (std::nothrow) http_request_task(request) };
         router()->enqueue(task);
 
-        soup_server_pause_message(delegate()->service<webserver_service>()->get_server(), message);
+        soup_server_pause_message(delegate()->service<server_service>()->soup_server(), message);
     }
 
     // static
