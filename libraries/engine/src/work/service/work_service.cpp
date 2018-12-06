@@ -29,8 +29,6 @@ namespace engine {
         } else {
             logerror("Task handler for key %lu not presented.", task->get_key());
         }
-
-        delete task;
     }
 
     void work_service::assign_task_handler(basic_task::key_type task_key, task_handler&& handler) noexcept

@@ -31,7 +31,7 @@ namespace engine {
         logassert(status == 0, "Can't init pthread.");
         status = pthread_attr_setdetachstate(&attributes, POSIX_DETACH_STATE.at(state));
         logassert(status == 0, "Can't set detach state.");
-        status = pthread_create(&_thread, &attributes, &worker::exec_callback, this);
+        status = pthread_create(&_thread, &attributes, &worker::exec_callback_fn, this);
         logassert(status == 0, "Can't create pthread.");
     }
 
@@ -53,7 +53,7 @@ namespace engine {
         logassert(status == 0, "Can't join pthread.");
     }
 
-    void worker::exec_callback() noexcept
+    void worker::on_exec_callback() noexcept
     {
         do {
             _context->setup_services();
@@ -63,9 +63,9 @@ namespace engine {
     }
 
     // static
-    void *worker::exec_callback(void *ptr) noexcept
+    void *worker::exec_callback_fn(void *ptr) noexcept
     {
-        (reinterpret_cast<worker *>(ptr))->exec_callback();
+        reinterpret_cast<worker *>(ptr)->on_exec_callback();
         pthread_exit(nullptr);
     }
 

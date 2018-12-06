@@ -175,6 +175,7 @@ namespace backend {
                      * calling curl_multi_cleanup, curl_multi_remove_handle or
                      * curl_easy_cleanup."
                      */
+                    auto easy { message->easy_handle };
 
                     break;
                 }

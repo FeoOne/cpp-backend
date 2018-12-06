@@ -51,9 +51,9 @@ namespace engine {
         work_context::uptr              _context;
         bool                            _should_restart;
 
-        void exec_callback() noexcept;
+        void on_exec_callback() noexcept;
 
-        static void *exec_callback(void *ptr) noexcept;
+        static void *exec_callback_fn(void *ptr) noexcept;
 
     };
 
