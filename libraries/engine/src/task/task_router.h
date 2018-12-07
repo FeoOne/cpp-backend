@@ -19,11 +19,12 @@ namespace engine {
         ~task_router() = default;
 
         void add_queue(stl::crucial_key_type context_key, task_queue::uptr&& queue) noexcept;
-        task_queue *get_queue(stl::crucial_key_type context_key) const noexcept;
+
+        task_queue *queue(stl::crucial_key_type context_key) const noexcept;
 
         template<typename T>
-        task_queue *get_queue() const noexcept {
-            return get_queue(T::key());
+        task_queue *queue() const noexcept {
+            return queue(T::key());
         }
 
         void assign_route(basic_task::key_type task_key, stl::crucial_key_type context_key) noexcept;

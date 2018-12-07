@@ -18,7 +18,7 @@ namespace engine {
         _queues[context_key] = std::move(queue);
     }
 
-    task_queue *task_router::get_queue(stl::crucial_key_type context_key) const noexcept
+    task_queue *task_router::queue(stl::crucial_key_type context_key) const noexcept
     {
         return _queues[context_key].get();
     }

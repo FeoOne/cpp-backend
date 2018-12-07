@@ -14,7 +14,7 @@
 namespace engine {
 
     job_context::job_context(const stl::setting& config, engine::task_router *router) noexcept :
-            crucial(config, router, job_loop::make_unique(router->get_queue<job_context>(), this))
+            crucial(config, router, job_loop::make_unique(router->queue<job_context>(), this))
     {
         add_service(db_service::make_unique(config, router, this));
 

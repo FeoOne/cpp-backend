@@ -5,11 +5,11 @@
  * @brief
  */
 
-#include "context/web/http/http_request.h"
+#include "context/web/http/http_server_request.h"
 
 namespace engine {
 
-    http_request::http_request(SoupMessage *message,
+    http_server_request::http_server_request(SoupMessage *message,
                                const std::string_view& path,
                                GHashTable *query,
                                SoupClientContext *client) noexcept :
@@ -18,7 +18,7 @@ namespace engine {
     {
     }
 
-    http_request::~http_request()
+    http_server_request::~http_server_request()
     {
     }
 

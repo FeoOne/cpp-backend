@@ -14,7 +14,7 @@
 namespace engine {
 
     system_context::system_context(const stl::setting& config, task_router *router) noexcept :
-            crucial(config, router, system_loop::make_unique(router->get_queue<system_context>(), this))
+            crucial(config, router, system_loop::make_unique(router->queue<system_context>(), this))
     {
         add_service(worker_watchdog_service::make_unique(config, router, this));
 

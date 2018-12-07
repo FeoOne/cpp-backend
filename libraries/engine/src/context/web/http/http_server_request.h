@@ -14,16 +14,16 @@
 
 namespace engine {
 
-    class http_request {
+    class http_server_request {
     public:
-        STL_DECLARE_SMARTPOINTERS(http_request)
-        STL_DELETE_ALL_DEFAULT(http_request)
+        STL_DECLARE_SMARTPOINTERS(http_server_request)
+        STL_DELETE_ALL_DEFAULT(http_server_request)
 
-        explicit http_request(SoupMessage *message,
+        explicit http_server_request(SoupMessage *message,
                               const std::string_view& path,
                               GHashTable *query,
                               SoupClientContext *client) noexcept;
-        ~http_request();
+        ~http_server_request();
 
         SoupMessage *get_message() noexcept { return _message; }
         const std::string_view& get_path() const { return _path; }

@@ -14,15 +14,19 @@
 
 namespace engine {
 
-    class http_service final : public stl::crucial<work_service, http_service> {
+    /**
+     * HTTP server service is for accepting http requests.
+     * This class represents basic HTTP server.
+     */
+    class http_server_service final : public stl::crucial<work_service, http_server_service> {
     public:
-        STL_DECLARE_SMARTPOINTERS(http_service)
-        STL_DELETE_ALL_DEFAULT(http_service)
+        STL_DECLARE_SMARTPOINTERS(http_server_service)
+        STL_DELETE_ALL_DEFAULT(http_server_service)
 
-        explicit http_service(const stl::setting& config,
+        explicit http_server_service(const stl::setting& config,
                               task_router *router,
                               const work_service_delegate *delegate) noexcept;
-        virtual ~http_service();
+        virtual ~http_server_service();
 
         void setup() noexcept final;
         void reset() noexcept final;

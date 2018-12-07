@@ -19,7 +19,7 @@
 namespace engine {
 
     io_context::io_context(const stl::setting& config, task_router *router) noexcept :
-            crucial(config, router, io_loop::make_unique(router->get_queue<io_context>(), this))
+            crucial(config, router, io_loop::make_unique(router->queue<io_context>(), this))
     {
         add_service(io_connection_service::make_unique(config, router, this));
         add_service(tcp_service::make_unique(config, router, this));

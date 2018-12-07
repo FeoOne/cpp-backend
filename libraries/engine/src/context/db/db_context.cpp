@@ -15,7 +15,7 @@
 namespace engine {
 
     db_context::db_context(const stl::setting& config, task_router *router) noexcept :
-            crucial(config, router, db_loop::make_unique(router->get_queue<db_context>(), this))
+            crucial(config, router, db_loop::make_unique(router->queue<db_context>(), this))
     {
         add_service(db_control_service::make_unique(config, router, this));
 

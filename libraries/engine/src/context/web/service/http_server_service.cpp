@@ -5,29 +5,29 @@
  * @brief
  */
 
-#include "context/web/task/http_request_task.h"
-#include "context/web/task/http_response_task.h"
+#include "context/web/task/http_server_request_task.h"
+#include "context/web/task/http_server_response_task.h"
 #include "context/web/service/server_service.h"
 
-#include "context/web/service/http_service.h"
+#include "context/web/service/http_server_service.h"
 
 namespace engine {
 
-    http_service::http_service(const stl::setting& config,
+    http_server_service::http_server_service(const stl::setting& config,
                                task_router *router,
                                const work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate)
     {
-        EX_ASSIGN_TASK_HANDLER(http_response_task, http_service, handle_http_response_task);
+        EX_ASSIGN_TASK_HANDLER(http_server_response_task, http_server_service, handle_http_response_task);
     }
 
     // virtual
-    http_service::~http_service()
+    http_server_service::~http_server_service()
     {
     }
 
     // virtual
-    void http_service::setup() noexcept
+    void http_server_service::setup() noexcept
     {
         auto server { delegate()->service<server_service>()->soup_server() };
         if (server == nullptr) {
@@ -36,21 +36,21 @@ namespace engine {
 
         soup_server_add_handler(server,
                                 consts::webserver::default_http_route,
-                                &http_service::handler_callback,
+                                &http_server_service::handler_callback,
                                 this,
                                 nullptr);
     }
 
     // virtual
-    void http_service::reset() noexcept
+    void http_server_service::reset() noexcept
     {
         soup_server_remove_handler(delegate()->service<server_service>()->soup_server(),
                                    consts::webserver::default_http_route);
     }
 
-    void http_service::handle_http_response_task(basic_task *base_task) noexcept
+    void http_server_service::handle_http_response_task(basic_task *base_task) noexcept
     {
-        auto task { reinterpret_cast<engine::http_response_task *>(base_task) };
+        auto task { reinterpret_cast<engine::http_server_response_task *>(base_task) };
         auto response { task->get_response() };
         auto request { response->get_request() };
 
@@ -58,7 +58,7 @@ namespace engine {
                                     request->get_message());
     }
 
-    void http_service::handler(SoupServer *server,
+    void http_server_service::handler(SoupServer *server,
                                SoupMessage *message,
                                const char *path,
                                GHashTable *query,
@@ -71,22 +71,22 @@ namespace engine {
                   "Can't process http request from different server.");
 
         std::string_view p { path };
-        auto request { http_request::make_shared(message, p, query, client) };
-        auto task { new (std::nothrow) http_request_task(request) };
+        auto request { http_server_request::make_shared(message, p, query, client) };
+        auto task { new (std::nothrow) http_server_request_task(request) };
         router()->enqueue(task);
 
         soup_server_pause_message(delegate()->service<server_service>()->soup_server(), message);
     }
 
     // static
-    void http_service::handler_callback(SoupServer *server,
+    void http_server_service::handler_callback(SoupServer *server,
                                        SoupMessage *message,
                                        const char *path,
                                        GHashTable *query,
                                        SoupClientContext *client,
                                        gpointer context) noexcept
     {
-        auto self { static_cast<http_service *>(context) };
+        auto self { static_cast<http_server_service *>(context) };
         if (self != nullptr) {
             self->handler(server, message, path, query, client);
         } else {
