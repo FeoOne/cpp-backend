@@ -29,6 +29,17 @@ namespace engine {
     // virtual
     void http_server_service::setup() noexcept
     {
+        setup_soup_server();
+    }
+
+    // virtual
+    void http_server_service::reset() noexcept
+    {
+        reset_soup_server();
+    }
+
+    void http_server_service::setup_soup_server() noexcept
+    {
         auto server { delegate()->service<server_service>()->soup_server() };
         if (server == nullptr) {
             logcrit("Failed to start http service w/o server.");
@@ -41,8 +52,7 @@ namespace engine {
                                 nullptr);
     }
 
-    // virtual
-    void http_server_service::reset() noexcept
+    void http_server_service::reset_soup_server() noexcept
     {
         soup_server_remove_handler(delegate()->service<server_service>()->soup_server(),
                                    consts::webserver::default_http_route);

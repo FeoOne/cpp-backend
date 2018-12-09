@@ -23,16 +23,16 @@ namespace engine {
     // virtual
     void http_client_service::setup() noexcept
     {
-        setup_session();
+        setup_soup_session();
     }
 
     // virtual
     void http_client_service::reset() noexcept
     {
-        reset_session();
+        reset_soup_session();
     }
 
-    void http_client_service::setup_session() noexcept
+    void http_client_service::setup_soup_session() noexcept
     {
         _session = soup_session_new_with_options(SOUP_SESSION_ADD_FEATURE_BY_TYPE, SOUP_TYPE_CONTENT_SNIFFER, NULL);
 
@@ -43,7 +43,7 @@ namespace engine {
 #endif
     }
 
-    void http_client_service::reset_session() noexcept
+    void http_client_service::reset_soup_session() noexcept
     {
         soup_session_abort(_session);
         STL_GOBJECT_RELEASE(_session);

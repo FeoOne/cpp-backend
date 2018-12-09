@@ -20,7 +20,7 @@
 #include "context/web/web_loop.h"
 #include "context/web/web_context.h"
 #include "context/web/service/http_server_service.h"
-#include "context/web/service/ws_service.h"
+#include "context/web/service/ws_server_service.h"
 #include "context/web/task/http_server_request_task.h"
 #include "context/web/task/http_server_response_task.h"
 #include "context/web/task/ws_request_task.h"

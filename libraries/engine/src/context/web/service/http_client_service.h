@@ -31,8 +31,8 @@ namespace engine {
     private:
         SoupSession *           _session;
 
-        void setup_session() noexcept;
-        void reset_session() noexcept;
+        void setup_soup_session() noexcept;
+        void reset_soup_session() noexcept;
 
     };
 

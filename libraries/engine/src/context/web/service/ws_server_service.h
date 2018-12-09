@@ -14,15 +14,15 @@
 
 namespace engine {
 
-    class ws_service final : public stl::crucial<work_service, ws_service> {
+    class ws_server_service final : public stl::crucial<work_service, ws_server_service> {
     public:
-        STL_DECLARE_SMARTPOINTERS(ws_service)
-        STL_DELETE_ALL_DEFAULT(ws_service)
+        STL_DECLARE_SMARTPOINTERS(ws_server_service)
+        STL_DELETE_ALL_DEFAULT(ws_server_service)
 
-        explicit ws_service(const stl::setting& config,
+        explicit ws_server_service(const stl::setting& config,
                                    task_router *router,
                                    const work_service_delegate *delegate) noexcept;
-        virtual ~ws_service();
+        virtual ~ws_server_service();
 
         void setup() noexcept final;
         void reset() noexcept final;

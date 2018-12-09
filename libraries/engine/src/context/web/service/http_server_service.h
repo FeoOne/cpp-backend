@@ -32,6 +32,9 @@ namespace engine {
         void reset() noexcept final;
 
     private:
+        void setup_soup_server() noexcept;
+        void reset_soup_server() noexcept;
+
         void handle_http_response_task(basic_task *base_task) noexcept;
 
         void handler(SoupServer *server,
