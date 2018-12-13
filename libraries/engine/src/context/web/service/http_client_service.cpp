@@ -12,7 +12,9 @@ namespace engine {
                                              task_router *router,
                                              const work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
-            _session { nullptr }
+            _session { nullptr },
+            _requests {},
+            _request_pool { stl::fixed_memory_pool::make_unique(sizeof(request_context), stl::memory::page_size()) }
     {
         EX_ASSIGN_TASK_HANDLER(http_client_request_task, http_client_service, handle_http_client_request_task);
     }
@@ -57,17 +59,31 @@ namespace engine {
     void http_client_service::handle_http_client_request_task(basic_task *base_task) noexcept
     {
         auto task { reinterpret_cast<http_client_request_task *>(base_task) };
+        auto request { task->request() };
+
+        auto context { new (_request_pool->alloc()) request_context };
+        context->service = this;
+        context->callback = task->grab_callback();
+
+        soup_session_queue_message(_session, request->message(), &http_client_service::handler_callback, context);
+
+        delete request;
     }
 
-    void http_client_service::on_handler(GObject *object, GAsyncResult *result) noexcept
+    void http_client_service::on_handler(SoupSession *session,
+                                         SoupMessage *message,
+                                         http_client_request_task::response_callback&& callback) noexcept
     {
 
     }
 
     // static
-    void http_client_service::handler_callback(GObject *object, GAsyncResult *result, gpointer user_data) noexcept
+    void http_client_service::handler_callback(SoupSession *session, SoupMessage *message, gpointer user_data) noexcept
     {
-
+        if (user_data != nullptr) {
+            auto context = reinterpret_cast<request_context *>(user_data);
+            context->service->on_handler(session, message, std::move(context->callback));
+        }
     }
 
 }

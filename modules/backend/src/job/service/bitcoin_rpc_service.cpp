@@ -51,6 +51,17 @@ namespace backend {
         }
     }
 
+    void bitcoin_rpc_service::perform(Json::Value& json, std::function<void(Json::Value&)>&& callback) noexcept
+    {
+        auto request { new (std::nothrow) engine::http_client_request(SOUP_METHOD_POST, "") };
+        auto task { new (std::nothrow) engine::http_client_request_task(request,
+                                                                        [](engine::http_server_response *response) {
+                                                                            //
+                                                                        }) };
+
+        router()->enqueue(task);
+    }
+
 //    void bitcoin_rpc_service::setup() noexcept
 //    {
 //        if (!config().lookup_string(consts::config::key::bitcoin_rpc_address, &_bitcoin_rpc_address)) {

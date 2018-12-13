@@ -26,6 +26,8 @@ namespace engine {
 
         void set_body(const char *cont_type, const std::string& data) noexcept;
 
+        SoupMessage *message() noexcept { return _message; }
+
     private:
         SoupMessage *           _message;
 

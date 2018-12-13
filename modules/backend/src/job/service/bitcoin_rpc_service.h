@@ -42,6 +42,8 @@ namespace backend {
 
         void configure() noexcept;
 
+        void perform(Json::Value& json, std::function<void(Json::Value&)>&& callback) noexcept;
+
 //        engine::timer_handle                                        _timeout_timer_handle;
 //        CURLM *                                                     _curl;
 //

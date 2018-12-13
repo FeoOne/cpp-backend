@@ -29,16 +29,25 @@ namespace engine {
         void reset() noexcept final;
 
     private:
-        SoupSession *           _session;
+        struct request_context {
+            http_client_service *                       service;
+            http_client_request_task::response_callback callback;
+        };
+
+        SoupSession *                                               _session;
+        std::unordered_map<SoupMessage *, http_client_request *>    _requests;
+        stl::fixed_memory_pool::uptr                                _request_pool;
 
         void setup_soup_session() noexcept;
         void reset_soup_session() noexcept;
 
         void handle_http_client_request_task(basic_task *base_task) noexcept;
 
-        void on_handler(GObject *object, GAsyncResult *result) noexcept;
+        void on_handler(SoupSession *session,
+                SoupMessage *message,
+                http_client_request_task::response_callback&& callback) noexcept;
 
-        static void handler_callback(GObject *object, GAsyncResult *result, gpointer user_data) noexcept;
+        static void handler_callback(SoupSession *session, SoupMessage *message, gpointer user_data) noexcept;
 
     };
 

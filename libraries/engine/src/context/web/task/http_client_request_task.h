@@ -7,6 +7,7 @@
 
 #include "task/basic_task.h"
 #include "context/web/http/http_client_request.h"
+#include "context/web/http/http_client_response.h"
 
 namespace engine {
 
@@ -15,16 +16,21 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(http_client_request_task)
         STL_DELETE_ALL_DEFAULT_EXCEPT_CTOR(http_client_request_task)
 
-        explicit http_client_request_task(http_client_request *request) noexcept :
-                _request { request }
+        using response_callback = std::function<void(http_client_response *)>;
+
+        explicit http_client_request_task(http_client_request *request, response_callback&& callback) noexcept :
+                _request { request },
+                _callback { callback }
         {}
 
         virtual ~http_client_request_task() = default;
 
         http_client_request *request() noexcept { return _request; }
+        response_callback&& grab_callback() noexcept { return std::move(_callback); }
 
     private:
         http_client_request *       _request;
+        response_callback           _callback;
 
     };
 
