@@ -18,7 +18,14 @@ namespace engine {
 
     http_client_request::~http_client_request()
     {
-        STL_GOBJECT_RELEASE(_message);
+        if (_message != nullptr) {
+            STL_GOBJECT_RELEASE(_message);
+        }
+    }
+
+    void http_client_request::set_body(const char *cont_type, const std::string& data) noexcept
+    {
+        soup_message_set_request(_message, cont_type, SOUP_MEMORY_COPY, data.data(), data.size());
     }
 
 }

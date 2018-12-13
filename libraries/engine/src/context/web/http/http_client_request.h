@@ -16,9 +16,15 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(http_client_request)
         STL_DELETE_ALL_DEFAULT(http_client_request)
 
+        struct content_type {
+            static constexpr char *plain { "text/plain" };
+        };
+
         explicit http_client_request(const char *method, const char *uri) noexcept;
         explicit http_client_request(const char *method, SoupURI *uri) noexcept;
         ~http_client_request();
+
+        void set_body(const char *cont_type, const std::string& data) noexcept;
 
     private:
         SoupMessage *           _message;

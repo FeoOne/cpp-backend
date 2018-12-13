@@ -34,6 +34,12 @@ namespace engine {
         void setup_soup_session() noexcept;
         void reset_soup_session() noexcept;
 
+        void handle_http_client_request_task(basic_task *base_task) noexcept;
+
+        void on_handler(GObject *object, GAsyncResult *result) noexcept;
+
+        static void handler_callback(GObject *object, GAsyncResult *result, gpointer user_data) noexcept;
+
     };
 
 }
