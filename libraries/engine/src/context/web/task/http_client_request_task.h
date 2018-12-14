@@ -23,7 +23,7 @@ namespace engine {
                 _callback { callback }
         {}
 
-        virtual ~http_client_request_task() = default;
+        virtual ~http_client_request_task();
 
         http_client_request *request() noexcept { return _request; }
         response_callback&& grab_callback() noexcept { return std::move(_callback); }

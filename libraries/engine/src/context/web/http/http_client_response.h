@@ -16,6 +16,16 @@ namespace engine {
         STL_DECLARE_SMARTPOINTERS(http_client_response)
         STL_DELETE_ALL_DEFAULT(http_client_response)
 
+        explicit http_client_response(SoupMessage *message) noexcept;
+
+        ~http_client_response();
+
+        u32 status_code() const noexcept;
+        SoupMessageBody *body() noexcept;
+
+    private:
+        SoupMessage *       _message;
+
     };
 
 }

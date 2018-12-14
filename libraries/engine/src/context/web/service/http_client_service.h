@@ -8,6 +8,8 @@
 #include <libsoup/soup.h>
 
 #include "work/service/work_service.h"
+#include "context/web/task/http_client_request_task.h"
+#include "context/web/task/http_client_response_task.h"
 
 namespace engine {
 
@@ -43,9 +45,7 @@ namespace engine {
 
         void handle_http_client_request_task(basic_task *base_task) noexcept;
 
-        void on_handler(SoupSession *session,
-                SoupMessage *message,
-                http_client_request_task::response_callback&& callback) noexcept;
+        void on_handler(SoupSession *session, SoupMessage *message, request_context *context) noexcept;
 
         static void handler_callback(SoupSession *session, SoupMessage *message, gpointer user_data) noexcept;
 

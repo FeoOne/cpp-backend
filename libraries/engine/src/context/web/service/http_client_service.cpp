@@ -2,8 +2,6 @@
 // Created by Feo on 07/12/2018.
 //
 
-#include "context/web/task/http_client_request_task.h"
-
 #include "context/web/service/http_client_service.h"
 
 namespace engine {
@@ -66,15 +64,14 @@ namespace engine {
         context->callback = task->grab_callback();
 
         soup_session_queue_message(_session, request->message(), &http_client_service::handler_callback, context);
-
-        delete request;
     }
 
-    void http_client_service::on_handler(SoupSession *session,
-                                         SoupMessage *message,
-                                         http_client_request_task::response_callback&& callback) noexcept
+    void http_client_service::on_handler(SoupSession *session, SoupMessage *message, request_context *context) noexcept
     {
+        auto response { new (std::nothrow) http_client_response(message) };
+        auto task { new (std::nothrow) http_client_response_task(response, std::move(context->callback)) };
 
+        router()->enqueue(task);
     }
 
     // static
@@ -82,7 +79,7 @@ namespace engine {
     {
         if (user_data != nullptr) {
             auto context = reinterpret_cast<request_context *>(user_data);
-            context->service->on_handler(session, message, std::move(context->callback));
+            context->service->on_handler(session, message, context);
         }
     }
 
