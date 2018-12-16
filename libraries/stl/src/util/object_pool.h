@@ -33,15 +33,9 @@ namespace stl {
                 if (mem != nullptr) {
                     object = new (mem) value_type;
                 }
-                if (object == nullptr) {
-                    abort();
-                }
             } else {
                 object = _objects.front();
                 _objects.pop();
-                if (object == nullptr) {
-                    abort();
-                }
             }
             return object;
         }

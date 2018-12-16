@@ -80,10 +80,10 @@ namespace engine {
         logassert(delegate()->service<server_service>()->soup_server() == server,
                   "Can't process http request from different server.");
 
-        std::string_view p { path };
-        auto request { http_server_request::make_shared(message, p, query, client) };
-        auto task { new (std::nothrow) http_server_request_task(request) };
-        router()->enqueue(task);
+//        std::string_view p { path };
+//        auto request { http_server_request::make_shared(message, p, query, client) };
+//        auto task { new (std::nothrow) http_server_request_task(request) };
+//        router()->enqueue(task);
 
         soup_server_pause_message(delegate()->service<server_service>()->soup_server(), message);
     }

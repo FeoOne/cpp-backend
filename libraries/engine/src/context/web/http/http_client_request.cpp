@@ -18,14 +18,27 @@ namespace engine {
 
     http_client_request::~http_client_request()
     {
-        if (_message != nullptr) {
-            STL_GOBJECT_RELEASE(_message);
-        }
     }
 
-    void http_client_request::set_body(const char *cont_type, const std::string& data) noexcept
+    void http_client_request::set_body(const std::string& body) noexcept
     {
-        soup_message_set_request(_message, cont_type, SOUP_MEMORY_COPY, data.data(), data.size());
+        soup_message_headers_append(_message->request_headers,
+                                    "Accept",
+                                    engine::http_client_request::content_type::json);
+
+        soup_message_set_request(_message,
+                                 engine::http_client_request::content_type::json,
+                                 SoupMemoryUse::SOUP_MEMORY_COPY,
+                                 body.data(),
+                                 body.size());
+    }
+
+    void http_client_request::set_credentials(const char *credentials) noexcept
+    {
+        std::string data { "Basic " + stl::crypto::base64_encode(credentials) };
+        soup_message_headers_append(_message->request_headers,
+                                    "Authorization",
+                                    data.data());
     }
 
 }

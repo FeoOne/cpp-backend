@@ -29,8 +29,8 @@ namespace engine {
 
         EX_BIND_TASK_ROUTE(http_client_request_task, http_client_service);
         EX_BIND_TASK_ROUTE(http_server_response_task, http_server_service);
-        EX_BIND_TASK_ROUTE(ws_response_task, ws_service);
-        EX_BIND_TASK_ROUTE(ws_disconnect_task, ws_service);
+        EX_BIND_TASK_ROUTE(ws_response_task, ws_server_service);
+        EX_BIND_TASK_ROUTE(ws_disconnect_task, ws_server_service);
     }
 
 }

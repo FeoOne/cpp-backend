@@ -38,7 +38,7 @@ namespace engine {
 
         SoupSession *                                               _session;
         std::unordered_map<SoupMessage *, http_client_request *>    _requests;
-        stl::fixed_memory_pool::uptr                                _request_pool;
+        stl::fixed_memory_pool::uptr                                _request_context_pool;
 
         void setup_soup_session() noexcept;
         void reset_soup_session() noexcept;

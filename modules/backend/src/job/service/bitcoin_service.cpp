@@ -5,6 +5,7 @@
  * @brief
  */
 
+#include "bitcoin/bitcoin.h"
 #include "main/backend_consts.h"
 #include "job/service/bitcoin_rpc_service.h"
 
@@ -52,7 +53,9 @@ namespace backend {
 
     void bitcoin_service::on_fee_poll_timer() noexcept
     {
-        _estimated_fee = BITCOIN_RPC_SERVICE->get_estimated_fee(_fee_wait_block_count);
+        BITCOIN_RPC_SERVICE->get_estimated_fee(_fee_wait_block_count, [this](Json::Value& json) {
+            _estimated_fee = bitcoin::json_value_to_amount(json["result"]["feerate"].asDouble());
+        });
     }
 
 }

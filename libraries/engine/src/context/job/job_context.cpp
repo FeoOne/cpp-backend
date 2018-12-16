@@ -7,7 +7,9 @@
 
 #include "context/job/job_loop.h"
 #include "context/job/service/db_service.h"
+#include "context/job/service/web_service.h"
 #include "context/db/task/db_response_task.h"
+#include "context/web/task/http_client_response_task.h"
 
 #include "context/job/job_context.h"
 
@@ -17,8 +19,10 @@ namespace engine {
             crucial(config, router, job_loop::make_unique(router->queue<job_context>(), this))
     {
         add_service(db_service::make_unique(config, router, this));
+        add_service(web_service::make_unique(config, router, this));
 
         EX_BIND_TASK_ROUTE(db_response_task, db_service);
+        EX_BIND_TASK_ROUTE(http_client_response_task, web_service);
     }
 
 }

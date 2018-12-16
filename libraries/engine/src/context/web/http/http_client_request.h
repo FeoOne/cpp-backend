@@ -17,14 +17,18 @@ namespace engine {
         STL_DELETE_ALL_DEFAULT(http_client_request)
 
         struct content_type {
-            static constexpr char *plain { "text/plain" };
+            static constexpr const char *json { "application/json" };
+            static constexpr const char *plain { "text/plain" };
+            static constexpr const char *form_data { "multipart/form-data" };
+            static constexpr const char *urlencoded { "application/x-www-form-urlencoded" };
         };
 
         explicit http_client_request(const char *method, const char *uri) noexcept;
         explicit http_client_request(const char *method, SoupURI *uri) noexcept;
         ~http_client_request();
 
-        void set_body(const char *cont_type, const std::string& data) noexcept;
+        void set_body(const std::string& body) noexcept;
+        void set_credentials(const char *credentials) noexcept;
 
         SoupMessage *message() noexcept { return _message; }
 

@@ -5,7 +5,6 @@
  * @brief
  */
 
-#include "bitcoin/bitcoin.h"
 #include "main/backend_consts.h"
 
 #include "job/service/bitcoin_rpc_service.h"
@@ -17,7 +16,9 @@ namespace backend {
                                              const engine::work_service_delegate *delegate) noexcept :
             crucial(config, router, delegate),
             _bitcoin_rpc_address { nullptr },
-            _bitcoin_rpc_credentials { nullptr }
+            _bitcoin_rpc_credentials { nullptr },
+            _request_counter { 0 },
+            _request_handlers {}
     {
     }
 
@@ -38,6 +39,23 @@ namespace backend {
 
     }
 
+    void bitcoin_rpc_service::get_estimated_fee(size_t wait_block_count, handler&& callback) noexcept
+    {
+        logassert(wait_block_count >= 2 && wait_block_count <= 1000, "conf_target out of bounds.");
+
+        Json::Value in;
+        auto id { init_in_json(in, "estimatesmartfee") };
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(static_cast<u32>(wait_block_count));
+        in["params"].append("ECONOMICAL"); // todo: add configuration for "UNSET" "ECONOMICAL" "CONSERVATIVE"
+
+        _request_handlers[id] = std::move(callback);
+
+        perform(in);
+
+        return 0;
+    }
+
     void bitcoin_rpc_service::configure() noexcept
     {
         if (!config().lookup_string(consts::config::key::bitcoin_rpc_address, &_bitcoin_rpc_address)) {
@@ -51,46 +69,56 @@ namespace backend {
         }
     }
 
-    void bitcoin_rpc_service::perform(Json::Value& json, std::function<void(Json::Value&)>&& callback) noexcept
+    void bitcoin_rpc_service::perform(Json::Value& json) noexcept
     {
-        auto request { new (std::nothrow) engine::http_client_request(SOUP_METHOD_POST, "") };
-        auto task { new (std::nothrow) engine::http_client_request_task(request,
-                                                                        [](engine::http_server_response *response) {
-                                                                            //
-                                                                        }) };
+        Json::StreamWriterBuilder write_builder; // @todo reusing builder?
+        auto data { Json::writeString(write_builder, json) };
+
+        auto request { new (std::nothrow) engine::http_client_request(SOUP_METHOD_POST, _bitcoin_rpc_address) };
+        request->set_body(data);
+        request->set_credentials(_bitcoin_rpc_credentials);
+
+        auto task {
+            new (std::nothrow)
+            engine::http_client_request_task(request,
+                                             std::bind(&bitcoin_rpc_service::on_perform, this, std::placeholders::_1))
+        };
 
         router()->enqueue(task);
     }
 
-//    void bitcoin_rpc_service::setup() noexcept
-//    {
-//        if (!config().lookup_string(consts::config::key::bitcoin_rpc_address, &_bitcoin_rpc_address)) {
-//            logemerg("Can't setup db connection service: no '%s' presented.",
-//                     consts::config::key::bitcoin_rpc_address);
-//        }
-//
-//        if (!config().lookup_string(consts::config::key::bitcoin_rpc_credentials, &_bitcoin_rpc_credentials)) {
-//            logemerg("Can't setup db connection service: no '%s' presented.",
-//                     consts::config::key::bitcoin_rpc_credentials);
-//        }
-//
-//        if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
-//            logerror("Failed to init libcurl.");
-//        }
-//
-//        uv_timer_init(delegate()->loop<engine::job_loop>()->loop(), &_timeout_timer_handle.timer);
-//
-//        _curl = curl_multi_init();
-//        curl_multi_setopt(_curl, CURLMOPT_SOCKETFUNCTION, &bitcoin_rpc_service::handle_socket_fn);
-//        curl_multi_setopt(_curl, CURLMOPT_TIMERFUNCTION, &bitcoin_rpc_service::start_timeout_fn);
-//    }
-//
-//    void bitcoin_rpc_service::reset() noexcept
-//    {
-//        curl_multi_cleanup(_curl);
-//        _curl = nullptr;
-//    }
-//
+    void bitcoin_rpc_service::on_perform(engine::http_client_response *response) noexcept
+    {
+        if (response->status_code() == SOUP_STATUS_OK) {
+            Json::Value json;
+            Json::CharReaderBuilder read_builder;
+            auto reader { read_builder.newCharReader() };
+            std::string errors;
+            bool result { reader->parse(response->response_body()->data,
+                                        response->response_body()->data + response->response_body()->length,
+                                        &json,
+                                        &errors) };
+            logassert(result, "Failed to parse json: %s", errors.data());
+            logassert(json["error"].isNull(), "Failed to process request: %s", json["error"]["message"].asCString());
+            delete reader;
+
+            size_t id { std::stoul(json["id"].asCString()) };
+            _request_handlers[id](json);
+        } else {
+            logwarn("Failed to process request '%s'.", response->request_body()->data);
+        }
+    }
+
+    u64 bitcoin_rpc_service::init_in_json(Json::Value& in, const std::string& method) noexcept
+    {
+        in["jsonrpc"] = "1.0";
+        in["method"] = method;
+        in["id"] = std::to_string(_request_counter);
+
+        return _request_counter++;
+    }
+
+
 //    size_t bitcoin_rpc_service::get_block_count() noexcept
 //    {
 //        Json::Value in;
@@ -147,11 +175,9 @@ namespace backend {
 //        return perform(in, out);
 //    }
 //
-//    void bitcoin_rpc_service::init_in_json(Json::Value& in, const std::string& method) noexcept
-//    {
-//        in["jsonrpc"] = "1.0";
-//        in["method"] = method;
-//    }
+
+
+
 //
 //    bool bitcoin_rpc_service::perform(const Json::Value& in, Json::Value& out) noexcept
 //    {

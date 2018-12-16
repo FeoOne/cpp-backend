@@ -21,6 +21,8 @@
 #include "context/db/task/db_response_task.h"
 #include "context/job/job_context.h"
 #include "context/web/web_context.h"
+#include "context/web/task/http_client_request_task.h"
+#include "context/web/task/http_client_response_task.h"
 #include "context/web/task/http_server_request_task.h"
 #include "context/web/task/http_server_response_task.h"
 #include "context/web/task/ws_request_task.h"
@@ -110,8 +112,10 @@ namespace engine {
 
         // web routes
         if (_need_web_worker) {
-            EX_ASSIGN_ROUTE(http_request_task, job_context);
-            EX_ASSIGN_ROUTE(http_response_task, web_context);
+            EX_ASSIGN_ROUTE(http_server_request_task, job_context);
+            EX_ASSIGN_ROUTE(http_server_response_task, web_context);
+            EX_ASSIGN_ROUTE(http_client_request_task, web_context);
+            EX_ASSIGN_ROUTE(http_client_response_task, job_context);
             EX_ASSIGN_ROUTE(ws_request_task, job_context);
             EX_ASSIGN_ROUTE(ws_response_task, web_context);
             EX_ASSIGN_ROUTE(ws_disconnect_task, web_context);

@@ -22,7 +22,12 @@ namespace engine {
         return _message->status_code;
     }
 
-    SoupMessageBody *http_client_response::body() noexcept
+    SoupMessageBody *http_client_response::request_body() noexcept
+    {
+        return _message->request_body;
+    }
+
+    SoupMessageBody *http_client_response::response_body() noexcept
     {
         return _message->response_body;
     }

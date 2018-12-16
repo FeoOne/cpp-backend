@@ -136,6 +136,15 @@ namespace stl {
 #endif
     }
 
+    fixed_memory_pool::fixed_memory_pool(size_t data_size) noexcept :
+            _pages {},
+            _block_size { static_cast<u32>(data_size) + INDEX_SIZE },
+            _page_size { static_cast<u32>(memory::page_size()) }
+    {
+        logdebug("Creating fixed memory pool (data size: %lu, page size: %u).", data_size, _page_size);
+        _pages.reserve(STL_PAGE_RESERVE_COUNT);
+    }
+
     fixed_memory_pool::fixed_memory_pool(size_t data_size, size_t page_size) noexcept :
             _pages {},
             _block_size { static_cast<u32>(data_size) + INDEX_SIZE },

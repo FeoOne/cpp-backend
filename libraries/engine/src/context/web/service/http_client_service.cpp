@@ -12,7 +12,7 @@ namespace engine {
             crucial(config, router, delegate),
             _session { nullptr },
             _requests {},
-            _request_pool { stl::fixed_memory_pool::make_unique(sizeof(request_context), stl::memory::page_size()) }
+            _request_context_pool { stl::fixed_memory_pool::make_unique(sizeof(request_context)) }
     {
         EX_ASSIGN_TASK_HANDLER(http_client_request_task, http_client_service, handle_http_client_request_task);
     }
@@ -36,13 +36,14 @@ namespace engine {
 
     void http_client_service::setup_soup_session() noexcept
     {
-        _session = soup_session_new_with_options(SOUP_SESSION_ADD_FEATURE_BY_TYPE, SOUP_TYPE_CONTENT_SNIFFER, NULL);
+        _session = soup_session_new_with_options(SOUP_SESSION_USER_AGENT, "bitpayments",
+                                                 NULL);
 
-        auto logger { soup_logger_new(SoupLoggerLogLevel::SOUP_LOGGER_LOG_HEADERS, -1) };
+#ifndef NDEBUG
+        auto logger { soup_logger_new(SoupLoggerLogLevel::SOUP_LOGGER_LOG_NONE, -1) };
         soup_session_add_feature(_session, SOUP_SESSION_FEATURE(logger));
         STL_GOBJECT_RELEASE(logger);
-
-        soup_session_add_feature_by_type(_session, SOUP_TYPE_AUTH_BASIC);
+#endif
     }
 
     void http_client_service::reset_soup_session() noexcept
@@ -59,19 +60,23 @@ namespace engine {
         auto task { reinterpret_cast<http_client_request_task *>(base_task) };
         auto request { task->request() };
 
-        auto context { new (_request_pool->alloc()) request_context };
+        auto context { _request_context_pool->construct<request_context>() };
         context->service = this;
-        context->callback = task->grab_callback();
+        context->callback = std::move(task->grab_callback());
 
         soup_session_queue_message(_session, request->message(), &http_client_service::handler_callback, context);
     }
 
-    void http_client_service::on_handler(SoupSession *session, SoupMessage *message, request_context *context) noexcept
+    void http_client_service::on_handler(SoupSession *,
+                                         SoupMessage *message,
+                                         request_context *context) noexcept
     {
         auto response { new (std::nothrow) http_client_response(message) };
         auto task { new (std::nothrow) http_client_response_task(response, std::move(context->callback)) };
 
         router()->enqueue(task);
+
+        _request_context_pool->destruct(context);
     }
 
     // static

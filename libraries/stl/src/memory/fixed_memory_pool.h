@@ -75,11 +75,29 @@ namespace stl {
         STL_DECLARE_SMARTPOINTERS(fixed_memory_pool)
         STL_DELETE_ALL_DEFAULT(fixed_memory_pool)
 
+        explicit fixed_memory_pool(size_t data_size) noexcept;
         explicit fixed_memory_pool(size_t data_size, size_t page_size) noexcept;
         ~fixed_memory_pool();
 
         void *alloc() noexcept;
         void free(void *ptr) noexcept;
+
+        /**
+         * Helper method for contructing classes.
+         */
+        template<typename T, typename... Args>
+        T *construct(Args&&... args) noexcept {
+            return new (alloc()) T(std::forward<Args>(args)...);
+        }
+
+        /**
+         * Helper method for destructing classes.
+         */
+        template<typename T>
+        void destruct(T *pointer) noexcept {
+            pointer->~T();
+            free(pointer);
+        }
 
     private:
         using index_type = u16;

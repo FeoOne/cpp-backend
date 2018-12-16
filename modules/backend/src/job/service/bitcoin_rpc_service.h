@@ -22,6 +22,8 @@ namespace backend {
         STL_DECLARE_SMARTPOINTERS(bitcoin_rpc_service)
         STL_DELETE_ALL_DEFAULT(bitcoin_rpc_service)
 
+        using handler = std::function<void(Json::Value&)>;
+
         explicit bitcoin_rpc_service(const stl::setting& config,
                                      engine::task_router *router,
                                      const engine::work_service_delegate *delegate) noexcept;
@@ -31,8 +33,9 @@ namespace backend {
         void setup() noexcept final;
         void reset() noexcept final;
 
+        void get_estimated_fee(size_t wait_block_count, handler&& callback) noexcept;
+
 //        size_t get_block_count() noexcept;
-//        s64 get_estimated_fee(size_t wait_for_block_count) noexcept;
 //        bool get_raw_mempool(bool is_verbose, Json::Value& out) noexcept;
 //        bool get_raw_transaction(const char *txid, Json::Value& out) noexcept;
 
@@ -40,9 +43,13 @@ namespace backend {
         const char *                                                _bitcoin_rpc_address;
         const char *                                                _bitcoin_rpc_credentials;
 
+        size_t                                                      _request_counter;
+        stl::ring_buffer<std::function<void(Json::Value&)>, 64>     _request_handlers;
+
         void configure() noexcept;
 
-        void perform(Json::Value& json, std::function<void(Json::Value&)>&& callback) noexcept;
+        void perform(Json::Value& json) noexcept;
+        void on_perform(engine::http_client_response *response) noexcept;
 
 //        engine::timer_handle                                        _timeout_timer_handle;
 //        CURLM *                                                     _curl;
@@ -50,7 +57,8 @@ namespace backend {
 //        std::unordered_map<CURL *, curl_context *>                  _context_by_curl;
 //        std::unordered_map<engine::poll_handle *, curl_context *>   _context_by_poll;
 
-//        void init_in_json(Json::Value& in, const std::string& method) noexcept;
+        u64 init_in_json(Json::Value& in, const std::string& method) noexcept;
+
 //
 //        void check_multi_info() noexcept;
 //

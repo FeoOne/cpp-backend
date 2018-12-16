@@ -34,6 +34,7 @@
 #include "util/crucial.h"
 #include "util/optional.h"
 #include "util/object_pool.h"
+#include "util/ring_buffer.h"
 
 #include "main/tools.h"
 #include "main/platform.h"
@@ -59,6 +60,7 @@
 #include "hardware/hardware.h"
 
 #include "crypto/hash.h"
+#include "crypto/crypto.h"
 #include "crypto/checksum.h"
 #include "crypto/digest_hash.h"
 

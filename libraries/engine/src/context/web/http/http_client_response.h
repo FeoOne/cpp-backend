@@ -21,7 +21,8 @@ namespace engine {
         ~http_client_response();
 
         u32 status_code() const noexcept;
-        SoupMessageBody *body() noexcept;
+        SoupMessageBody *request_body() noexcept;
+        SoupMessageBody *response_body() noexcept;
 
     private:
         SoupMessage *       _message;

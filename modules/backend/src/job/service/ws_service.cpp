@@ -199,37 +199,37 @@ namespace backend {
     {
         lognotice("Polling pending invoices...");
 
-        Json::Value mempool;
-        if (!BITCOIN_RPC_SERVICE->get_raw_mempool(false, mempool)) {
-            return;
-        }
-
-        if (!mempool["error"].isNull()) {
-            logwarn("%s", mempool["error"].asCString());
-            return;
-        }
-
-        //for (const auto& txid: mempool["result"]) {
-        auto& result { mempool["result"] };
-        for (Json::Value::ArrayIndex i = 0; i < result.size(); ++i) {
-            logdebug("txid: %s", result[i].asCString());
-
-            Json::Value tx;
-            if (!BITCOIN_RPC_SERVICE->get_raw_transaction(result[i].asCString(), tx)) {
-                continue;
-            }
-
-            if (!tx["error"].isNull()) {
-                logwarn("%s", tx["error"].asCString());
-                continue;
-            }
-
-            auto& address { tx["result"]["vout"][0]["scriptPubKey"]["addresses"][0] };
-            if (address.isNull()) {
-                continue;
-            }
-
-            logdebug("address: %s", address.asCString());
+//        Json::Value mempool;
+//        if (!BITCOIN_RPC_SERVICE->get_raw_mempool(false, mempool)) {
+//            return;
+//        }
+//
+//        if (!mempool["error"].isNull()) {
+//            logwarn("%s", mempool["error"].asCString());
+//            return;
+//        }
+//
+//        //for (const auto& txid: mempool["result"]) {
+//        auto& result { mempool["result"] };
+//        for (Json::Value::ArrayIndex i = 0; i < result.size(); ++i) {
+//            logdebug("txid: %s", result[i].asCString());
+//
+//            Json::Value tx;
+//            if (!BITCOIN_RPC_SERVICE->get_raw_transaction(result[i].asCString(), tx)) {
+//                continue;
+//            }
+//
+//            if (!tx["error"].isNull()) {
+//                logwarn("%s", tx["error"].asCString());
+//                continue;
+//            }
+//
+//            auto& address { tx["result"]["vout"][0]["scriptPubKey"]["addresses"][0] };
+//            if (address.isNull()) {
+//                continue;
+//            }
+//
+//            logdebug("address: %s", address.asCString());
 
 //            try {
 //
@@ -241,7 +241,7 @@ namespace backend {
 //                auto data { Json::writeString(write_builder, tx) };
 //                printf("%s\n\n", data.data());
 //            }
-        }
+//        }
 
 //        auto& result { mempool["result"] };
 //        for (auto it { result.begin() }; it != result.end(); ++it) {
