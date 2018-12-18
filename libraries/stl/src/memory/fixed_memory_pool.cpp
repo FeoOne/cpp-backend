@@ -82,6 +82,8 @@ namespace stl {
         if (_data_size + CHUNK_HEAD_SIZE == _chunk_size) {
             auto chunk { _free_chunks };
 
+//            logdebug("chunk %p", chunk);
+
             _free_chunks = chunk->next();
             if (_free_chunks != nullptr) {
                 _free_chunks->prev(nullptr);

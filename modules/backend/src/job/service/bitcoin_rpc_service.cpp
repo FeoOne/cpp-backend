@@ -18,7 +18,8 @@ namespace backend {
             _bitcoin_rpc_address { nullptr },
             _bitcoin_rpc_credentials { nullptr },
             _request_counter { 0 },
-            _request_handlers {}
+            _request_handlers {},
+            _json_writer_builder {}
     {
     }
 
@@ -52,8 +53,31 @@ namespace backend {
         _request_handlers[id] = std::move(callback);
 
         perform(in);
+    }
 
-        return 0;
+    bool bitcoin_rpc_service::get_raw_mempool(bool is_verbose, handler&& callback) noexcept
+    {
+        Json::Value in;
+        auto id { init_in_json(in, "getrawmempool") };
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(is_verbose);
+
+        _request_handlers[id] = std::move(callback);
+
+        perform(in);
+    }
+
+    bool bitcoin_rpc_service::get_raw_transaction(const char *txid, handler&& callback) noexcept
+    {
+        Json::Value in;
+        auto id { init_in_json(in, "getrawtransaction") };
+        in["params"] = Json::Value { Json::arrayValue };
+        in["params"].append(txid);
+        in["params"].append(true);
+
+        _request_handlers[id] = std::move(callback);
+
+        perform(in);
     }
 
     void bitcoin_rpc_service::configure() noexcept
@@ -71,8 +95,7 @@ namespace backend {
 
     void bitcoin_rpc_service::perform(Json::Value& json) noexcept
     {
-        Json::StreamWriterBuilder write_builder; // @todo reusing builder?
-        auto data { Json::writeString(write_builder, json) };
+        auto data { Json::writeString(_json_writer_builder, json) };
 
         auto request { new (std::nothrow) engine::http_client_request(SOUP_METHOD_POST, _bitcoin_rpc_address) };
         request->set_body(data);
@@ -164,7 +187,7 @@ namespace backend {
 //        return perform(in, out);
 //    }
 //
-//    bool bitcoin_rpc_service::get_raw_transaction(const char *txid, Json::Value& out) noexcept
+//    bool bitcoin_rpc_service::get_raw_transaction(const char *txid, handler&& callback) noexcept
 //    {
 //        Json::Value in;
 //        init_in_json(in, "getrawtransaction");

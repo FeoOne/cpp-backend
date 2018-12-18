@@ -53,7 +53,7 @@ namespace backend {
 
     void bitcoin_service::on_fee_poll_timer() noexcept
     {
-        BITCOIN_RPC_SERVICE->get_estimated_fee(_fee_wait_block_count, [this](Json::Value& json) {
+        BITCOIN_RPC_SERVICE->get_estimated_fee(_fee_wait_block_count, [this](const Json::Value& json) {
             _estimated_fee = bitcoin::json_value_to_amount(json["result"]["feerate"].asDouble());
         });
     }

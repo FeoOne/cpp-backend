@@ -22,7 +22,7 @@ namespace backend {
         STL_DECLARE_SMARTPOINTERS(bitcoin_rpc_service)
         STL_DELETE_ALL_DEFAULT(bitcoin_rpc_service)
 
-        using handler = std::function<void(Json::Value&)>;
+        using handler = std::function<void(const Json::Value&)>;
 
         explicit bitcoin_rpc_service(const stl::setting& config,
                                      engine::task_router *router,
@@ -34,10 +34,8 @@ namespace backend {
         void reset() noexcept final;
 
         void get_estimated_fee(size_t wait_block_count, handler&& callback) noexcept;
-
-//        size_t get_block_count() noexcept;
-//        bool get_raw_mempool(bool is_verbose, Json::Value& out) noexcept;
-//        bool get_raw_transaction(const char *txid, Json::Value& out) noexcept;
+        bool get_raw_mempool(bool is_verbose, handler&& callback) noexcept;
+        bool get_raw_transaction(const char *txid, handler&& callback) noexcept;
 
     private:
         const char *                                                _bitcoin_rpc_address;
@@ -46,38 +44,14 @@ namespace backend {
         size_t                                                      _request_counter;
         stl::ring_buffer<std::function<void(Json::Value&)>, 64>     _request_handlers;
 
+        Json::StreamWriterBuilder                                   _json_writer_builder;
+
         void configure() noexcept;
 
         void perform(Json::Value& json) noexcept;
         void on_perform(engine::http_client_response *response) noexcept;
 
-//        engine::timer_handle                                        _timeout_timer_handle;
-//        CURLM *                                                     _curl;
-//
-//        std::unordered_map<CURL *, curl_context *>                  _context_by_curl;
-//        std::unordered_map<engine::poll_handle *, curl_context *>   _context_by_poll;
-
         u64 init_in_json(Json::Value& in, const std::string& method) noexcept;
-
-//
-//        void check_multi_info() noexcept;
-//
-//        int on_handle_socket(CURL *easy, curl_socket_t socket, int action, void *userp) noexcept;
-//        int on_start_timeout(CURLM *multi, long timeout_ms, void *userp) noexcept;
-//        void on_curl_perform(engine::poll_handle *poll_handle, int status, int events) noexcept;
-//        void on_curl_close(engine::poll_handle *poll_handle) noexcept;
-//
-//        static int handle_socket_fn(CURL *easy, curl_socket_t socket, int action, void *userp, void *socketp) noexcept;
-//        static int start_timeout_fn(CURLM *multi, long timeout_ms, void *userp) noexcept;
-//        static void curl_perform_fn(uv_poll_t *poll_handle, int status, int events) noexcept;
-//        static void curl_close_fn(uv_handle_t *poll_handle) noexcept;
-//
-//
-//
-//
-//        bool perform(const Json::Value& in, Json::Value& out) noexcept;
-//
-//        static size_t write_callback(void *ptr, size_t size, size_t nmemb, std::string* data) noexcept;
 
     };
 
