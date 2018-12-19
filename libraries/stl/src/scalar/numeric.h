@@ -27,6 +27,16 @@ namespace stl {
         static bool belong_to_range(u32 lo, u32 hi, u32 val) noexcept;
         static bool belong_to_range(s32 lo, s32 hi, s32 val) noexcept;
 
+        /**
+         * @param val Value to round.
+         * @param mul Must be mod of 2.
+         */
+        template<typename T>
+        static T round_up_mod2(T val, T mul) noexcept
+        {
+            return (val + mul - 1) & -mul;
+        }
+
     };
 
 }

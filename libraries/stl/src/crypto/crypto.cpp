@@ -15,6 +15,8 @@
 
 namespace stl {
 
+    static size_t calculate_decoded_string_length(const char* b64input) noexcept;
+
     // static
     std::string crypto::base64_encode(const char *text) noexcept
     {
@@ -38,20 +40,6 @@ namespace stl {
         return result;
     }
 
-    size_t calculate_decoded_string_length(const char* b64input) noexcept
-    {
-        size_t len { std::strlen(b64input) };
-        size_t padding { 0 };
-
-        if (b64input[len-1] == '=' && b64input[len-2] == '=') {// last two chars are =
-            padding = 2;
-        } else if (b64input[len - 1] == '=') {// last char is =
-            padding = 1;
-        }
-
-        return (len * 3) / 4 - padding;
-    }
-
     // static
     std::string crypto::base64_decode(const char *b64input) noexcept
     {
@@ -73,6 +61,20 @@ namespace stl {
         BIO_free_all(bio);
 
         return result;
+    }
+
+    size_t calculate_decoded_string_length(const char* b64input) noexcept
+    {
+        size_t len { std::strlen(b64input) };
+        size_t padding { 0 };
+
+        if (b64input[len-1] == '=' && b64input[len-2] == '=') { // last two chars are =
+            padding = 2;
+        } else if (b64input[len - 1] == '=') { // last char is =
+            padding = 1;
+        }
+
+        return (len * 3) / 4 - padding;
     }
 
 }

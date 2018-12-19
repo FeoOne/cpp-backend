@@ -20,7 +20,7 @@
 #define logdebug(format, ...)
 #else
 #define logassert(cond, format, ...) \
-    do { if (!(cond)) { logdebug("Assertion failed '" STL_STR(cond) "'. " format, ##__VA_ARGS__); } } while (false)
+    do { if (!(cond)) { logdebug("Assertion failed '" STL_STR(cond) "'. " format, ##__VA_ARGS__); abort(); } } while (false)
 #define logdebug(format, ...)                                                   \
     stl::log_manager::get_logger()->log(stl::logger::level_t::DEBUG,            \
                                         __FILE__,                               \

@@ -33,7 +33,7 @@ namespace backend {
     pending_invoice *invoice_manager::get_by_invoice_guid(const stl::uuid& invoice_guid) noexcept
     {
         pending_invoice *result { nullptr };
-        auto it { _invoices_by_invoice_guid.find(invoice_guid) };
+        const auto& it { _invoices_by_invoice_guid.find(invoice_guid) };
         if (it != _invoices_by_invoice_guid.end()) {
             result = it->second;
         }
@@ -43,7 +43,7 @@ namespace backend {
     pending_invoice *invoice_manager::get_by_pending_guid(const stl::uuid &pending_guid) noexcept
     {
         pending_invoice *result { nullptr };
-        auto it { _invoices_by_pending_guid.find(pending_guid) };
+        const auto& it { _invoices_by_pending_guid.find(pending_guid) };
         if (it != _invoices_by_pending_guid.end()) {
             result = it->second;
         }
@@ -53,16 +53,37 @@ namespace backend {
     pending_invoice *invoice_manager::get_by_connection(SoupWebsocketConnection *connection) noexcept
     {
         pending_invoice *result { nullptr };
-        auto it { _invoices_by_connection.find(connection) };
+        const auto& it { _invoices_by_connection.find(connection) };
         if (it != _invoices_by_connection.end()) {
             result = it->second;
         }
         return result;
     }
 
+    pending_invoice *invoice_manager::get_by_address(const char *address) noexcept
+    {
+        pending_invoice *result { nullptr };
+        const auto& it { _invoices_by_address.find(address) };
+        if (it != _invoices_by_address.end()) {
+            result = it->second;
+        }
+        return result;
+    }
+
+    void invoice_manager::pending_invoice_created(pending_invoice *invoice) noexcept
+    {
+        const auto& it { _invoices_by_pending_guid.find(invoice->pending_guid()) };
+        if (it != _invoices_by_pending_guid.end()) {
+            _invoices_by_pending_guid.erase(it);
+        }
+
+        _invoices_by_invoice_guid.insert({ invoice->guid(), invoice });
+        _invoices_by_address.insert({ invoice->address(), invoice });
+    }
+
     void invoice_manager::disconnected(SoupWebsocketConnection *connection) noexcept
     {
-        auto it { _invoices_by_connection.find(connection) };
+        const auto& it { _invoices_by_connection.find(connection) };
         if (it != _invoices_by_connection.end()) {
             it->second->assign_connection(nullptr);
             _invoices_by_connection.erase(it);

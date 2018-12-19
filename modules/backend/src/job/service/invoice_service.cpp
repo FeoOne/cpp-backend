@@ -108,6 +108,7 @@ namespace backend {
             auto invoice { _invoice_manager->get_by_pending_guid(request->pending_guid()) };
             if (invoice != nullptr) {
                 invoice->update(request);
+                _invoice_manager->pending_invoice_created(invoice);
 
                 if (invoice->connection() != nullptr) {
                     respond_invoice_created(invoice);
@@ -140,21 +141,6 @@ namespace backend {
                                              std::bind(&invoice_service::on_raw_mempool,
                                                        this,
                                                        std::placeholders::_1));
-
-//        for (const auto& json : mempool["result"]) {
-//            const Json::StaticString& k = json.first;
-//            Json::Value& v = json.second;
-//
-//            Json::StreamWriterBuilder write_builder;
-//            auto data { Json::writeString(write_builder, json) };
-//            printf("%s\n\n", data.data());
-//        }
-//
-//        for (auto& pair: _invoice_manager->invoices_by_invoice_guid()) {
-//            auto invoice { pair.second };
-//
-//
-//        }
     }
 
     void invoice_service::on_raw_mempool(const Json::Value& json) noexcept
@@ -165,6 +151,7 @@ namespace backend {
         }
 
         auto& result { json["result"] };
+        lognotice("Raw mempool tx count: %u.", result.size());
         for (const auto &i : result) {
             BITCOIN_RPC_SERVICE->get_raw_transaction(i.asCString(),
                                                      std::bind(&invoice_service::on_raw_transaction,
@@ -176,22 +163,29 @@ namespace backend {
     void invoice_service::on_raw_transaction(const Json::Value& json) noexcept
     {
         if (!json["error"].isNull()) {
-                logwarn("%s", json["error"].asCString());
+            logwarn("%s", json["error"].asCString());
             return;
         }
 
-        Json::StreamWriterBuilder write_builder;
-        auto data { Json::writeString(write_builder, json) };
-        printf("%s\n\n", data.data());
+//        Json::StreamWriterBuilder write_builder;
+//        auto data { Json::writeString(write_builder, json) };
+//        printf("%s\n\n", data.data());
 
-        auto& address { json["result"]["vout"][0]["scriptPubKey"]["addresses"][0] };
-        if (address.isNull()) {
-            return;
+        const auto& vout { json["result"]["vout"] };
+        for (const auto &i : vout) {
+            const auto& addresses { i["scriptPubKey"]["addresses"] };
+            if (addresses.size() != 1) {
+                continue;
+            }
+
+            auto invoice { _invoice_manager->get_by_address(addresses[0].asCString()) };
+            if (invoice != nullptr) {
+                loginfo("Found payment for pending invoice guid: %s, address: %s.",
+                        invoice->guid().to_string().data(),
+                        invoice->address().data());
+                // @todo
+            }
         }
-
-        //logdebug("address: %s", address.asCString());
-
-
     }
 
 }

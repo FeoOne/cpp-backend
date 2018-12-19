@@ -39,11 +39,11 @@ namespace engine {
         _session = soup_session_new_with_options(SOUP_SESSION_USER_AGENT, "bitpayments",
                                                  NULL);
 
-#ifndef NDEBUG
-        auto logger { soup_logger_new(SoupLoggerLogLevel::SOUP_LOGGER_LOG_NONE, -1) };
-        soup_session_add_feature(_session, SOUP_SESSION_FEATURE(logger));
-        STL_GOBJECT_RELEASE(logger);
-#endif
+//#ifndef NDEBUG
+//        auto logger { soup_logger_new(SoupLoggerLogLevel::SOUP_LOGGER_LOG_NONE, -1) };
+//        soup_session_add_feature(_session, SOUP_SESSION_FEATURE(logger));
+//        STL_GOBJECT_RELEASE(logger);
+//#endif
     }
 
     void http_client_service::reset_soup_session() noexcept

@@ -1,8 +1,13 @@
 //
 // Created by Feo on 04/09/2018.
 //
+// dump memory:
+// (lldb) memory read --outfile ~/Desktop/mem.txt 0x7ff59c800000 0x7ff59c801000 --force
+//
 
 #include <inttypes.h>
+
+#include "scalar/numeric.h"
 
 #include "memory/fixed_memory_pool.h"
 
@@ -22,12 +27,10 @@ namespace stl {
         _memory = memory::aligned_alloc<u8>(_total_size);
 
 #ifdef STL_TRASHING_MEMORY_POOL
-        std::memset(_memory,
-                memory_pool_debug::TRASH_ON_CREATE_SIGNATURE,
-                _total_size);
+        std::memset(_memory, memory_pool_debug::TRASH_ON_CREATE_SIGNATURE, _total_size);
 #endif
 
-        _chunk_size = _data_size + CHUNK_HEAD_SIZE;
+        _chunk_size = numeric::round_up_mod2<u32>(_data_size + CHUNK_HEAD_SIZE, memory_pool_debug::BOUNDS_CHECK_SIZE);
 
         auto block_size { _chunk_size };
 #ifdef STL_BOUNDING_MEMORY_POOL
@@ -51,6 +54,7 @@ namespace stl {
             }
 
             _free_chunks = chunk;
+            logassert(_free_chunks != nullptr, "Debug _free_chunks.");
 
 #ifdef STL_BOUNDING_MEMORY_POOL
             std::memcpy(memory - memory_pool_debug::BOUNDS_CHECK_SIZE,
@@ -77,30 +81,30 @@ namespace stl {
 
     void *fixed_memory_page::alloc() noexcept
     {
+        if (_free_chunks == nullptr) {
+            return nullptr;
+        }
+
         u8 *memory { nullptr };
 
-        if (_data_size + CHUNK_HEAD_SIZE == _chunk_size) {
-            auto chunk { _free_chunks };
+        auto chunk { _free_chunks };
 
-//            logdebug("chunk %p", chunk);
+        _free_chunks = chunk->next();
+        if (_free_chunks != nullptr) {
+            _free_chunks->prev(nullptr);
+        }
 
-            _free_chunks = chunk->next();
-            if (_free_chunks != nullptr) {
-                _free_chunks->prev(nullptr);
-            }
+        chunk->next(_allocated_chunks);
+        if (_allocated_chunks != nullptr) {
+            _allocated_chunks->prev(chunk);
+        }
+        _allocated_chunks = chunk;
 
-            chunk->next(_allocated_chunks);
-            if (_allocated_chunks != nullptr) {
-                _allocated_chunks->prev(chunk);
-            }
-            _allocated_chunks = chunk;
-
-            memory = reinterpret_cast<u8 *>(chunk) + CHUNK_HEAD_SIZE;
+        memory = reinterpret_cast<u8 *>(chunk) + CHUNK_HEAD_SIZE;
 
 #ifdef STL_TRASHING_MEMORY_POOL
-            std::memset(memory, memory_pool_debug::TRASH_ON_CREATE_SIGNATURE, _data_size);
+        std::memset(memory, memory_pool_debug::TRASH_ON_CREATE_SIGNATURE, _data_size);
 #endif
-        }
 
         return memory;
     }
@@ -132,6 +136,7 @@ namespace stl {
         }
 
         _free_chunks = chunk;
+        logassert(_free_chunks != nullptr, "Debug _free_chunks.");
 
 #ifdef STL_TRASHING_MEMORY_POOL
         std::memset(ptr, memory_pool_debug::TRASH_ON_FREE_SIGNATURE, _chunk_size - CHUNK_HEAD_SIZE);

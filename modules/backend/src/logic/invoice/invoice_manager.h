@@ -30,10 +30,9 @@ namespace backend {
         pending_invoice *get_by_invoice_guid(const stl::uuid& invoice_guid) noexcept;
         pending_invoice *get_by_pending_guid(const stl::uuid& pending_guid) noexcept;
         pending_invoice *get_by_connection(SoupWebsocketConnection *connection) noexcept;
+        pending_invoice *get_by_address(const char *address) noexcept;
 
-        inline std::unordered_map<stl::uuid, pending_invoice *>& invoices_by_invoice_guid() noexcept {
-            return _invoices_by_invoice_guid;
-        }
+        void pending_invoice_created(pending_invoice *invoice) noexcept;
 
         void disconnected(SoupWebsocketConnection *connection) noexcept;
 
@@ -41,6 +40,7 @@ namespace backend {
         std::unordered_map<stl::uuid, pending_invoice *>                    _invoices_by_invoice_guid;
         std::unordered_map<stl::uuid, pending_invoice *>                    _invoices_by_pending_guid;
         std::unordered_map<SoupWebsocketConnection *, pending_invoice *>    _invoices_by_connection;
+        std::unordered_map<std::string_view, pending_invoice *>             _invoices_by_address;
 
     };
 
