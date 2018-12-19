@@ -37,6 +37,9 @@ namespace backend {
 
         s64                         _estimated_fee;
 
+        void setup_fee_poll_timer() noexcept;
+        void reset_fee_poll_timer() noexcept;
+
         void on_fee_poll_timer() noexcept;
     };
 
