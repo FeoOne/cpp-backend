@@ -35,6 +35,16 @@ namespace backend {
 
     void bitcoin_service::setup() noexcept
     {
+        setup_fee_poll_timer();
+    }
+
+    void bitcoin_service::reset() noexcept
+    {
+        reset_fee_poll_timer();
+    }
+
+    void bitcoin_service::setup_fee_poll_timer() noexcept
+    {
         config().lookup_int32<size_t>(consts::config::key::bitcoin_fee_wait_blocks,
                                       &_fee_wait_block_count,
                                       EX_FEE_WAIT_BLOCK_COUNT);
@@ -46,7 +56,7 @@ namespace backend {
         _fee_poll_timer->start();
     }
 
-    void bitcoin_service::reset() noexcept
+    void bitcoin_service::reset_fee_poll_timer() noexcept
     {
         _fee_poll_timer->stop();
     }
