@@ -47,7 +47,7 @@ namespace backend {
         void on_raw_transaction(const Json::Value& json) noexcept;
 
         // database responses
-        void create_float_invoice_db_response_fn(engine::db_request *base_request) noexcept;
+        void invoice_create_float_db_response_fn(engine::db_request *base_request) noexcept;
 
     };
 

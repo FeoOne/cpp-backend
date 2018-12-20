@@ -10,7 +10,7 @@
 
 #include <stl.h>
 
-#include "db/create_float_invoice_db_request.h"
+#include "db/invoice_create_float_db_request.h"
 
 namespace backend {
 
@@ -32,6 +32,7 @@ namespace backend {
         const stl::uuid& wallet_guid() const noexcept { return _wallet_guid; }
 
         const std::string& address() const noexcept { return _address; }
+        const std::string& txid() const noexcept { return _txid; }
 
         const stl::uuid& merchandise_guid() const noexcept { return _merchandise_guid; }
         const std::string& mail() const noexcept { return _mail; }
@@ -39,7 +40,8 @@ namespace backend {
 
         s64 fee() const noexcept { return _fee; }
 
-        void update(create_float_invoice_db_request *request) noexcept;
+        void on_created(invoice_create_float_db_request *request) noexcept;
+        void on_paid(const std::string& txid) noexcept;
 
         void assign_connection(SoupWebsocketConnection *connection) noexcept { _connection = connection; }
         SoupWebsocketConnection *connection() noexcept { return _connection; }
@@ -54,6 +56,7 @@ namespace backend {
         u32                         _confirm_block_count;
         std::string                 _callback_url;
         std::string                 _address;
+        std::string                 _txid;
 
         stl::uuid                   _merchandise_guid;
         std::string                 _mail;

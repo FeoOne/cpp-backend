@@ -9,7 +9,8 @@
 #include "job/service/ws_service.h"
 #include "job/service/bitcoin_service.h"
 #include "job/service/bitcoin_rpc_service.h"
-#include "db/create_float_invoice_db_request.h"
+#include "db/invoice_paid_db_request.h"
+#include "db/invoice_create_float_db_request.h"
 
 #include "job/service/invoice_service.h"
 
@@ -83,12 +84,12 @@ namespace backend {
                                                     BITCOIN_SERVICE->estimated_fee(),
                                                     connection) };
 
-            auto request { new (std::nothrow) create_float_invoice_db_request(invoice->pending_guid(),
+            auto request { new (std::nothrow) invoice_create_float_db_request(invoice->pending_guid(),
                                                                               merchandise_guid,
                                                                               invoice->mail(),
                                                                               invoice->amount(),
                                                                               invoice->fee()) };
-            request->assign_callback(std::bind(&invoice_service::create_float_invoice_db_response_fn,
+            request->assign_callback(std::bind(&invoice_service::invoice_create_float_db_response_fn,
                                                this,
                                                std::placeholders::_1));
 
@@ -101,14 +102,14 @@ namespace backend {
         }
     }
 
-    void invoice_service::create_float_invoice_db_response_fn(engine::db_request *base_request) noexcept
+    void invoice_service::invoice_create_float_db_response_fn(engine::db_request *base_request) noexcept
     {
-        auto request { reinterpret_cast<create_float_invoice_db_request *>(base_request) };
+        auto request { reinterpret_cast<invoice_create_float_db_request *>(base_request) };
         if (request->is_success()) {
             auto invoice { _invoice_manager->get_by_pending_guid(request->pending_guid()) };
             if (invoice != nullptr) {
-                invoice->update(request);
-                _invoice_manager->pending_invoice_created(invoice);
+                invoice->on_created(request);
+                _invoice_manager->on_created(invoice);
 
                 if (invoice->connection() != nullptr) {
                     respond_invoice_created(invoice);
@@ -167,11 +168,10 @@ namespace backend {
             return;
         }
 
-//        Json::StreamWriterBuilder write_builder;
-//        auto data { Json::writeString(write_builder, json) };
-//        printf("%s\n\n", data.data());
+//        STL_PRINT_JSON(json);
 
-        const auto& vout { json["result"]["vout"] };
+        const auto& result { json["result"] };
+        const auto& vout { result["vout"] };
         for (const auto &i : vout) {
             const auto& addresses { i["scriptPubKey"]["addresses"] };
             if (addresses.size() != 1) {
@@ -180,10 +180,17 @@ namespace backend {
 
             auto invoice { _invoice_manager->get_by_address(addresses[0].asCString()) };
             if (invoice != nullptr) {
-                loginfo("Found payment for pending invoice guid: %s, address: %s.",
+                const auto& txid { result["txid"].asString() };
+                loginfo("Paid invoice guid: %s, address: %s, txid: %s.",
                         invoice->guid().to_string().data(),
-                        invoice->address().data());
-                // @todo
+                        invoice->address().data(),
+                        txid.data());
+
+                invoice->on_paid(txid);
+
+                auto request { new (std::nothrow) invoice_paid_db_request(invoice->guid(), txid) };
+                auto task { new (std::nothrow) engine::db_request_task(request) };
+                router()->enqueue(task);
             }
         }
     }

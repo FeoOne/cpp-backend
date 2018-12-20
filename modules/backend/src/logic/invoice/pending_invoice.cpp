@@ -22,6 +22,8 @@ namespace backend {
             _wallet_guid {},
             _confirm_block_count { 0 },
             _callback_url {},
+            _address {},
+            _txid {},
             _merchandise_guid { merchandise_guid },
             _mail { mail },
             _amount { amount },
@@ -34,7 +36,7 @@ namespace backend {
     {
     }
 
-    void pending_invoice::update(create_float_invoice_db_request *request) noexcept
+    void pending_invoice::on_created(invoice_create_float_db_request *request) noexcept
     {
         _id = request->invoice_id;
         _guid = request->invoice_guid;
@@ -45,6 +47,13 @@ namespace backend {
         _address = bitcoin::generate_address(_wallet_guid.data(), stl::uuid::size, _id);
 
         _state = pending_state::created;
+    }
+
+    void pending_invoice::on_paid(const std::string& txid) noexcept
+    {
+        _txid = txid;
+
+        _state = pending_state::paid;
     }
 
 }

@@ -70,7 +70,7 @@ namespace backend {
         return result;
     }
 
-    void invoice_manager::pending_invoice_created(pending_invoice *invoice) noexcept
+    void invoice_manager::on_created(pending_invoice *invoice) noexcept
     {
         const auto& it { _invoices_by_pending_guid.find(invoice->pending_guid()) };
         if (it != _invoices_by_pending_guid.end()) {

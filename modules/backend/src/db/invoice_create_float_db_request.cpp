@@ -5,14 +5,14 @@
  * @brief
  */
 
-#include "create_float_invoice_db_request.h"
+#include "invoice_create_float_db_request.h"
 
 namespace backend {
 
-    static const char *sql { "SELECT * FROM create_float_invoice($1::UUID, $2::VARCHAR, $3::BIGINT, $4::BIGINT);" };
+    static const char *sql { "SELECT * FROM invoice_create_float($1::UUID, $2::VARCHAR, $3::BIGINT, $4::BIGINT);" };
     static constexpr size_t param_count { 4 };
 
-    create_float_invoice_db_request::create_float_invoice_db_request(const stl::uuid& pending_guid,
+    invoice_create_float_db_request::invoice_create_float_db_request(const stl::uuid& pending_guid,
                                                                      const stl::uuid& merchandise_guid,
                                                                      const std::string& mail,
                                                                      s64 amount,
@@ -32,12 +32,12 @@ namespace backend {
     }
 
     // virtual
-    create_float_invoice_db_request::~create_float_invoice_db_request()
+    invoice_create_float_db_request::~invoice_create_float_db_request()
     {
     }
 
     // virtual
-    void create_float_invoice_db_request::process_response(engine::db_response *response) noexcept
+    void invoice_create_float_db_request::process_response(engine::db_response *response) noexcept
     {
         auto row_count { response->row_count() };
         if (row_count != 1) {

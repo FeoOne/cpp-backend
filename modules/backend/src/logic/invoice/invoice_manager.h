@@ -32,7 +32,7 @@ namespace backend {
         pending_invoice *get_by_connection(SoupWebsocketConnection *connection) noexcept;
         pending_invoice *get_by_address(const char *address) noexcept;
 
-        void pending_invoice_created(pending_invoice *invoice) noexcept;
+        void on_created(pending_invoice *invoice) noexcept;
 
         void disconnected(SoupWebsocketConnection *connection) noexcept;
 
