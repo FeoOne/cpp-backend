@@ -44,6 +44,7 @@ namespace backend {
         _confirm_block_count = request->confirm_block_count;
         _callback_url.assign(request->callback_url);
 
+        // @todo add salt
         _address = bitcoin::generate_address(_wallet_guid.data(), stl::uuid::size, _id);
 
         _state = pending_state::created;

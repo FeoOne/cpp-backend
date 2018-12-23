@@ -69,8 +69,3 @@ namespace backend {
     }
 
 }
-
-#undef EX_FEE_WAIT_BLOCK_COUNT
-
-#undef EX_FEE_POLL_TIMER_REPEAT
-#undef EX_FEE_POLL_TIMER_DELAY

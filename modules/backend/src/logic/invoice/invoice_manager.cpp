@@ -70,12 +70,16 @@ namespace backend {
         return result;
     }
 
+    void invoice_manager::remove(pending_invoice *invoice) noexcept
+    {
+        STL_SAFE_ERASE(_invoices_by_invoice_guid, invoice->guid());
+        STL_SAFE_ERASE(_invoices_by_connection, invoice->connection());
+        STL_SAFE_ERASE(_invoices_by_address, invoice->address());
+    }
+
     void invoice_manager::on_created(pending_invoice *invoice) noexcept
     {
-        const auto& it { _invoices_by_pending_guid.find(invoice->pending_guid()) };
-        if (it != _invoices_by_pending_guid.end()) {
-            _invoices_by_pending_guid.erase(it);
-        }
+        STL_SAFE_ERASE(_invoices_by_pending_guid, invoice->pending_guid());
 
         _invoices_by_invoice_guid.insert({ invoice->guid(), invoice });
         _invoices_by_address.insert({ invoice->address(), invoice });

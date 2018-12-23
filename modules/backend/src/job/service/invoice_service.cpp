@@ -186,6 +186,7 @@ namespace backend {
                         invoice->address().data(),
                         txid.data());
 
+                _invoice_manager->remove(invoice);
                 invoice->on_paid(txid);
 
                 auto request { new (std::nothrow) invoice_paid_db_request(invoice->guid(), txid) };

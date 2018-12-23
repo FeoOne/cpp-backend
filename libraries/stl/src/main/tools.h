@@ -26,4 +26,12 @@
 #define STL_NODISCARD                    [[nodiscard]]
 #define STL_UNUSED                       [[maybe_unused]]
 
+#define STL_SAFE_ERASE(c, k)            \
+    do {                                \
+        const auto& it { c.find(k) };   \
+            if (it != c.end()) {        \
+                c.erase(it);            \
+            }                           \
+    } while (false)
+
 #endif /* STL_TOOLS_H */
